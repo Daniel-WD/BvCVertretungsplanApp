@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    android:id="@+id/dayText"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textColor="@color/snow"
+    android:text="DEFAULT"
+    android:fontFamily="sans-serif-light"
+    android:textSize="35sp">
+
+</TextView>
