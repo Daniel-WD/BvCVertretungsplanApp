@@ -14,15 +14,19 @@ import com.titaniel.bvcvertretungsplan.R;
 
 public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolder> {
 
+    private static final int MAX_GLOW = 10;
+    private static final float MAX_SCALE = 1.5f;
+    private static final float MIN_ALPHA = 0.7f;
+
     private Handler mHandler = new Handler();
 
     private RecyclerView mList;
     private String[] mElements = {
-            "MO",
-            "DI",
-            "MI",
-            "DO",
-            "FR"
+            "mo",
+            "di",
+            "mi",
+            "do",
+            "fr"
     };
     
     private int mSelected = 0;
@@ -88,7 +92,7 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
         }
 
         long select() {
-            ValueAnimator shadowOn = ValueAnimator.ofFloat(0, 15);
+            ValueAnimator shadowOn = ValueAnimator.ofFloat(0, MAX_GLOW);
             shadowOn.addUpdateListener(animation ->
                     text.setShadowLayer((float)animation.getAnimatedValue(), 0, 0, Color.WHITE));
             shadowOn.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -98,8 +102,8 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
             itemView.animate()
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .setDuration(150)
-                    .scaleY(1.6f)
-                    .scaleX(1.6f)
+                    .scaleY(MAX_SCALE)
+                    .scaleX(MAX_SCALE)
                     .alpha(1)
                     .start();
 
@@ -107,7 +111,7 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
         }
 
         long deselect() {
-            ValueAnimator shadowOff = ValueAnimator.ofFloat(15, 0);
+            ValueAnimator shadowOff = ValueAnimator.ofFloat(MAX_GLOW, 0);
             shadowOff.addUpdateListener(animation ->
                     text.setShadowLayer((float)animation.getAnimatedValue(), 0, 0, Color.WHITE));
             shadowOff.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -119,10 +123,10 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
                     .setDuration(150)
                     .scaleY(1f)
                     .scaleX(1f)
-                    .alpha(0.7f)
+                    .alpha(MIN_ALPHA)
                     .start();
 
-            return 200;
+            return 150;
         }
     }
 }

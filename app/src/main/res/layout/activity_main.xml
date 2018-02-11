@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/one"
@@ -27,7 +28,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/bg" />
 
-            <RelativeLayout
+            <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -35,46 +36,66 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?android:actionBarSize"
-                    android:layout_marginTop="25dp">
+                    android:layout_marginTop="25dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="sans-serif-light"
-                        android:text="@string/app_name"
+                        android:text=""
                         android:textColor="@color/snow"
                         android:textSize="20sp" />
 
                 </android.support.v7.widget.Toolbar>
 
+                <TextView
+                    android:id="@+id/tvDatePrim"
+                    android:textSize="14sp"
+                    android:textColor="@color/snow"
+                    android:text="A Date"
+                    android:fontFamily="sans-serif-black"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@+id/dayPager" />
+
                 <ImageView
                     android:id="@+id/triangle"
                     android:layout_width="match_parent"
                     android:layout_height="70dp"
-                    android:layout_alignParentBottom="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/triangle_overlay" />
+                    android:src="@drawable/triangle_overlay"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <android.support.v4.view.ViewPager
                     android:id="@+id/dayPager"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@id/toolbar"
-                    android:layout_above="@id/triangle"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:paddingTop="24dp"
                     android:clipToPadding="false"
-                    android:overScrollMode="never" />
+                    android:overScrollMode="never"
+                    app:layout_constraintBottom_toBottomOf="@+id/triangle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
                 <android.support.v7.widget.RecyclerView
-                    android:layout_marginTop="2dp"
                     android:id="@+id/listDays"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
+                    android:layout_height="35sp"
                     android:overScrollMode="never"
                     android:paddingBottom="4dp"
-                    android:layout_marginStart="12dp"/>
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.13"
+                    app:layout_constraintStart_toStartOf="parent" />
 
-            </RelativeLayout>
+            </android.support.constraint.ConstraintLayout>
 
             <!--<TextView
                 android:id="@+id/tvSelectedDay"
@@ -92,10 +113,10 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:scaleType="fitXY"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="40dp"
+        android:scaleType="fitXY"
         app:backgroundTint="@color/four"
         app:fabSize="normal"
         app:layout_anchor="@id/appbarlayout"

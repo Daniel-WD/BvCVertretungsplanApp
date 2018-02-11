@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.titaniel.bvcvertretungsplan.database.Database;
 import com.titaniel.bvcvertretungsplan.day_list.DayListAdapter;
 import com.titaniel.bvcvertretungsplan.day_pager.DayPagerAdapter;
 import com.titaniel.bvcvertretungsplan.day_pager.DayPagerTransformer;
@@ -34,6 +35,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Database
+        Database.init(this);
+
+        //Size
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);
         mWidth = size.x;
@@ -70,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             mDayIndicator.setRotation(mTriDegrees);
         });
 
-        //new QueryTask().execute(this);
+        //new LoadingTask().execute(this);
     }
 
     private void adjustViewHeightToTriangle(View... views) {
@@ -82,5 +87,14 @@ public class MainActivity extends AppCompatActivity {
             additionalHeight = rightCenter * mTriRatio;
             v.setTranslationY(-additionalHeight);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //hide status bar
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
     }
 }
