@@ -6,6 +6,7 @@ import android.view.View;
 public class DayPagerTransformer implements ViewPager.PageTransformer {
 
     private static final float FADE_SPEED = 3;
+    private static final float BLOCK_VALUE = 0.8f;
 
     private float mRatio = 0;
 
@@ -22,6 +23,8 @@ public class DayPagerTransformer implements ViewPager.PageTransformer {
             view.setAlpha(1 - Math.abs(FADE_SPEED*position));
 
             view.setRotation((float)Math.toDegrees(Math.atan(mRatio)));
+
+            view.setTranslationX(-pageWidth*position *BLOCK_VALUE);
 
             float xDist = position * pageWidth;
 

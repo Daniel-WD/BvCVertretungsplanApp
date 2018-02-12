@@ -7,6 +7,8 @@ import android.util.Xml;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -100,15 +102,13 @@ public class LoadingTask extends AsyncTask<Context, Void, Void> {
 //                Log.d(TAG, "attribute_count:" + parser.getAttributeCount());
 
     private void readFile(Context context, String _name) {
+        if(_name.charAt(0) != 'k') return;
         Database.Day day = new Database.Day();
         Database.Entry entry = null;
 
-        Calendar date = Calendar.getInstance();
-        date.set(DataUtils.yearInName(_name),
+        day.date = new LocalDate(DataUtils.yearInName(_name),
                 DataUtils.monthInName(_name),
-                DataUtils.dayInName(_name),
-                0, 0);
-        day.date = date;
+                DataUtils.dayInName(_name));
 
         try(InputStream is = context.openFileInput(_name)) {
             XmlPullParser parser = Xml.newPullParser();
@@ -123,14 +123,13 @@ public class LoadingTask extends AsyncTask<Context, Void, Void> {
                         switch(parser.getName()) {
                             case KEY_LAST_UPDATED:
                                 parser.next();
-                                String lastUpdate = parser.getText();
-                                Calendar lastUpdated = Calendar.getInstance();
-                                lastUpdated.set(DataUtils.yearInDate(lastUpdate),
-                                        DataUtils.monthInDate(lastUpdate),
-                                        DataUtils.dayInDate(lastUpdate),
-                                        DataUtils.hoursInDate(lastUpdate),
-                                        0);
-                                day.lastUpdate = lastUpdated;
+                                String lastUpdateText = parser.getText();
+                                day.lastUpdate = new LocalDateTime(
+                                        DataUtils.yearInDate(lastUpdateText),
+                                        DataUtils.monthInDate(lastUpdateText),
+                                        DataUtils.dayInDate(lastUpdateText),
+                                        DataUtils.hoursInDate(lastUpdateText),
+                                        DataUtils.minutesInDate(lastUpdateText));
                                 continue;
 
                             case KEY_DISABLED_COURSES:

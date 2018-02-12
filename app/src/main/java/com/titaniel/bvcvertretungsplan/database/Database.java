@@ -2,10 +2,11 @@ package com.titaniel.bvcvertretungsplan.database;
 
 import android.content.Context;
 
+import org.joda.time.LocalDate;
+import org.joda.time.LocalDateTime;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 
 public class Database {
 
@@ -31,7 +32,8 @@ public class Database {
 
     static class Day {
         ArrayList<Entry> entries = new ArrayList<>();
-        Calendar date, lastUpdate;
+        LocalDate date;
+        LocalDateTime lastUpdate;
         String disabledCourses;
         String disabledRooms;
     }

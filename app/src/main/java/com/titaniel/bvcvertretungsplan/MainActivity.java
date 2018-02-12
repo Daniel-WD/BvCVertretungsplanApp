@@ -1,5 +1,6 @@
 package com.titaniel.bvcvertretungsplan;
 
+import android.graphics.Color;
 import android.graphics.Point;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
@@ -8,12 +9,13 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.titaniel.bvcvertretungsplan.database.Database;
-import com.titaniel.bvcvertretungsplan.day_list.DayListAdapter;
+import com.titaniel.bvcvertretungsplan.date_shower.DateShower;
+import com.titaniel.bvcvertretungsplan.day_indicator_list.DayListAdapter;
 import com.titaniel.bvcvertretungsplan.day_pager.DayPagerAdapter;
 import com.titaniel.bvcvertretungsplan.day_pager.DayPagerTransformer;
 
@@ -24,10 +26,13 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private FloatingActionButton mFab;
     private ImageView mTriangle;
+    private FrameLayout mDateContainer;
+
+    private DateShower mDateShower;
 
     private int mWidth, mHeight;
 
-    private float mTriRatio = 0;
+    private double mTriRatio = 0;
     private float mTriDegrees = 0;
 
     @Override
@@ -53,13 +58,16 @@ public class MainActivity extends AppCompatActivity {
         mFab = findViewById(R.id.fab);
         mDayPager = findViewById(R.id.dayPager);
         mTriangle = findViewById(R.id.triangle);
+        mDateContainer = findViewById(R.id.dateContainer);
 
-        LinearLayoutManager mManagerDays =
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        //dateShower
+        mDateContainer.post(() -> mDateShower = new DateShower(mDateContainer));
 
         //day indicator
+        LinearLayoutManager mManagerDays =
+                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mDayIndicator.setLayoutManager(mManagerDays);
-        mDayIndicator.setAdapter(new DayListAdapter(mDayIndicator));
+        mDayIndicator.setAdapter(new DayListAdapter(mDayIndicator, mDayPager));
         mDayIndicator.setHasFixedSize(true);
 
         //day pager
@@ -68,11 +76,23 @@ public class MainActivity extends AppCompatActivity {
             DayPagerTransformer transformer = new DayPagerTransformer();
 //            transformer.setRatio(mTriRatio);
             mDayPager.setPageTransformer(false, transformer);
+
+            //adjust date container position
+            View v = mDayPager.getChildAt(0).findViewById(R.id.dayText);
+            mDateContainer.setY(v.getY() + v.getHeight() + mDayPager.getY());
+        });
+        mDayPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override public void onPageScrollStateChanged(int state) {}
+            @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            @Override public void onPageSelected(int position) {
+                ((DayListAdapter)mDayIndicator.getAdapter()).changeSelected(position);
+                mDateShower.show(position);
+            }
         });
 
         //adjust fab position
         mTriangle.post(() -> {
-            mTriRatio = (float)mTriangle.getHeight()/(float)mTriangle.getWidth();
+            mTriRatio = (double)mTriangle.getHeight()/(double)mTriangle.getWidth();
             mTriDegrees = (float)Math.toDegrees(Math.atan(mTriRatio));
             adjustViewHeightToTriangle(mFab, mDayIndicator);
             mDayIndicator.setRotation(mTriDegrees);
@@ -87,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         for(View v : views) {
             if(v == null) continue;
             rightCenter = mWidth-(v.getX()+v.getWidth()/2);
-            additionalHeight = rightCenter * mTriRatio;
+            additionalHeight = rightCenter * (float)mTriRatio;
             v.setTranslationY(-additionalHeight);
         }
     }

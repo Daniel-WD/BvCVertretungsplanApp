@@ -25,14 +25,14 @@ public class DayPagerFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_day, container, false);
+        return inflater.inflate(R.layout.pager_fragment_day, container, false);
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        TextView dayText = (TextView) getView();
+        TextView dayText = (TextView) getView().findViewById(R.id.dayText);
 
         if(getArguments() != null) {
             dayText.setText(getArguments().getString(KEY_TEXT));

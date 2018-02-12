@@ -51,16 +51,40 @@
 
                 </android.support.v7.widget.Toolbar>
 
-                <TextView
-                    android:id="@+id/tvDatePrim"
-                    android:textSize="14sp"
-                    android:textColor="@color/snow"
-                    android:text="A Date"
-                    android:fontFamily="sans-serif-black"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
+                <FrameLayout
+                    android:id="@+id/dateContainer"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="@+id/dayPager" />
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:paddingBottom="28sp"
+                    android:paddingTop="4dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/dayPager"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.84"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.75">
+
+                    <TextView
+                        android:id="@+id/tvDatePrim"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:gravity="center"
+                        android:textColor="@color/snow"
+                        android:textSize="28sp" />
+
+                    <TextView
+                        android:id="@+id/tvDateSec"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-light"
+                        android:gravity="center"
+                        android:textColor="@color/snow"
+                        android:textSize="28sp" />
+
+                </FrameLayout>
 
                 <ImageView
                     android:id="@+id/triangle"
@@ -76,7 +100,6 @@
                     android:id="@+id/dayPager"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:paddingTop="24dp"
                     android:clipToPadding="false"
                     android:overScrollMode="never"
                     app:layout_constraintBottom_toBottomOf="@+id/triangle"
