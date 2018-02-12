@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
         //Database
         Database.init(this);
 
+        //Day Manager
+        DayManager.init(this);
+
         //Size
         Point size = new Point();
         getWindowManager().getDefaultDisplay().getSize(size);

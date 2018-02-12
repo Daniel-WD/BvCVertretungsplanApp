@@ -4,28 +4,22 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import com.titaniel.bvcvertretungsplan.DayManager;
+
 public class DayPagerAdapter extends FragmentPagerAdapter {
 
     public DayPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
-    private String[] texts = {
-            "MONTAG",
-            "DIENSTAG",
-            "MITTWOCH",
-            "DONNERSTAG",
-            "FREITAG"
-    };
-
     @Override
     public Fragment getItem(int position) {
-        return DayPagerFragment.newInstance(texts[position]);
+        return DayPagerFragment.newInstance(DayManager.capsDayList[position]);
     }
 
     @Override
     public int getCount() {
-        return texts.length;
+        return DayManager.capsDayList.length;
     }
 
 }

@@ -106,7 +106,8 @@ public class LoadingTask extends AsyncTask<Context, Void, Void> {
         Calendar date = Calendar.getInstance();
         date.set(DataUtils.yearInName(_name),
                 DataUtils.monthInName(_name),
-                DataUtils.dayInName(_name));
+                DataUtils.dayInName(_name),
+                0, 0);
         day.date = date;
 
         try(InputStream is = context.openFileInput(_name)) {

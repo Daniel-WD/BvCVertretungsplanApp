@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
 
+import com.titaniel.bvcvertretungsplan.DayManager;
 import com.titaniel.bvcvertretungsplan.R;
 
 public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolder> {
@@ -21,13 +22,6 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
     private Handler mHandler = new Handler();
 
     private RecyclerView mList;
-    private String[] mElements = {
-            "mo",
-            "di",
-            "mi",
-            "do",
-            "fr"
-    };
     
     private int mSelected = 0;
     private boolean mClickable = true;
@@ -62,12 +56,12 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
 
     @Override
     public void onBindViewHolder(DayHolder holder, int position) {
-        holder.text.setText(mElements[position]);
+        holder.text.setText(DayManager.shortDayList[position]);
     }
 
     @Override
     public int getItemCount() {
-        return mElements.length;
+        return DayManager.shortDayList.length;
     }
 
 

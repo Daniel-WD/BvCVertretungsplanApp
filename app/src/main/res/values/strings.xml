@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">Vertretungsplan</string>
+
+    <string name="monday_caps">MONTAG</string>
+    <string name="tuesday_caps">DIENSTAG</string>
+    <string name="wednesday_caps">MITTWOCH</string>
+    <string name="thursday_caps">DONNERSTAG</string>
+    <string name="friday_caps">FREITAG</string>
+
+    <string name="monday_short">mo</string>
+    <string name="tuesday_short">di</string>
+    <string name="wednesday_short">mi</string>
+    <string name="thursday_short">do</string>
+    <string name="friday_short">fr</string>
+
 </resources>

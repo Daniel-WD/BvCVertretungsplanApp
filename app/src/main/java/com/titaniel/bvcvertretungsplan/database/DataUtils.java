@@ -34,6 +34,4 @@ public class DataUtils {
         return Integer.valueOf(date.substring(15, 17));
     }
 
-
-
 }
