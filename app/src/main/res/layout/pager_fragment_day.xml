@@ -4,14 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:id="@+id/dayText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="24dp"
-        android:fontFamily="sans-serif-light"
-        android:gravity="left"
+        android:fontFamily="sans-serif"
+        android:gravity="start"
         android:shadowColor="@color/snow"
         android:shadowDx="0"
         android:shadowDy="0"

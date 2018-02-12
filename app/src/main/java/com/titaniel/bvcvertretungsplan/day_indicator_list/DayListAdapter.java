@@ -16,10 +16,6 @@ import com.titaniel.bvcvertretungsplan.R;
 
 public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolder> {
 
-    private static final int MAX_GLOW = 6;
-    private static final float MAX_SCALE = 1.5f;
-    private static final float MIN_ALPHA = 0.7f;
-
     private Handler mHandler = new Handler();
 
     private RecyclerView mList;
@@ -69,8 +65,14 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
 
     class DayHolder extends RecyclerView.ViewHolder {
 
+        private static final int MAX_GLOW = 6;
+        private static final float MAX_SCALE = 1.5f;
+        private static final float MIN_ALPHA = 0.7f;
+
         View itemView;
         TextView text;
+
+        float lineMaxScale = 1;
 
         DayHolder(View itemView) {
             super(itemView);
@@ -88,10 +90,17 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
                 if(getAdapterPosition() == 0) select();
             });
 
-            text = (TextView) itemView;
+            text = itemView.findViewById(R.id.shortDay);
+
         }
 
         long select() {
+/*            line.animate()
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setDuration(150)
+                    .scaleX(lineMaxScale)
+                    .start();*/
+
             ValueAnimator shadowOn = ValueAnimator.ofFloat(0, MAX_GLOW);
             shadowOn.addUpdateListener(animation ->
                     text.setShadowLayer((float)animation.getAnimatedValue(), 0, 0, Color.WHITE));
@@ -99,7 +108,7 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
             shadowOn.setDuration(150);
             shadowOn.start();
 
-            itemView.animate()
+            text.animate()
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .setDuration(150)
                     .scaleY(MAX_SCALE)
@@ -111,6 +120,12 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
         }
 
         long deselect() {
+/*            line.animate()
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setDuration(150)
+                    .scaleX(0)
+                    .start();*/
+
             ValueAnimator shadowOff = ValueAnimator.ofFloat(MAX_GLOW, 0);
             shadowOff.addUpdateListener(animation ->
                     text.setShadowLayer((float)animation.getAnimatedValue(), 0, 0, Color.WHITE));
@@ -118,7 +133,7 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
             shadowOff.setDuration(150);
             shadowOff.start();
 
-            itemView.animate()
+            text.animate()
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .setDuration(150)
                     .scaleY(1f)

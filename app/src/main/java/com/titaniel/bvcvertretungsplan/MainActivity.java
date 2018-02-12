@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton mFab;
     private ImageView mTriangle;
     private FrameLayout mDateContainer;
+    private View mIndicatorLine;
 
     private DateShower mDateShower;
 
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private double mTriRatio = 0;
     private float mTriDegrees = 0;
+    private float mTriHypot = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         mDayPager = findViewById(R.id.dayPager);
         mTriangle = findViewById(R.id.triangle);
         mDateContainer = findViewById(R.id.dateContainer);
+        //mIndicatorLine = findViewById(R.id.indicatorLine);
 
         //dateShower
         mDateContainer.post(() -> mDateShower = new DateShower(mDateContainer));
@@ -79,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
 
             //adjust date container position
             View v = mDayPager.getChildAt(0).findViewById(R.id.dayText);
-            mDateContainer.setY(v.getY() + v.getHeight() + mDayPager.getY());
+            float topMargin = getResources().getDimensionPixelSize(R.dimen.dateMarginTop);
+            mDateContainer.setY(v.getY() + v.getHeight() + mDayPager.getY() - mDateContainer.getHeight()/2 + topMargin);
+
         });
         mDayPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override public void onPageScrollStateChanged(int state) {}
@@ -90,11 +95,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //adjust fab position
+        //adjust views to triangle position
         mTriangle.post(() -> {
             mTriRatio = (double)mTriangle.getHeight()/(double)mTriangle.getWidth();
             mTriDegrees = (float)Math.toDegrees(Math.atan(mTriRatio));
-            adjustViewHeightToTriangle(mFab, mDayIndicator);
+            mTriHypot = (float)Math.hypot((double)mTriangle.getHeight(), (double)mTriangle.getWidth());
+
+            adjustViewHeightToTriangle(mFab, mDayIndicator, mIndicatorLine);
+
+            //mIndicatorLine.setRotation(mTriDegrees);
+            //mIndicatorLine.setScaleX(mTriHypot/(float)mIndicatorLine.getWidth());
+
             mDayIndicator.setRotation(mTriDegrees);
         });
 
@@ -118,6 +129,6 @@ public class MainActivity extends AppCompatActivity {
         //hide status bar
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
+        //decorView.setSystemUiVisibility(uiOptions);
     }
 }

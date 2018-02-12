@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
     android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:alpha="0.7"
-    android:textColor="@color/snow"
-    android:text="DEFAULT"
-    android:fontFamily="sans-serif-light"
-    android:textSize="14sp">
+    android:paddingBottom="4dp"
+    android:clipToPadding="false"
+    android:clipChildren="false">
 
-</TextView>
+    <TextView
+        android:id="@+id/shortDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:alpha="0.7"
+        android:textColor="@color/snow"
+        android:layout_gravity="center"
+        android:text="D"
+        android:fontFamily="sans-serif-light"
+        android:textSize="14sp"/>
+
+<!--    <View
+        android:layout_marginTop="3dp"
+        android:id="@+id/line"
+        android:layout_below="@id/shortDay"
+        android:layout_centerHorizontal="true"
+        android:background="@color/snow"
+        android:layout_width="10dp"
+        android:layout_height="1dp"/>-->
+
+</RelativeLayout>

@@ -13,8 +13,9 @@ public class DateShower {
 
     private TextView mTvPrim, mTvSec;
 
-    private boolean mPrimSelected = true;
     private float mTransY = 0;
+
+    private int mLastIndex = -1;
 
     public DateShower(View container) {
         mTvPrim = container.findViewById(R.id.tvDatePrim);
@@ -25,37 +26,35 @@ public class DateShower {
     }
 
     public void show(int index) {
+        if(index == mLastIndex) return;
         String date = DayManager.dateList[index];
-
-        if(mPrimSelected) {
-            mTvSec.setText(date);
-            swap(mTvPrim, mTvSec);
+        if(index < mLastIndex) {
+            move(date, -mTransY); //down
         } else {
-            mTvPrim.setText(date);
-            swap(mTvSec, mTvPrim);
+            move(date, mTransY); //up
         }
-        mPrimSelected = !mPrimSelected;
+        mLastIndex = index;
     }
 
-    private void swap(View vUp, View vDown) {
-        //prim text up
-        vUp.setTranslationY(0);
-        vUp.setAlpha(1);
-        vUp.animate()
-                .setInterpolator(new AccelerateDecelerateInterpolator())
+    private void move(String text, float transY) {
+        mTvSec.setText(mTvPrim.getText());
+        mTvSec.setAlpha(1);
+        mTvSec.setTranslationY(0);
+
+        mTvPrim.setText(text);
+        mTvPrim.setTranslationY(transY);
+        mTvPrim.setAlpha(0);
+
+        mTvSec.animate()
                 .setDuration(200)
-                .withEndAction(() -> vUp.setVisibility(View.VISIBLE))
+                .setInterpolator(new AccelerateDecelerateInterpolator())
                 .alpha(0)
-                .translationY(mTransY)
+                .translationY(-transY)
                 .start();
 
-        //sec text down
-        vDown.setVisibility(View.VISIBLE);
-        vDown.setTranslationY(mTransY);
-        vDown.setAlpha(0);
-        vDown.animate()
-                .setInterpolator(new AccelerateDecelerateInterpolator())
+        mTvPrim.animate()
                 .setDuration(200)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
                 .alpha(1)
                 .translationY(0)
                 .start();
