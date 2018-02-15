@@ -30,22 +30,23 @@ public class Database {
     static final String KEY_ROOM_CHANGE = "rageaendert";
     static final String KEY_TRUE = "ae";
 
-    static class Day {
-        ArrayList<Entry> entries = new ArrayList<>();
-        LocalDate date;
-        LocalDateTime lastUpdate;
-        String disabledCourses;
-        String disabledRooms;
+    public static class Day {
+        public String name;
+        public ArrayList<Entry> entries = new ArrayList<>();
+        public LocalDate date;
+        public LocalDateTime lastUpdate;
+        public String disabledCourses;
+        public String disabledRooms;
     }
 
-    static class Entry {
-        String course, hours, lesson, teacher, room, info;
-        boolean lessonChange = false, teacherChange = false, roomChange = false;
+    public static class Entry {
+        public String course, hours, lesson, teacher, room, info;
+        public boolean lessonChange = false, teacherChange = false, roomChange = false;
     }
 
-    static final ArrayList<String> savedFiles = new ArrayList<>();
+    public static final ArrayList<String> savedFiles = new ArrayList<>();
 
-    static final ArrayList<Day> day = new ArrayList<>();
+    public static final ArrayList<Day> days = new ArrayList<>();
 
     public static void init(Context context) {
 

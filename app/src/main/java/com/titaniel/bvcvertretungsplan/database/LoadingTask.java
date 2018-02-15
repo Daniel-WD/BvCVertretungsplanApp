@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Xml;
 
+import com.titaniel.bvcvertretungsplan.MainActivity;
+
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.joda.time.LocalDate;
@@ -30,12 +32,17 @@ import static com.titaniel.bvcvertretungsplan.database.Database.KEY_ROOM;
 import static com.titaniel.bvcvertretungsplan.database.Database.KEY_TEACHER;
 import static com.titaniel.bvcvertretungsplan.database.Database.KEY_TRUE;
 
-public class LoadingTask extends AsyncTask<Context, Void, Void> {
+public class LoadingTask extends AsyncTask<Context, Void, Context> {
 
     private static final String TAG = LoadingTask.class.getSimpleName();
 
     @Override
-    protected Void doInBackground(Context... contexts) {
+    protected void onPostExecute(Context context) {
+        ((MainActivity) context).onDatabaseLoaded();
+    }
+
+    @Override
+    protected Context doInBackground(Context... contexts) {
         FTPClient ftpClient = new FTPClient();
 
         try {
@@ -49,7 +56,23 @@ public class LoadingTask extends AsyncTask<Context, Void, Void> {
             //list files
             FTPFile[] allFiles = ftpClient.listFiles();
 
-            //filter new fiels
+            //get last update
+            for(FTPFile file : allFiles) {
+                if(file.getType() != FTPFile.FILE_TYPE ||
+                        file.getName().charAt(0) != 'k') {
+                    continue;
+                }
+                Calendar cal = file.getTimestamp();
+                LocalDateTime dateTime = new LocalDateTime(cal.get(Calendar.YEAR),
+                        cal.get(Calendar.MONTH)+1,
+                        cal.get(Calendar.DAY_OF_MONTH),
+                        cal.get(Calendar.HOUR_OF_DAY),
+                        cal.get(Calendar.MINUTE),
+                        cal.get(Calendar.SECOND));
+                Log.d(TAG, dateTime.toString());
+            }
+
+            //filter new files
             ArrayList<FTPFile> newFiles = new ArrayList<>();
             for(FTPFile file : allFiles) {
                 if(file.getType() == FTPFile.FILE_TYPE &&
@@ -59,6 +82,7 @@ public class LoadingTask extends AsyncTask<Context, Void, Void> {
                 }
             }
 
+            //download new files
             for(FTPFile newFile : newFiles) {
                 downloadFile(contexts[0], ftpClient, newFile);
                 Database.savedFiles.add(newFile.getName());
@@ -77,7 +101,7 @@ public class LoadingTask extends AsyncTask<Context, Void, Void> {
             }
         }
         readData(contexts[0]);
-        return null;
+        return contexts[0];
     }
 
     private boolean downloadFile(Context context, FTPClient client, FTPFile file) {
@@ -94,12 +118,6 @@ public class LoadingTask extends AsyncTask<Context, Void, Void> {
             readFile(context, name);
         }
     }
-//            Log.d(TAG, "##########################################################################################");
-//
-//                Log.d(TAG, "---------------------------------------------------------------");
-//                Log.d(TAG, "name:" + parser.getName());
-//                Log.d(TAG, "text:" + parser.getText());
-//                Log.d(TAG, "attribute_count:" + parser.getAttributeCount());
 
     private void readFile(Context context, String _name) {
         if(_name.charAt(0) != 'k') return;
@@ -203,7 +221,7 @@ public class LoadingTask extends AsyncTask<Context, Void, Void> {
             }
             Log.d(TAG, day.date.toString());
             Log.d(TAG, day.lastUpdate.toString());
-            Log.d("sdkfj", "sdlkjf");
+            Database.days.add(day);
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
         }

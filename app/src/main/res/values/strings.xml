@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name">Vertretungsplan</string>
+    <string name="app_name">BvC Vertretungsplan</string>
 
     <!-- Template -->
     <string name="temp_date">%1$d. %2$s</string>
+    <string name="temp_class">Klasse %1$s</string>
 
     <string name="monday_caps">MONTAG</string>
     <string name="tuesday_caps">DIENSTAG</string>

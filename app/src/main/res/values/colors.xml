@@ -9,6 +9,12 @@
     <color name="four">#18C29C</color>
     <color name="five">#88F9D4</color>
 
+    <color name="one_trans">#cc031727</color>
+    <color name="two_trans">#51126872</color>
+    <color name="three_trans">#cc0B877D</color>
+    <color name="four_trans">#cc18C29C</color>
+    <color name="five_trans">#cc88F9D4</color>
+
     <color name="snow">#ffffff</color><!--FEFCFC--><!--f0f0f1-->
 
 </resources>
