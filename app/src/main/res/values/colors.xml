@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="toolbarBg">#32000000</color>
+    <color name="splashButtonBg">#64000000</color>
+
+    <color name="messageBg">#64000000</color>
+
+    <color name="mainBackground">#82000000</color>
+
+    <color name="backgroundZoomTint">#5a000000</color>
 
     <color name="one">#031727</color>
     <color name="two">#126872</color>
     <color name="three">#0B877D</color>
     <color name="four">#18C29C</color>
     <color name="five">#88F9D4</color>
+
+    <color name="four_dark">#1ACFA6</color>
+
+    <color name="prim">#1abc9c</color>
+    <color name="prim_dark">#16a085</color>
 
     <color name="one_trans">#cc031727</color>
     <color name="two_trans">#51126872</color>

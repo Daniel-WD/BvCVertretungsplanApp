@@ -1,12 +1,13 @@
 package com.titaniel.bvcvertretungsplan.database;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.support.v7.app.AppCompatActivity;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Database {
 
@@ -44,16 +45,33 @@ public class Database {
         public boolean lessonChange = false, teacherChange = false, roomChange = false;
     }
 
-    public static final ArrayList<String> savedFiles = new ArrayList<>();
-
     public static final ArrayList<Day> days = new ArrayList<>();
 
-    public static void init(Context context) {
+    private static final String KEY_COURSE_DEGREE = "key_course_degree";
+    private static final String KEY_COURSE_NUMBER = "key_course_number";
 
-        savedFiles.addAll(Arrays.asList(context.fileList()));
+    public static String courseDegree = "5";
+    public static String courseNumber = "1";
+
+    private static SharedPreferences sPrefs;
+
+    public static void init(Context context) {
+        sPrefs = ((AppCompatActivity) context).getPreferences(Context.MODE_PRIVATE);
+    }
+
+    public static void fetchData(Context context) {
 
         new LoadingTask().execute(context);
 
+    }
+
+    public static void load() {
+        courseDegree = sPrefs.getString(KEY_COURSE_DEGREE, "5");
+        courseNumber = sPrefs.getString(KEY_COURSE_NUMBER , "1");
+    }
+
+    public static void save() {
+        sPrefs.edit().putString(KEY_COURSE_DEGREE, courseDegree).putString(KEY_COURSE_NUMBER, courseNumber).apply();
     }
 
 }

@@ -3,8 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/_one"
+    android:background="@color/prim"
     android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/_three" />
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbarlayout"
@@ -63,19 +70,19 @@
                         android:textSize="20sp" />
 
                 </android.support.v7.widget.Toolbar>
-<!--
-                <TextView
-                    android:layout_marginTop="50dp"
-                    android:id="@+id/tvClass"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-thin"
-                    android:text="Klasse 5-1"
-                    android:textColor="@color/snow"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/toolbar" />-->
+                <!--
+                                <TextView
+                                    android:layout_marginTop="50dp"
+                                    android:id="@+id/tvClass"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="sans-serif-thin"
+                                    android:text="Klasse 5-1"
+                                    android:textColor="@color/snow"
+                                    android:textSize="14sp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="@+id/toolbar" />-->
 
                 <FrameLayout
                     android:id="@+id/dateContainer"
@@ -127,7 +134,7 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/listDays"
                     android:layout_width="wrap_content"
-                    android:layout_height="35sp"
+                    android:layout_height="wrap_content"
                     android:overScrollMode="never"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -136,34 +143,14 @@
 
             </android.support.constraint.ConstraintLayout>
 
-            <LinearLayout
+            <include
+                android:id="@+id/realCut"
+                layout="@layout/layout_cut"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:orientation="vertical"
                 app:layout_collapseMode="parallax"
-                app:layout_collapseParallaxMultiplier="0.2">
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="70dp">
-
-                    <ImageView
-                        android:id="@+id/triangle"
-                        android:layout_width="match_parent"
-                        android:layout_height="70dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/triangle_overlay" />
-
-                </FrameLayout>
-
-                <View
-                    android:id="@+id/extra"
-                    android:layout_width="match_parent"
-                    android:layout_height="80dp"
-                    android:background="@color/one_trans" />
-
-            </LinearLayout>
+                app:layout_collapseParallaxMultiplier="0.2" />
 
             <View
                 android:id="@+id/headerClickConsumer"
@@ -177,23 +164,29 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <include
+        android:id="@+id/fakeCut"
+        layout="@layout/layout_cut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
         android:layout_marginEnd="40dp"
         android:scaleType="fitXY"
-        app:backgroundTint="@color/three"
-        app:fabSize="normal"
-        app:layout_anchor="@id/appbarlayout"
-        app:layout_anchorGravity="bottom|end"
         android:src="@drawable/ic_sort_variant"
-        android:tint="@color/snow"/>
+        android:tint="@color/snow"
+        app:backgroundTint="@color/four"
+        app:fabSize="normal" />
 
     <FrameLayout
+        android:id="@+id/listBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/one_trans"
+        android:background="@color/mainBackground"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.v7.widget.RecyclerView
@@ -204,5 +197,210 @@
         android:clipChildren="false"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <FrameLayout
+        android:id="@+id/logoContainer"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_gravity="center">
+
+        <ImageView
+            android:id="@+id/ivLogo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:tint="@color/snow"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/ivLogoBvCFilled"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_logo_filled_bvc"
+            android:tint="@color/snow"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/ivLogoBvCOutline"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_logo_outline_bvc"
+            android:tint="@color/snow"
+            android:visibility="invisible" />
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/errorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/messageBg"
+        android:orientation="vertical"
+        android:paddingBottom="8dp"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingTop="16dp"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@+id/ivErr"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:tint="@color/four" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:text="@string/omg"
+            android:textAlignment="center"
+            android:textColor="@color/snow"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/tvErr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:alpha="1"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/err_io_exception"
+            android:textAlignment="center"
+            android:textColor="@color/snow"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnErrAgain"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.5"
+                android:background="@android:color/transparent"
+                android:paddingEnd="24dp"
+                android:paddingStart="24dp"
+                android:text="@string/res_try_again"
+                android:textColor="@color/snow"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnErrOffline"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="0.5"
+                android:background="@android:color/transparent"
+                android:paddingEnd="24dp"
+                android:paddingStart="24dp"
+                android:text="@string/res_offline"
+                android:textColor="@color/four"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/loadingView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        app:indicatorName="BallPulseIndicator" />
+
+    <LinearLayout
+        android:id="@+id/coursePickerLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="48dp"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif-thin"
+            android:text="@string/chooseCurse"
+            android:textColor="@color/snow"
+            android:textSize="20sp" />
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="6dp"
+            android:animateLayoutChanges="true">
+
+            <TextView
+                android:id="@+id/tvCourseDegree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-thin"
+                android:text="5"
+                android:textColor="@color/four"
+                android:textSize="70sp"/>
+
+            <TextView
+                android:id="@+id/tvCourseNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tvCourseDegree"
+                android:layout_marginBottom="2dp"
+                android:layout_marginStart="4dp"
+                android:layout_toEndOf="@id/tvCourseDegree"
+                android:fontFamily="sans-serif-black"
+                android:text="2"
+                android:textColor="@color/four_dark"
+                android:textSize="30sp"/>
+
+        </RelativeLayout>
+
+        <!--<TextView-->
+        <!--android:text="@string/degree"-->
+        <!--android:textColor="@color/snow"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/courseDegreeList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="2dp" />
+
+        <!--<TextView-->
+        <!--android:text="@string/number"-->
+        <!--android:textColor="@color/snow"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content" />-->
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/courseNumberList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/globalConsumer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:elevation="10dp"
+        android:focusable="true"
+        android:visibility="invisible" />
+
 
 </android.support.design.widget.CoordinatorLayout>

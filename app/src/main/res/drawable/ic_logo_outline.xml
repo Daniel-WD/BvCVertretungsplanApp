@@ -1,0 +1,32 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/lg_width"
+    android:height="@dimen/lg_height"
+    android:viewportHeight="@integer/lg_vp_height"
+    android:viewportWidth="@integer/lg_vp_width">
+    <group android:name="@string/lg_group_main">
+        <group android:name="@string/lg_group_big_sp">
+            <clip-path android:pathData="M 9.127 0.937 C 6.455 0.937 3.893 1.998 2 3.886 C 0.111 5.775 -0.95 8.337 -0.95 11.01 C -0.95 16.574 3.563 21.087 9.127 21.087 C 9.211 21.082 9.295 21.078 9.383 21.073 C 8.934 20.448 8.696 19.704 8.692 18.934 C 8.692 16.909 10.329 15.267 12.354 15.258 C 12.447 11.93 15.167 9.279 18.496 9.275 C 18.681 9.275 18.87 9.284 19.055 9.301 C 18.223 4.468 14.032 0.937 9.127 0.937 Z" />
+            <path
+                android:name="@string/lg_path_name_big_sp"
+                android:pathData="@string/lg_path_big_sp"
+                android:strokeColor="#000"
+                android:strokeWidth="0.5"
+                android:trimPathOffset="0.25"/>
+        </group>
+        <group android:name="@string/lg_group_mid_sp">
+            <clip-path android:pathData="M 18.416 9.271 C 15.088 9.275 12.368 11.925 12.275 15.253 C 12.279 15.253 12.288 15.253 12.293 15.253 C 13.27 15.253 14.208 15.641 14.895 16.332 C 15.586 17.023 15.973 17.961 15.973 18.938 C 15.973 19.599 15.793 20.246 15.454 20.814 C 16.36 21.311 17.382 21.575 18.416 21.575 C 20.05 21.575 21.613 20.928 22.766 19.775 C 23.919 18.621 24.571 17.054 24.571 15.425 C 24.571 13.792 23.919 12.229 22.766 11.076 C 21.613 9.918 20.05 9.271 18.416 9.271 Z" />
+            <path
+                android:name="@string/lg_path_name_mid_sp"
+                android:pathData="@string/lg_path_mid_sp"
+                android:strokeColor="#000"
+                android:strokeWidth="0.5"
+                android:trimPathOffset="0.5" />
+        </group>
+        <path
+            android:name="@string/lg_path_name_sma_sp"
+            android:pathData="@string/lg_path_sma_sp"
+            android:strokeColor="#000"
+            android:strokeWidth="0.5"
+            android:trimPathOffset="0.2" />
+    </group>
+</vector>

@@ -5,6 +5,21 @@
     <string name="temp_date">%1$d. %2$s</string>
     <string name="temp_class">Klasse %1$s</string>
 
+    <string name="err_no_internet">Es konnte keine Verbindung mit dem Internet hergestellt werden</string>
+    <string name="err_io_exception">Es konnte keine Verbindung zum Server hergestellt werden</string>
+    <string name="err_other_exception">Beim lesen der Daten ist ein Fehler aufgetreten</string>
+    <string name="res_offline">OFFLINE MODUS</string>
+    <string name="res_try_again">NOCHMAL</string>
+
+    <string name="chooseCurse">Wähle deine Klasse</string>
+    <string name="degree">Stufe</string>
+    <string name="number">Nummer</string>
+
+    <string name="run">Run as fast as you can and don\'t look back.</string>
+    <string name="runn">Lauf so schnell wie möglich und schau nicht zurück.</string>
+
+    <string name="omg">OMG</string>
+
     <string name="monday_caps">MONTAG</string>
     <string name="tuesday_caps">DIENSTAG</string>
     <string name="wednesday_caps">MITTWOCH</string>

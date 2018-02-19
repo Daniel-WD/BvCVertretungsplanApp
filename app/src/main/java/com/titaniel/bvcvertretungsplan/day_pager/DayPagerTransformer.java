@@ -6,7 +6,7 @@ import android.view.View;
 public class DayPagerTransformer implements ViewPager.PageTransformer {
 
     private static final float FADE_SPEED = 3;
-    private static final float BLOCK_VALUE = 0.8f;
+    private static final float BLOCK_VALUE = 0.9f;
 
     private float mRatio = 0;
 
