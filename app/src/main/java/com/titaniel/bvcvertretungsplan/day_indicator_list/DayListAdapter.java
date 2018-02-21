@@ -38,7 +38,7 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
         if(toPosition == mSelected) return;
         //deselect
         DayHolder oldHolder = (DayHolder) mList.findViewHolderForAdapterPosition(mSelected);
-        disableClickable(oldHolder.deselect());
+        if(oldHolder != null) disableClickable(oldHolder.deselect());
 
         //select
         DayHolder newHolder = (DayHolder) mList.findViewHolderForAdapterPosition(toPosition);
@@ -65,14 +65,12 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
 
     class DayHolder extends RecyclerView.ViewHolder {
 
-        private static final int MAX_GLOW = 6;
+        private static final int MAX_GLOW = 0;
         private static final float MAX_SCALE = 1.5f;
         private static final float MIN_ALPHA = 0.7f;
 
         View itemView;
         TextView text;
-
-        float lineMaxScale = 1;
 
         DayHolder(View itemView) {
             super(itemView);
@@ -95,12 +93,6 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
         }
 
         long select() {
-/*            line.animate()
-                    .setInterpolator(new AccelerateDecelerateInterpolator())
-                    .setDuration(150)
-                    .scaleX(lineMaxScale)
-                    .start();*/
-
             ValueAnimator shadowOn = ValueAnimator.ofFloat(0, MAX_GLOW);
             shadowOn.addUpdateListener(animation ->
                     text.setShadowLayer((float)animation.getAnimatedValue(), 0, 0, Color.WHITE));

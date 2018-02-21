@@ -41,8 +41,61 @@ public class Database {
     }
 
     public static class Entry {
-        public String course, hours, lesson, teacher, room, info;
+        public Course course;
+        public Hours hours;
+        public String courseString, hoursString, lesson, teacher, room, info;
         public boolean lessonChange = false, teacherChange = false, roomChange = false;
+
+        Entry copy() {
+            Entry entry = new Entry();
+            entry.course = course;
+            entry.hours = hours;
+            entry.courseString = courseString;
+            entry.hoursString = hoursString;
+            entry.lesson = lesson;
+            entry.teacher = teacher;
+            entry.room = room;
+            entry.info = info;
+            entry.lessonChange = lessonChange;
+            entry.teacherChange = teacherChange;
+            entry.roomChange = roomChange;
+            return entry;
+        }
+
+    }
+
+    public static class Course {
+        public int degree = 0, number = 0;
+        public String specification = "";
+
+        Course copy() {
+            Course res = new Course();
+            res.degree = degree;
+            res.number = number;
+            res.specification = specification;
+            return res;
+        }
+
+        @Override
+        public String toString() {
+            return "Course{" +
+                    "degree=" + degree +
+                    ", number=" + number +
+                    ", specification='" + specification + '\'' +
+                    '}';
+        }
+    }
+
+    public static class Hours {
+        public int startHour = 0, endHour = 0;
+
+        @Override
+        public String toString() {
+            return "Hours{" +
+                    "startHour=" + startHour +
+                    ", endHour=" + endHour +
+                    '}';
+        }
     }
 
     public static final ArrayList<Day> days = new ArrayList<>();
@@ -55,14 +108,32 @@ public class Database {
 
     private static SharedPreferences sPrefs;
 
+    public static boolean loaded = false;
+
     public static void init(Context context) {
         sPrefs = ((AppCompatActivity) context).getPreferences(Context.MODE_PRIVATE);
     }
 
-    public static void fetchData(Context context) {
+    public static void fetchData(Context context, boolean offline) {
 
-        new LoadingTask().execute(context);
+        new LoadingTask().execute(new LoadingTask.Input(context, offline));
 
+    }
+
+    public static Entry[] findEntriesByCourse(LocalDate date, int degree, int number) {
+        Day curDay = null;
+        for(Day day : days) {
+            if(day.date.isEqual(date)) curDay = day;
+        }
+        if(curDay == null) return null;
+        ArrayList<Entry> res = new ArrayList<>();
+        for(Entry entry : curDay.entries) {
+            if(entry.course.degree == degree && (degree > 10 || entry.course.number == number)) {
+                res.add(entry);
+            }
+        }
+        Entry[] output = new Entry[res.size()];
+        return res.toArray(output);
     }
 
     public static void load() {

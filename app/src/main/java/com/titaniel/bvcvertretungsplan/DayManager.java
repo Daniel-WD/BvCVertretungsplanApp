@@ -12,6 +12,7 @@ public class DayManager {
     public static String[] shortDayList = new String[5];
 
     public static String[] dateList = new String[5];
+    public static LocalDate[] dates = new LocalDate[5];
 
     public static void init(Context context) {
         String[] srcCapsDays = {
@@ -43,9 +44,8 @@ public class DayManager {
                 context.getString(R.string.december)
         };
 
-        LocalDate[] order = new LocalDate[5];//five days
         int dayOrderIndex = 0;
-        LocalDate localDate = LocalDate.now();
+        LocalDate localDate = LocalDate.now();//oisdföoadhjgfalkvjaonfoiv n jf pojfpv if wvof ö
         for(int i = 0; i < 7; i++) {
             switch(localDate.getDayOfWeek()) {
                 case DateTimeConstants.SATURDAY:
@@ -53,16 +53,16 @@ public class DayManager {
                     localDate = localDate.plusDays(1);
                     continue;
             }
-            order[dayOrderIndex++] = localDate;
+            dates[dayOrderIndex++] = localDate;
             localDate = localDate.plusDays(1);
         }
 
-        fillWeekDays(order, srcCapsDays, capsDayList);
-        fillWeekDays(order, srcShortDays, shortDayList);
+        fillWeekDays(dates, srcCapsDays, capsDayList);
+        fillWeekDays(dates, srcShortDays, shortDayList);
 
-        for(int i = 0; i < order.length; i++) {
+        for(int i = 0; i < dates.length; i++) {
             dateList[i] = context.getString(R.string.temp_date,
-                    order[i].getDayOfMonth(), srcMonths[order[i].getMonthOfYear()-1]);
+                    dates[i].getDayOfMonth(), srcMonths[dates[i].getMonthOfYear()-1]);
         }
 
     }

@@ -12,14 +12,13 @@ import com.titaniel.bvcvertretungsplan.database.Database;
 
 public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.EntryHolder> {
 
-    private Database.Day mDay;
+    private Database.Entry[] mEntries;
     private Context mContext;
     private float mDegrees;
 
-    public EntryListAdapter(Context context, Database.Day day, float degrees) {
+    public EntryListAdapter(Context context, Database.Entry... entries) {
         mContext = context;
-        mDay = day;
-        mDegrees = degrees;
+        mEntries = entries;
     }
 
     @Override
@@ -30,37 +29,47 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
 
     @Override
     public void onBindViewHolder(EntryHolder holder, int position) {
-        Database.Entry entry = mDay.entries.get(position);
-//        holder.tvCourse.setText(entry.course);
-//        holder.tvHours.setText(entry.hours);
-//        holder.tvLesson.setText(entry.lesson);
-//        holder.tvTeacher.setText(entry.teacher);
-//        holder.tvRoom.setText(entry.room);
-//        holder.tvInfo.setText(entry.info);
-
-        /*holder.background.post(() -> {
-            holder.background.setRotation(mDegrees);
-        });*/
+        Database.Entry entry = mEntries[position];
+        if(entry.hours.startHour == entry.hours.endHour) {
+            holder.tvHours.setText(String.valueOf(entry.hours.startHour));
+        } else {
+            // TODO: 20.02.2018 template
+            holder.tvHours.setText(String.valueOf(entry.hours.startHour) + "-" + String.valueOf(entry.hours.endHour));
+        }
+        if(entry.course.specification.equals("")) {
+            holder.tvSpec.setVisibility(View.GONE);
+        } else {
+            holder.tvSpec.setText(entry.course.specification);
+        }
+        holder.tvSpec.setText(entry.course.specification);
+        holder.tvLesson.setText(entry.lesson);
+        holder.tvTeacher.setText(entry.teacher);
+        holder.tvRoom.setText(entry.room);
+        if(entry.info == null || entry.info.equals("")) {
+            holder.tvInfo.setVisibility(View.GONE);
+        } else {
+            holder.tvInfo.setText(entry.info);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mDay.entries.size();
+        return mEntries.length;
     }
 
     class EntryHolder extends RecyclerView.ViewHolder {
 
-        TextView tvCourse, tvHours, tvLesson, tvTeacher, tvRoom, tvInfo;
+        TextView tvRoom, tvSpec, tvHours, tvLesson, tvTeacher, tvInfo;
 
         EntryHolder(View itemView) {
             super(itemView);
 
-//            tvCourse = itemView.findViewById(R.id.tvCourse);
-//            tvHours = itemView.findViewById(R.id.tvHours);
-//            tvLesson = itemView.findViewById(R.id.tvLesson);
-//            tvTeacher = itemView.findViewById(R.id.tvTeacher);
-//            tvRoom = itemView.findViewById(R.id.tvRoom);
-//            tvInfo = itemView.findViewById(R.id.tvInfo);
+            tvRoom = itemView.findViewById(R.id.tvRoom);
+            tvSpec = itemView.findViewById(R.id.tvSpec);
+            tvHours = itemView.findViewById(R.id.tvHours);
+            tvLesson = itemView.findViewById(R.id.tvLesson);
+            tvTeacher = itemView.findViewById(R.id.tvTeacher);
+            tvInfo = itemView.findViewById(R.id.tvInfo);
         }
     }
 

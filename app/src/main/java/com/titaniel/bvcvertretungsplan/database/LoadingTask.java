@@ -2,7 +2,6 @@ package com.titaniel.bvcvertretungsplan.database;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.text.format.DateUtils;
 import android.util.Log;
 import android.util.Xml;
 
@@ -18,10 +17,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
+import java.util.Scanner;
 
 import static com.titaniel.bvcvertretungsplan.database.Database.KEY_COURSE;
 import static com.titaniel.bvcvertretungsplan.database.Database.KEY_DISABLED_COURSES;
@@ -35,11 +32,11 @@ import static com.titaniel.bvcvertretungsplan.database.Database.KEY_ROOM;
 import static com.titaniel.bvcvertretungsplan.database.Database.KEY_TEACHER;
 import static com.titaniel.bvcvertretungsplan.database.Database.KEY_TRUE;
 
-public class LoadingTask extends AsyncTask<Context, Void, LoadingTask.LoadingResult> {
+public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.LoadingResult> {
 
     private static final String TAG = LoadingTask.class.getSimpleName();
 
-    class LoadingResult {
+    static class LoadingResult {
         Context context;
         boolean ioException;
         boolean otherException;
@@ -51,20 +48,31 @@ public class LoadingTask extends AsyncTask<Context, Void, LoadingTask.LoadingRes
         }
     }
 
+    static class Input {
+        Context context;
+        boolean offline;
+
+        Input(Context context, boolean offline) {
+            this.context = context;
+            this.offline = offline;
+        }
+    }
+
     @Override
     protected void onPostExecute(LoadingResult result) {
         ((MainActivity) result.context).onDatabaseLoaded(result.ioException, result.otherException);
     }
 
     @Override
-    protected LoadingResult doInBackground(Context... contexts) {
-        Context context = contexts[0];
+    protected LoadingResult doInBackground(LoadingTask.Input... inputs) {
+        Context context = inputs[0].context;
         FTPClient ftpClient = new FTPClient();
         try {
             // TODO: 15.02.2018 delete all outdated files
-            
+
             //read all current existing files
             readData(context, context.fileList());
+            if(inputs[0].offline) return new LoadingResult(context, false, false);
 
             //connect
             ftpClient.connect("w00a1664.kasserver.com");
@@ -107,12 +115,23 @@ public class LoadingTask extends AsyncTask<Context, Void, LoadingTask.LoadingRes
             //read all updated and new files
             readData(context, DataUtils.toStringArray(newFiles));
 
+            //prepare all entries for classification
+            prepareEntries();
+
+            for(Database.Day day : Database.days) {
+                Log.d("da", "da");
+                for(Database.Entry entry : day.entries) {
+                    Log.d("hallo?", "str::" + entry.courseString + " --- " + entry.course.toString());
+                }
+            }
+
             //logout
             ftpClient.logout();
         } catch (IOException e) {
             e.printStackTrace();
             return new LoadingResult(context, true, false);
         } catch (Exception e) {
+            e.printStackTrace();
             return new LoadingResult(context, false, true);
         } finally {
             try {
@@ -152,6 +171,16 @@ public class LoadingTask extends AsyncTask<Context, Void, LoadingTask.LoadingRes
                 DataUtils.dayInName(_name));
 
         try(InputStream is = context.openFileInput(_name)) {
+            Scanner s = new Scanner(is);
+
+            while(s.hasNextLine()) {
+                Log.d("hallo", s.nextLine());
+            }
+        }
+
+        try(InputStream is = context.openFileInput(_name)) {
+
+
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(is, null);
@@ -189,12 +218,12 @@ public class LoadingTask extends AsyncTask<Context, Void, LoadingTask.LoadingRes
 
                             case KEY_COURSE:
                                 parser.next();
-                                entry.course = parser.getText();
+                                entry.courseString = parser.getText();
                                 continue;
 
                             case KEY_HOURS:
                                 parser.next();
-                                entry.hours = parser.getText();
+                                entry.hoursString = parser.getText();
                                 continue;
 
                             case KEY_LESSON:
@@ -238,6 +267,7 @@ public class LoadingTask extends AsyncTask<Context, Void, LoadingTask.LoadingRes
                         switch(parser.getName()) {
                             case KEY_ENTRY:
                                 day.entries.add(entry);
+                                continue;
                         }
                         break;
                 }
@@ -245,6 +275,27 @@ public class LoadingTask extends AsyncTask<Context, Void, LoadingTask.LoadingRes
             Log.d(TAG, day.date.toString());
             Log.d(TAG, day.lastUpdate.toString());
             Database.days.add(day);
+
+        }
+    }
+
+    private void prepareEntries() {
+        for(Database.Day day : Database.days) {
+            ArrayList<Database.Entry> newEntries = new ArrayList<>();
+            for(Database.Entry entry : day.entries) {
+                //hours processing
+                entry.hours = DataUtils.findHours(entry.hoursString);
+
+                //course processing
+                Database.Course[] courses = DataUtils.findCourses(entry.courseString);
+                entry.course = courses[0];
+                for(int i = 1; i < courses.length; i++) {
+                    Database.Entry newEntry = entry.copy();
+                    newEntry.course = courses[i];
+                    newEntries.add(newEntry);
+                }
+            }
+            day.entries.addAll(newEntries);
         }
     }
 }

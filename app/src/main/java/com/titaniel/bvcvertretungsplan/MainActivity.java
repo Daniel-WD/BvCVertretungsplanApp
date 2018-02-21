@@ -156,8 +156,40 @@ public class MainActivity extends AppCompatActivity {
         int colorFour = ContextCompat.getColor(this, R.color.four);
         mCourseDegreeList.setAdapter(
                 new NumberAdapter(mCourseDegreeList, sDegrees, this, colorFour, R.layout.list_item_degree, number -> {
-                    Database.courseDegree = number;
-                    mTvCourseDegree.setText(number);
+
+                    if(!mTvCourseDegree.getText().toString().equals(number)) {
+                        Database.courseDegree = number;
+                        mTvCourseNumber.animate()
+                                .setInterpolator(new AccelerateDecelerateInterpolator())
+                                .setDuration(100)
+                                .alpha(0)
+                                .start();
+                        mTvCourseDegree.animate()
+                                .setInterpolator(new AccelerateDecelerateInterpolator())
+                                .setDuration(100)
+                                .alpha(0)
+                                .withEndAction(() -> {
+                                    if(Integer.parseInt(number) > 10) {
+                                        mTvCourseNumber.setVisibility(View.GONE);
+                                    } else {
+                                        mTvCourseNumber.setVisibility(View.VISIBLE);
+                                    }
+                                    mTvCourseDegree.setText(number);
+                                    mTvCourseDegree.animate()
+                                            .setInterpolator(new AccelerateDecelerateInterpolator())
+                                            .setDuration(100)
+                                            .alpha(1)
+                                            .start();
+                                    mTvCourseNumber.setText(Database.courseNumber);//prevent issues on start
+                                    mTvCourseNumber.animate()
+                                            .setInterpolator(new AccelerateDecelerateInterpolator())
+                                            .setDuration(100)
+                                            .alpha(1)
+                                            .start();
+                                })
+                                .start();
+                    }
+
                     updateClassText();
 
                     if(Integer.parseInt(number) > 10) {
@@ -168,7 +200,6 @@ public class MainActivity extends AppCompatActivity {
                                 .translationY(10)
                                 .alpha(0.5f)
                                 .start();
-                        mTvCourseNumber.setVisibility(View.GONE);
                     } else {
                         ((NumberAdapter) mCourseNumberList.getAdapter()).setEnabled(true);
                         mCourseNumberList.animate()
@@ -177,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
                                 .translationY(0)
                                 .alpha(1)
                                 .start();
-                        mTvCourseNumber.setVisibility(View.VISIBLE);
                     }
         }));
 
@@ -188,8 +218,23 @@ public class MainActivity extends AppCompatActivity {
         int colorFourDark = ContextCompat.getColor(this, R.color.four_dark);
         mCourseNumberList.setAdapter(
                 new NumberAdapter(mCourseNumberList, sNumbers, this, colorFourDark, R.layout.list_item_number, number -> {
-                    Database.courseNumber = number;
-                    mTvCourseNumber.setText(number);
+                    if(!mTvCourseNumber.getText().toString().equals(number)) {
+                        Database.courseNumber = number;
+                        mTvCourseNumber.animate()
+                                .setInterpolator(new AccelerateDecelerateInterpolator())
+                                .setDuration(100)
+                                .alpha(0)
+                                .withEndAction(() -> {
+                                    mTvCourseNumber.setText(number);
+                                    mTvCourseNumber.animate()
+                                            .setInterpolator(new AccelerateDecelerateInterpolator())
+                                            .setDuration(100)
+                                            .alpha(1)
+                                            .start();
+                                })
+                                .start();
+                    }
+
                     updateClassText();
         }));
         mCourseNumberList.setHasFixedSize(true);
@@ -200,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
                 showCoursePicker();
                 mFab.setImageResource(R.drawable.ic_close);
             } else {
+                refreshEntryList();
                 hideCoursePicker();
                 mFab.setImageResource(R.drawable.ic_sort_variant);
             }
@@ -229,10 +275,17 @@ public class MainActivity extends AppCompatActivity {
                     .translationY(100)
                     .withEndAction(() -> {
                         mErrLayout.setVisibility(View.INVISIBLE);
-                        enterMainComponents(300);
+                        Database.fetchData(MainActivity.this, true);
+                        //too short xD
+//                        mLoadingView.animate()
+//                                .setInterpolator(new AccelerateDecelerateInterpolator())
+//                                .setStartDelay(0)
+//                                .setDuration(500)
+//                                .alpha(1)
+//                                .start();
+                        //enterMainComponents(300);
                     })
                     .start();
-            zoom(150, 600, false);
         });
 
         //AppBarLayout
@@ -320,8 +373,11 @@ public class MainActivity extends AppCompatActivity {
             @Override public void onPageScrollStateChanged(int state) {}
             @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
             @Override public void onPageSelected(int position) {
-                ((DayListAdapter) mDayIndicator.getAdapter()).changeSelected(position);
+                mDayIndicator.post(() -> {
+                    ((DayListAdapter) mDayIndicator.getAdapter()).changeSelected(position);
+                });
                 mDateShower.show(position);
+                refreshEntryList();
             }
         });
 
@@ -368,6 +424,13 @@ public class MainActivity extends AppCompatActivity {
         long moveDur = 300;
 //        float ty = (mHeight - mTriangle.getY());
         float ty = mCoursePickerLayout.getY() - mTriangle.getY() + mTriangle.getHeight()/2;
+
+        mEntryList.animate()
+                .setStartDelay(delay)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .setDuration(moveDur)
+                .alpha(0f)
+                .start();
 
         mRealCut.setVisibility(View.INVISIBLE);
         mFakeCut.setVisibility(View.VISIBLE);
@@ -450,9 +513,17 @@ public class MainActivity extends AppCompatActivity {
                 .translationY(-50)
                 .start();
 
-        delay += 100;
+        delay += 0;
 
         float ty = mFakeCut.getY() - mRealCut.getY();
+
+
+        mEntryList.animate()
+                .setStartDelay(delay)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .setDuration(moveDur)
+                .alpha(1f)
+                .start();
 
         mFakeCut.animate()
                 .setStartDelay(delay)
@@ -488,6 +559,8 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .translationYBy(-ty)
                 .start();
+
+        delay += 100;
 
         //header out
         mAppBarLayout.animate()
@@ -672,7 +745,7 @@ public class MainActivity extends AppCompatActivity {
                 .setDuration(700)
                 .alpha(1)
                 .withEndAction(() -> {
-                    long d = 150;
+                    long d = 50;
                     //switch fill to outline with bvc ... cross fade
                     mIvLogoBvCFilled.animate()
                             .setStartDelay(d)
@@ -690,7 +763,7 @@ public class MainActivity extends AppCompatActivity {
                             .start();
                 })
                 .start();
-        delay += 1000;
+        delay += 900;
         //scale out with alpha
         mLogoContainer.animate()
                 .setInterpolator(new AccelerateDecelerateInterpolator())
@@ -724,11 +797,10 @@ public class MainActivity extends AppCompatActivity {
             boolean isOnline = isOnline();
             if(isOnline) {
                 //Database
-                Database.fetchData(this);
+                Database.fetchData(this, false);
             } else {
                 errorOnLoading(ERR_NO_INTERNET);
             }
-
 
 //            initDataComponents();
         }, delay);
@@ -745,16 +817,24 @@ public class MainActivity extends AppCompatActivity {
 
         delay += 400;
 
+        int accentColor = ContextCompat.getColor(this, R.color.four);
         switch(errorCode) {
             case ERR_IO_EXCEPTION:
+                mBtnErrOffline.setVisibility(View.GONE);
+                mBtnErrAgain.setTextColor(accentColor);
                 mTvErr.setText(R.string.err_io_exception);
                 break;
 
             case ERR_NO_INTERNET:
+                mBtnErrOffline.setVisibility(View.VISIBLE);
+                mBtnErrOffline.setTextColor(accentColor);
+                mBtnErrAgain.setTextColor(Color.WHITE);
                 mTvErr.setText(R.string.err_no_internet);
                 break;
 
             case ERR_OTHER_EXCEPTION:
+                mBtnErrOffline.setVisibility(View.GONE);
+                mBtnErrAgain.setTextColor(accentColor);
                 mTvErr.setText(R.string.err_other_exception);
                 break;
         }
@@ -793,7 +873,6 @@ public class MainActivity extends AppCompatActivity {
         updateClassText();
         ((NumberAdapter) mCourseNumberList.getAdapter()).setNumber(Database.courseNumber);
         ((NumberAdapter) mCourseDegreeList.getAdapter()).setNumber(Database.courseDegree);
-
         //hide status bar
         //View decorView = getWindow().getDecorView();
         //int uiOptions = View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
@@ -809,8 +888,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void onDatabaseLoaded(boolean ioException, boolean otherException) {
         if(!ioException && !otherException) {
-
-            mEntryList.setAdapter(new EntryListAdapter(this, Database.days.get(0), mTriDegrees));
+            Database.loaded = true;
+            refreshEntryList();
 
             zoom(0, 600, false);
             mLoadingView.animate()
@@ -831,10 +910,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean isOnline() {
+    private boolean isOnline() {
         ConnectivityManager cm =
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnected();
+    }
+
+    private void refreshEntryList() {
+        if(!Database.loaded) return;
+        Database.Entry[] entries = Database.findEntriesByCourse(
+                DayManager.dates[mDayPager.getCurrentItem()],
+                Integer.parseInt(Database.courseDegree),
+                Integer.parseInt(Database.courseNumber));
+        if(entries == null) {
+            entries = new Database.Entry[0];
+        }
+        mEntryList.setAdapter(new EntryListAdapter(this, entries));
     }
 }

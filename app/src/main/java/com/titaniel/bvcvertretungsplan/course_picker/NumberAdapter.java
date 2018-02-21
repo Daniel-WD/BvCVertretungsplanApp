@@ -25,7 +25,7 @@ public class NumberAdapter extends RecyclerView.Adapter<NumberAdapter.NumberHold
     private final int mClickColor;
     private NumberListener mListener;
     private final int mLayout;
-    private int mSelected;
+    private int mSelected = -1;
     private boolean mClickable = true;
     private RecyclerView mList;
     private boolean mEnabled = true;
@@ -45,7 +45,7 @@ public class NumberAdapter extends RecyclerView.Adapter<NumberAdapter.NumberHold
             for(int i = 0; i < getItemCount(); i++) {
                 NumberHolder holder = (NumberHolder) mList.findViewHolderForAdapterPosition(i);
                 if(holder.tvNumber.getText().equals(number)) {
-                    holder.itemView.performClick();
+                    holder.itemView.callOnClick();
                     break;
                 }
             }
@@ -87,8 +87,10 @@ public class NumberAdapter extends RecyclerView.Adapter<NumberAdapter.NumberHold
     public void changeSelected(int toPosition) {
         if(toPosition == mSelected) return;
         //deselect
-        NumberHolder oldHolder = (NumberHolder) mList.findViewHolderForAdapterPosition(mSelected);
-        disableClickable(oldHolder.deselect());
+        if(mSelected != -1) {
+            NumberHolder oldHolder = (NumberHolder) mList.findViewHolderForAdapterPosition(mSelected);
+            disableClickable(oldHolder.deselect());
+        }
 
         //select
         NumberHolder newHolder = (NumberHolder) mList.findViewHolderForAdapterPosition(toPosition);

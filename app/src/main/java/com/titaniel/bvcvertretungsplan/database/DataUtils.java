@@ -1,8 +1,11 @@
 package com.titaniel.bvcvertretungsplan.database;
 
+import android.provider.ContactsContract;
+
 import org.apache.commons.net.ftp.FTPFile;
 import org.joda.time.LocalDateTime;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -62,6 +65,99 @@ public class DataUtils {
         for(int i = 0; i < files.size(); i++) {
             res[i] = files.get(i).getName();
         }
+        return res;
+    }
+
+    static Database.Course[] findCourses(String courseString) {
+        ArrayList<Database.Course> result = new ArrayList<>();
+        ArrayList<String> blocks = new ArrayList<>();
+        String specification = "";
+        StringBuilder builder = new StringBuilder(courseString);
+
+        if(builder.toString().contains(",")) {
+            while(builder.toString().contains(",")) {
+                int index = builder.indexOf(",");
+                blocks.add(builder.substring(0, index));
+                builder.replace(0, index+1, "");
+                if(builder.toString().contains(",")) {
+                    continue;
+                } else if(builder.toString().contains("/")) {
+                    int dex = builder.indexOf("/");
+                    blocks.add(builder.substring(0, dex));
+                    break;
+                } else {
+                    blocks.add(builder.substring(0, builder.length()));
+                    break;
+                }
+            }
+        } else {
+            if(builder.toString().contains("-")) {
+                blocks.add(builder.substring(0, 9));
+            } else {
+                blocks.add(builder.substring(0, 4));
+            }
+        }
+
+/*        blocks.add(builder.substring(0, 4));
+        builder.replace(0, 4, "");
+
+        while(builder.toString().contains(",")) {
+            blocks.add(builder.substring(1, 5));
+            builder.replace(0, 5, "");
+        }*/
+        //specification
+        if(courseString.contains("/")) {
+            specification = courseString.substring(courseString.indexOf("/")+1).trim();
+        }
+
+        for(String block : blocks) {
+            if(block.contains("-")) {
+                int index = block.indexOf("-");
+                Database.Course startCourse = resolveBlock(block.substring(0, index), specification);
+                Database.Course endCourse = resolveBlock(block.substring(index+1), specification);
+                result.add(startCourse);
+                result.add(endCourse);
+                if(startCourse.degree == endCourse.degree && startCourse.number != 0 && endCourse.number != 0) {
+                    for(int i = startCourse.number+1; i < endCourse.number; i++) {
+                        Database.Course newCourse = startCourse.copy();
+                        newCourse.number = i;
+                        result.add(newCourse);
+                    }
+                }
+            } else {
+                Database.Course course = resolveBlock(block, specification);
+                result.add(course);
+            }
+        }
+
+        Database.Course[] res = new Database.Course[result.size()];
+        return result.toArray(res);
+    }
+
+    private static Database.Course resolveBlock(String block, String spec) {
+        Database.Course course = new Database.Course();
+        course.degree = Integer.parseInt(block.substring(0, 2));
+
+        if(course.degree != 11 && course.degree != 12) {
+            course.number = Integer.parseInt(block.substring(3, 4));
+        }
+        course.specification = spec;
+        return course;
+    }
+
+    static Database.Hours findHours(String hoursString) {
+        Database.Hours res = new Database.Hours();
+        for(int i = 0; i < hoursString.length(); i++) {
+            char c = hoursString.charAt(i);
+            if(Character.isDigit(c)) {
+                if(res.startHour == 0) res.startHour = Integer.parseInt(String.valueOf(c));
+                else if(res.endHour == 0) {
+                    res.endHour = Integer.parseInt(String.valueOf(c));
+                    break;
+                }
+            }
+        }
+        if(res.endHour == 0) res.endHour = res.startHour;
         return res;
     }
 
