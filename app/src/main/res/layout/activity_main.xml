@@ -64,25 +64,12 @@
                         android:id="@+id/tvClass"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-thin"
+                        android:fontFamily="sans-serif-light"
                         android:text="@string/temp_class"
                         android:textColor="@color/snow"
                         android:textSize="20sp" />
 
                 </android.support.v7.widget.Toolbar>
-                <!--
-                                <TextView
-                                    android:layout_marginTop="50dp"
-                                    android:id="@+id/tvClass"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="sans-serif-thin"
-                                    android:text="Klasse 5-1"
-                                    android:textColor="@color/snow"
-                                    android:textSize="14sp"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="@+id/toolbar" />-->
 
                 <FrameLayout
                     android:id="@+id/dateContainer"
@@ -194,7 +181,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/entryList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="-50dp"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -378,7 +365,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="2dp" />
+            android:layout_marginTop="2dp"
+            android:overScrollMode="never" />
 
         <!--<TextView-->
         <!--android:text="@string/number"-->
@@ -391,7 +379,8 @@
             android:id="@+id/courseNumberList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:overScrollMode="never" />
 
     </LinearLayout>
 

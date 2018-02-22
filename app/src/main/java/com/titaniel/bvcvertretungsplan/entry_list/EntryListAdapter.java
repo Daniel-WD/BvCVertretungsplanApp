@@ -1,6 +1,8 @@
 package com.titaniel.bvcvertretungsplan.entry_list;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,23 +35,20 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
         if(entry.hours.startHour == entry.hours.endHour) {
             holder.tvHours.setText(String.valueOf(entry.hours.startHour));
         } else {
-            // TODO: 20.02.2018 template
-            holder.tvHours.setText(String.valueOf(entry.hours.startHour) + "-" + String.valueOf(entry.hours.endHour));
+            holder.tvHours.setText(mContext.getString(R.string.temp_hours, entry.hours.startHour, entry.hours.endHour));
         }
-        if(entry.course.specification.equals("")) {
-            holder.tvSpec.setVisibility(View.GONE);
-        } else {
-            holder.tvSpec.setText(entry.course.specification);
-        }
+        holder.tvSpec.setVisibility(entry.course.specification.equals("") ? View.GONE : View.VISIBLE);
+
         holder.tvSpec.setText(entry.course.specification);
-        holder.tvLesson.setText(entry.lesson);
-        holder.tvTeacher.setText(entry.teacher);
-        holder.tvRoom.setText(entry.room);
-        if(entry.info == null || entry.info.equals("")) {
-            holder.tvInfo.setVisibility(View.GONE);
-        } else {
-            holder.tvInfo.setText(entry.info);
-        }
+        holder.tvLesson.setText(entry.lesson == null ? "---" : entry.lesson);
+        holder.tvTeacher.setText(entry.teacher == null ? "---" : entry.teacher);
+        holder.tvRoom.setText(entry.room == null ? "---" : entry.room);
+        holder.tvInfo.setText(entry.info == null ? "keine Info" : entry.info);
+
+        int shadowRadius = 0;
+        holder.tvLesson.setShadowLayer(entry.lessonChange ? shadowRadius : 0, 0, 0, Color.WHITE);
+        holder.tvTeacher.setShadowLayer(entry.teacherChange ? shadowRadius : 0, 0, 0, Color.WHITE);
+        holder.tvRoom.setShadowLayer(entry.roomChange ? shadowRadius : 0, 0, 0, Color.WHITE);
     }
 
     @Override

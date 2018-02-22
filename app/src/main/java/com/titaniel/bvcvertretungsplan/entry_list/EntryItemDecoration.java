@@ -14,23 +14,26 @@ public class EntryItemDecoration extends RecyclerView.ItemDecoration {
 
     private Paint mPaint;
 
+    private static final float SCALE = 0.3f;
+
     public EntryItemDecoration(Context context) {
         int dividerColor = ContextCompat.getColor(context, R.color.snow);
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(dividerColor);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(1);
+        mPaint.setStrokeWidth(6);
     }
 
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDrawOver(c, parent, state);
 
-        for(int i = 0; i < parent.getChildCount(); i++) {
+        for(int i = 1; i < parent.getChildCount(); i++) {
             View child = parent.getChildAt(i);
-            float y = child.getY() + child.getHeight() - mPaint.getStrokeWidth()/2;
-            c.drawLine(0, y, c.getWidth(), y, mPaint);
+            float y = child.getY() + mPaint.getStrokeWidth()/2;
+            float dx = (c.getWidth()*(1-SCALE))/2;
+            c.drawLine(dx, y, c.getWidth() -dx, y, mPaint);
         }
 
     }
@@ -38,6 +41,6 @@ public class EntryItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);
-        outRect.bottom = (int)mPaint.getStrokeWidth()/2;
+        outRect.bottom = (int)(mPaint.getStrokeWidth()/2f);
     }
 }

@@ -5,7 +5,7 @@
 
     <color name="messageBg">#64000000</color>
 
-    <color name="mainBackground">#b4000000</color>
+    <color name="mainBackground">#9f000000</color>
 
     <color name="backgroundZoomTint">#5a000000</color>
 
@@ -20,10 +20,10 @@
     <color name="prim">#1abc9c</color>
     <color name="prim_dark">#16a085</color>
 
-    <color name="one_trans">#cc031727</color>
-    <color name="two_trans">#51126872</color>
-    <color name="three_trans">#cc0B877D</color>
-    <color name="four_trans">#cc18C29C</color>
+    <color name="one_trans">#28031727</color>
+    <color name="two_trans">#28126872</color>
+    <color name="three_trans">#280b877d</color>
+    <color name="four_trans">#2818c29c</color>
     <color name="five_trans">#cc88F9D4</color>
 
     <color name="snow">#ffffff</color><!--FEFCFC--><!--f0f0f1-->

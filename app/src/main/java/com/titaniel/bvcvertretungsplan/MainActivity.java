@@ -9,7 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean mEntryListScrollEnabled = true;
     private boolean mCollapsingEnabled = true;
+    private boolean mStarted = false;
 
     private int mWidth, mHeight;
 
@@ -94,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
     private float mTriHypot = 0;
 
     private Handler mHandler = new Handler();
-
-    private float mCoursePickerShowMoveDistance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -209,9 +208,9 @@ public class MainActivity extends AppCompatActivity {
                                 .alpha(1)
                                 .start();
                     }
-        }));
+                }));
 
-        //mCourseDegreeList
+        //mCourseNumberList
         LinearLayoutManager managerNumber =
                 new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         mCourseNumberList.setLayoutManager(managerNumber);
@@ -236,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     updateClassText();
-        }));
+                }));
         mCourseNumberList.setHasFixedSize(true);
 
         //fab
@@ -298,7 +297,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                    if(!mCollapsingEnabled) return;
+                    if(!mCollapsingEnabled || !mStarted) return;
                     if(flag) {
                         fabTY = mFab.getTranslationY();
                         flag = false;
@@ -306,19 +305,10 @@ public class MainActivity extends AppCompatActivity {
                     mFab.setTranslationY(fabTY + verticalOffset);
                     if(verticalOffset < 0) {
                         mHeaderClickConsumer.setVisibility(View.VISIBLE);
-                        if(mFab.getVisibility() == View.VISIBLE) {
-                            mFab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
-                                @Override
-                                public void onHidden(FloatingActionButton fab) {
-                                    mFab.setVisibility(View.VISIBLE);
-                                }
-                            });
-                        }
+                        mFab.hide();
                     } else {
                         mHeaderClickConsumer.setVisibility(View.INVISIBLE);
-                        if(mFab.getVisibility() == View.VISIBLE) {
-                            mFab.show();
-                        }
+                        mFab.show();
                     }
                     mHeaderContainer.setAlpha(1 - ((float) Math.abs(verticalOffset)*HEADER_FADE_SPEED)/(float) appBarLayout.getHeight());
                 }
@@ -328,9 +318,17 @@ public class MainActivity extends AppCompatActivity {
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
         AppBarLayout.Behavior behavior = new AppBarLayout.Behavior();
         behavior.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+            boolean flag = true;
+            float y;
+
             @Override
-            public boolean canDrag(AppBarLayout appBarLayout) {
-                return mCollapsingEnabled;
+            public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                if(flag) {
+                    y = mAppBarLayout.getBottom();
+                    flag = false;
+                }
+
+                return mCollapsingEnabled && mHeight - mAppBarLayout.getBottom() < mEntryList.getHeight();
             }
         });
         params.setBehavior(behavior);
@@ -338,9 +336,16 @@ public class MainActivity extends AppCompatActivity {
         //entryList
         LinearLayoutManager managerEntries =
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false) {
+                    boolean flag = true;
+                    float y;
+
                     @Override
                     public boolean canScrollVertically() {
-                        return mEntryListScrollEnabled && super.canScrollVertically();
+                        if(flag) {
+                            y = mAppBarLayout.getBottom();
+                            flag = false;
+                        }
+                        return mEntryListScrollEnabled && mHeight - y < mEntryList.getHeight();
                     }
                 };
         mEntryList.setLayoutManager(managerEntries);
@@ -370,9 +375,16 @@ public class MainActivity extends AppCompatActivity {
 
         });
         mDayPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override public void onPageScrollStateChanged(int state) {}
-            @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
-            @Override public void onPageSelected(int position) {
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
                 mDayIndicator.post(() -> {
                     ((DayListAdapter) mDayIndicator.getAdapter()).changeSelected(position);
                 });
@@ -583,7 +595,13 @@ public class MainActivity extends AppCompatActivity {
         mDateContainer.setVisibility(View.INVISIBLE);
         mDayIndicator.setVisibility(View.INVISIBLE);
         mFab.setVisibility(View.INVISIBLE);
-        mFab.hide();
+        mFab.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+            @Override
+            public void onHidden(FloatingActionButton fab) {
+                super.onHidden(fab);
+//                mFab.setVisibility(View.INVISIBLE);
+            }
+        });
 
     }
 
@@ -684,7 +702,10 @@ public class MainActivity extends AppCompatActivity {
         delay += 200;
 
         //fab
-        mHandler.postDelayed(() -> mFab.show(), delay);
+        mHandler.postDelayed(() -> {
+            mStarted = true;
+            mFab.show();
+        }, delay);
 
     }
 
@@ -724,7 +745,7 @@ public class MainActivity extends AppCompatActivity {
     private void startSplash() {
         long delay = 0;
 
-        delay += zoom(delay, 600, true) -50;
+        delay += zoom(delay, 600, true) - 50;
 
         //draw balls
         mHandler.postDelayed(() -> {
@@ -860,7 +881,7 @@ public class MainActivity extends AppCompatActivity {
         for(View v : views) {
             if(v == null) continue;
             rightCenter = mWidth - (v.getX() + v.getWidth()/2);
-            additionalHeight = rightCenter* (float)mTriRatio +  v.getY() - mAppBarLayout.getHeight() + mToolbar.getY()/*equals status bar height*/;
+            additionalHeight = rightCenter*(float) mTriRatio + v.getY() - mAppBarLayout.getHeight() + mToolbar.getY()/*equals status bar height*/;
             v.setTranslationY(-(additionalHeight + extraHeight));
         }
     }
