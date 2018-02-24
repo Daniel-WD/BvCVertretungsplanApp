@@ -22,7 +22,7 @@ public class EntryItemDecoration extends RecyclerView.ItemDecoration {
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(dividerColor);
         mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeWidth(6);
+        mPaint.setStrokeWidth(8);
     }
 
     @Override
