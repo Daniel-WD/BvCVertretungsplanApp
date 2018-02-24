@@ -2,6 +2,7 @@ package com.titaniel.bvcvertretungsplan.database;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import org.joda.time.LocalDate;
@@ -40,11 +41,16 @@ public class Database {
         public String disabledRooms;
     }
 
-    public static class Entry {
+    public static class Entry implements Comparable<Entry> {
         public Course course;
         public Hours hours;
         public String courseString, hoursString, lesson, teacher, room, info;
         public boolean lessonChange = false, teacherChange = false, roomChange = false;
+
+        @Override
+        public int compareTo(@NonNull Entry o) {
+            return hours.compareTo(o.hours);
+        }
 
         Entry copy() {
             Entry entry = new Entry();
@@ -86,8 +92,27 @@ public class Database {
         }
     }
 
-    public static class Hours {
+    public static class Hours implements Comparable<Hours> {
         public int startHour = 0, endHour = 0;
+
+        @Override
+        public int compareTo(@NonNull Hours o) {
+            if((startHour == endHour && o.startHour == o.endHour) || (startHour != endHour && o.startHour != o.endHour)) {
+                return Integer.compare(startHour, o.startHour);
+            } else if(startHour == endHour) {
+                if(startHour <= o.endHour) {
+                    return -1;
+                } else {
+                    return +1;
+                }
+            } else {
+                if(o.startHour <= endHour) {
+                    return +1;
+                } else {
+                    return -1;
+                }
+            }
+        }
 
         @Override
         public String toString() {
@@ -96,6 +121,8 @@ public class Database {
                     ", endHour=" + endHour +
                     '}';
         }
+
+
     }
 
     public static final ArrayList<Day> days = new ArrayList<>();
@@ -120,7 +147,7 @@ public class Database {
 
     }
 
-    public static Entry[] findEntriesByCourse(LocalDate date, int degree, int number) {
+    public static Entry[] findEntriesByCourseAndDate(LocalDate date, int degree, int number) {
         Day curDay = null;
         for(Day day : days) {
             if(day.date.isEqual(date)) curDay = day;

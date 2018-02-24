@@ -1,8 +1,8 @@
-package com.titaniel.bvcvertretungsplan.entry_list;
+package com.titaniel.bvcvertretungsplan.main_pager.entry_list;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v4.content.ContextCompat;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,15 +12,27 @@ import android.widget.TextView;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+
 public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.EntryHolder> {
 
-    private Database.Entry[] mEntries;
+    private ArrayList<Database.Entry> mEntries = new ArrayList<>();
     private Context mContext;
-    private float mDegrees;
+    private Handler handler = new Handler();
 
     public EntryListAdapter(Context context, Database.Entry... entries) {
         mContext = context;
-        mEntries = entries;
+        setEntries(entries);
+    }
+
+    public void setEntries(Database.Entry... entries) {
+        Arrays.sort(entries);
+        mEntries.clear();
+        mEntries.addAll(Arrays.asList(entries));
+        notifyDataSetChanged();
     }
 
     @Override
@@ -31,7 +43,7 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
 
     @Override
     public void onBindViewHolder(EntryHolder holder, int position) {
-        Database.Entry entry = mEntries[position];
+        Database.Entry entry = mEntries.get(position);
         if(entry.hours.startHour == entry.hours.endHour) {
             holder.tvHours.setText(String.valueOf(entry.hours.startHour));
         } else {
@@ -53,7 +65,7 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
 
     @Override
     public int getItemCount() {
-        return mEntries.length;
+        return mEntries.size();
     }
 
     class EntryHolder extends RecyclerView.ViewHolder {

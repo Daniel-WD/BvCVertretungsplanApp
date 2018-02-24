@@ -72,7 +72,10 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
 
             //read all current existing files
             readData(context, context.fileList());
-            if(inputs[0].offline) return new LoadingResult(context, false, false);
+            if(inputs[0].offline) {
+                prepareEntries();
+                return new LoadingResult(context, false, false);
+            }
 
             //connect
             ftpClient.connect("w00a1664.kasserver.com");

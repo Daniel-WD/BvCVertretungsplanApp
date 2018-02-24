@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">BvC Vertretungsplan</string>
 
-    <string name="std">STD</string>
+    <string name="noEntries">Sorry…\nEs ist leider keine Vertretung vorhanden :-(</string>
 
     <!-- Template -->
     <string name="temp_hours">%1$d-%2$d</string>

@@ -1,4 +1,4 @@
-package com.titaniel.bvcvertretungsplan.entry_list;
+package com.titaniel.bvcvertretungsplan.main_pager.entry_list;
 
 import android.content.Context;
 import android.graphics.Canvas;

@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
     android:clipToPadding="false"
     android:clipChildren="false">
+
+    <ImageView
+        android:alpha="0.7"
+        android:id="@+id/dot"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_circle"
+        android:layout_width="5dp"
+        android:layout_height="5dp" />
 
     <TextView
         android:id="@+id/shortDay"
@@ -15,7 +25,6 @@
         android:layout_height="wrap_content"
         android:alpha="0.7"
         android:textColor="@color/snow"
-        android:layout_centerHorizontal="true"
         android:text="D"
         android:fontFamily="sans-serif"
         android:textSize="14sp"/>
@@ -29,4 +38,4 @@
         android:layout_width="10dp"
         android:layout_height="1dp"/>-->
 
-</RelativeLayout>
+</LinearLayout>

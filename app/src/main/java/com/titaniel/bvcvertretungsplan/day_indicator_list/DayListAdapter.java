@@ -1,7 +1,5 @@
 package com.titaniel.bvcvertretungsplan.day_indicator_list;
 
-import android.animation.ValueAnimator;
-import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.OvershootInterpolator;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.titaniel.bvcvertretungsplan.DayManager;
@@ -47,6 +48,11 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
         mSelected = toPosition;
     }
 
+    public void setDot(int pos, boolean visible) {
+        DayHolder holder = ((DayHolder) mList.findViewHolderForAdapterPosition(pos));
+        holder.ivDot.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+    }
+
     @Override
     public DayHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mList.getContext()).inflate(R.layout.list_item_day, parent, false);
@@ -63,14 +69,14 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
         return DayManager.shortDayList.length;
     }
 
-    class DayHolder extends RecyclerView.ViewHolder {
+    public class DayHolder extends RecyclerView.ViewHolder {
 
-        private static final int MAX_GLOW = 0;
         private static final float MAX_SCALE = 1.5f;
         private static final float MIN_ALPHA = 0.7f;
 
+        ImageView ivDot;
         View itemView;
-        TextView text;
+        public TextView text;
 
         DayHolder(View itemView) {
             super(itemView);
@@ -89,17 +95,11 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
             });
 
             text = itemView.findViewById(R.id.shortDay);
-
+            ivDot = itemView.findViewById(R.id.dot);
+            ivDot.setVisibility(View.INVISIBLE);
         }
 
         long select() {
-            ValueAnimator shadowOn = ValueAnimator.ofFloat(0, MAX_GLOW);
-            shadowOn.addUpdateListener(animation ->
-                    text.setShadowLayer((float)animation.getAnimatedValue(), 0, 0, Color.WHITE));
-            shadowOn.setInterpolator(new AccelerateDecelerateInterpolator());
-            shadowOn.setDuration(150);
-            shadowOn.start();
-
             text.animate()
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .setDuration(150)
@@ -107,24 +107,17 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
                     .scaleX(MAX_SCALE)
                     .alpha(1)
                     .start();
+            ivDot.animate()
+                    .setInterpolator(new OvershootInterpolator())
+                    .setDuration(300)
+                    .translationY(-10)
+                    .alpha(1)
+                    .start();
 
-            return 150;
+            return 300;
         }
 
         long deselect() {
-/*            line.animate()
-                    .setInterpolator(new AccelerateDecelerateInterpolator())
-                    .setDuration(150)
-                    .scaleX(0)
-                    .start();*/
-
-            ValueAnimator shadowOff = ValueAnimator.ofFloat(MAX_GLOW, 0);
-            shadowOff.addUpdateListener(animation ->
-                    text.setShadowLayer((float)animation.getAnimatedValue(), 0, 0, Color.WHITE));
-            shadowOff.setInterpolator(new AccelerateDecelerateInterpolator());
-            shadowOff.setDuration(150);
-            shadowOff.start();
-
             text.animate()
                     .setInterpolator(new AccelerateDecelerateInterpolator())
                     .setDuration(150)
@@ -132,8 +125,14 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
                     .scaleX(1f)
                     .alpha(MIN_ALPHA)
                     .start();
+            ivDot.animate()
+                    .setInterpolator(new AnticipateInterpolator())
+                    .setDuration(300)
+                    .translationY(0)
+                    .alpha(MIN_ALPHA)
+                    .start();
 
-            return 150;
+            return 300;
         }
     }
 }
