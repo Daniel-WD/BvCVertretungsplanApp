@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     private ConstraintLayout mHeaderContainer;
     private AppBarLayout mAppBarLayout;
     private View mHeaderExtra;
-    private View mHeaderClickConsumer;
+    private View mHeaderConsumer;
     private TextView mTvClass;
     private FrameLayout mListBackground;
     private LinearLayout mRealCut;
@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTvCourseDegree, mTvCourseNumber;
     private View mGlobalConsumer;
     private ViewPager mMainPager;
+    private View mPagerConsumer;
 
     private DateShower mDateShower;
 
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         mAppBarLayout = findViewById(R.id.appbarlayout);
         mHeaderContainer = findViewById(R.id.headerContainer);
         mHeaderExtra = findViewById(R.id.extra);
-        mHeaderClickConsumer = findViewById(R.id.headerClickConsumer);
+        mHeaderConsumer = findViewById(R.id.headerClickConsumer);
         mTvClass = findViewById(R.id.tvClass);
         mListBackground = findViewById(R.id.listBackground);
         mRealCut = findViewById(R.id.realCut);
@@ -150,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
         mTvCourseNumber = findViewById(R.id.tvCourseNumber);
         mGlobalConsumer = findViewById(R.id.globalConsumer);
         mMainPager = findViewById(R.id.mainPager);
+        mPagerConsumer = findViewById(R.id.pagerConsumer);
 
         //mainPager
         OverScrollDecoratorHelper.setUpOverScroll(mMainPager);
@@ -163,21 +165,26 @@ public class MainActivity extends AppCompatActivity {
                 int newPos = mMainPager.getCurrentItem();
                 switch(state) {
                     case ViewPager.SCROLL_STATE_IDLE:
+                        mFabEnabled = true;
                         mCollapsingEnabled = true;
                         if(newPos != oldPos) {
                             ((MainPagerAdapter) mMainPager.getAdapter()).getEntryList(oldPos).scrollToPosition(0);
-                            updateScrollEnabledForPos(newPos);
                         }
-                        oldPos = newPos;
                         break;
                     case ViewPager.SCROLL_STATE_DRAGGING:
+                        mFabEnabled = false;
                         mCollapsingEnabled = false;
                         break;
                     case ViewPager.SCROLL_STATE_SETTLING:
+                        mFabEnabled = false;
                         mCollapsingEnabled = true;
                         mDayPager.setCurrentItem(newPos, true);
+                        if(newPos != oldPos) {
+                            updateScrollEnabledForPos(newPos);
+                        }
                         break;
                 }
+                oldPos = newPos;
             }
 
             @Override
@@ -398,10 +405,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                             mFab.setTranslationY(fabTY + verticalOffset);
                             if(verticalOffset < 0) {
-                                mHeaderClickConsumer.setVisibility(View.VISIBLE);
+                                mHeaderConsumer.setVisibility(View.VISIBLE);
                                 mFab.hide();
                             } else {
-                                mHeaderClickConsumer.setVisibility(View.INVISIBLE);
+                                mHeaderConsumer.setVisibility(View.INVISIBLE);
                                 mFab.show();
                             }
                             mHeaderContainer.setAlpha(1 - ((float) Math.abs(verticalOffset)*HEADER_FADE_SPEED)/(float) appBarLayout.getHeight());
@@ -422,8 +429,9 @@ public class MainActivity extends AppCompatActivity {
                     flag = false;
                 }
 
-                return mCollapsingEnabled && mHeight - y <
-                        ((MainPagerAdapter) mMainPager.getAdapter()).getEntryList(mMainPager.getCurrentItem()).getHeight();
+                RecyclerView list = ((MainPagerAdapter)
+                        mMainPager.getAdapter()).getEntryList(mMainPager.getCurrentItem());
+                return list.getChildCount() != 0 && mCollapsingEnabled && mHeight - y < list.getHeight();
             }
         });
         params.setBehavior(mAppBarBehavior);
@@ -463,11 +471,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateScrollEnabledForPos(int pos) {
-        if(mHeight - mAppBarLayout.getHeight() > ((MainPagerAdapter) mMainPager.getAdapter()).getEntryList(pos).getHeight()) {
+        MainPagerAdapter adapter = ((MainPagerAdapter) mMainPager.getAdapter());
+        if(mHeight - mAppBarLayout.getHeight() > adapter.getEntryList(pos).getHeight() || adapter.getEntryList(pos).getChildCount() == 0) {
             mAppBarLayout.setExpanded(true, true);
-            ((MainPagerAdapter) mMainPager.getAdapter()).getFragment(pos).scrollEnabled = false;
+            adapter.getFragment(pos).scrollEnabled = false;
         } else {
-            ((MainPagerAdapter) mMainPager.getAdapter()).getFragment(pos).scrollEnabled = true;
+            adapter.getFragment(pos).scrollEnabled = true;
         }
     }
 
@@ -508,6 +517,16 @@ public class MainActivity extends AppCompatActivity {
                 .start();
 
         mMainPager.animate()
+                .setStartDelay(delay)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .setDuration(moveDur)
+                .translationYBy(ty)
+                .alpha(0f)
+                .start();
+
+        mHeaderConsumer.setVisibility(View.VISIBLE);
+        mPagerConsumer.setVisibility(View.VISIBLE);
+        mPagerConsumer.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new FastOutSlowInInterpolator())
                 .setDuration(moveDur)
@@ -607,6 +626,18 @@ public class MainActivity extends AppCompatActivity {
                 .alpha(1f)
                 .start();
 
+        mPagerConsumer.animate()
+                .setStartDelay(delay)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .setDuration(moveDur)
+                .translationYBy(-ty)
+                .alpha(1f)
+                .withEndAction(() -> {
+                    mPagerConsumer.setVisibility(View.INVISIBLE);
+                    mHeaderConsumer.setVisibility(View.INVISIBLE);
+                })
+                .start();
+
         mFab.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new FastOutSlowInInterpolator())
@@ -658,7 +689,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //moveIn
-        long moveInDur = 400;
+        long moveInDur = 300;
         float ty = mHeight - mTriangle.getY();
         mFakeCut.setTranslationY(mFakeCut.getTranslationY() + ty);
         mFakeCut.setVisibility(View.VISIBLE);

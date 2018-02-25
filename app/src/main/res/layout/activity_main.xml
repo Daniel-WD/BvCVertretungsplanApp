@@ -176,7 +176,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/mainBackground"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/mainPager"
@@ -185,6 +185,17 @@
         android:layout_marginTop="-70dp"
         android:clipChildren="false"
         android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <View
+        android:id="@+id/pagerConsumer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="-70dp"
+        android:clickable="true"
+        android:elevation="10dp"
+        android:focusable="true"
+        android:visibility="invisible"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <FrameLayout

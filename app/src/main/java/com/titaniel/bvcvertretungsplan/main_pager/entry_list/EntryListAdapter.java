@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.titaniel.bvcvertretungsplan.R;
@@ -57,10 +58,9 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
         holder.tvRoom.setText(entry.room == null ? "---" : entry.room);
         holder.tvInfo.setText(entry.info == null ? "keine Info" : entry.info);
 
-        int shadowRadius = 0;
-        holder.tvLesson.setShadowLayer(entry.lessonChange ? shadowRadius : 0, 0, 0, Color.WHITE);
-        holder.tvTeacher.setShadowLayer(entry.teacherChange ? shadowRadius : 0, 0, 0, Color.WHITE);
-        holder.tvRoom.setShadowLayer(entry.roomChange ? shadowRadius : 0, 0, 0, Color.WHITE);
+        holder.dotLesson.setVisibility(entry.lessonChange && !holder.tvLesson.getText().equals("---") ? View.VISIBLE : View.GONE);
+        holder.dotTeacher.setVisibility(entry.teacherChange && !holder.tvTeacher.getText().equals("---") ? View.VISIBLE : View.GONE);
+        holder.dotRoom.setVisibility(entry.roomChange && !holder.tvRoom.getText().equals("---") ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -71,6 +71,7 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
     class EntryHolder extends RecyclerView.ViewHolder {
 
         TextView tvRoom, tvSpec, tvHours, tvLesson, tvTeacher, tvInfo;
+        ImageView dotLesson, dotTeacher, dotRoom;
 
         EntryHolder(View itemView) {
             super(itemView);
@@ -81,6 +82,10 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
             tvLesson = itemView.findViewById(R.id.tvLesson);
             tvTeacher = itemView.findViewById(R.id.tvTeacher);
             tvInfo = itemView.findViewById(R.id.tvInfo);
+
+            dotLesson = itemView.findViewById(R.id.dotLesson);
+            dotTeacher = itemView.findViewById(R.id.dotTeacher);
+            dotRoom = itemView.findViewById(R.id.dotRoom);
         }
     }
 

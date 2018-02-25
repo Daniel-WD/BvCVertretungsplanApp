@@ -52,7 +52,7 @@ public class EntryListFragment extends Fragment {
                 new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false) {
                     @Override
                     public boolean canScrollVertically() {
-                        return scrollEnabled;
+                        return scrollEnabled && entryList.getChildCount() != 0;
                     }
                 };
         entryList.setLayoutManager(managerEntries);
