@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
@@ -45,7 +46,12 @@ public class Database {
         public Course course;
         public Hours hours;
         public String courseString, hoursString, lesson, teacher, room, info;
+        public String hoursText;
         public boolean lessonChange = false, teacherChange = false, roomChange = false;
+        public int lessonDotVisible = View.VISIBLE;
+        public int teacherDotVisible = View.VISIBLE;
+        public int roomDotVisible = View.VISIBLE;
+        public int specVisible = View.VISIBLE;
 
         @Override
         public int compareTo(@NonNull Entry o) {
@@ -65,6 +71,11 @@ public class Database {
             entry.lessonChange = lessonChange;
             entry.teacherChange = teacherChange;
             entry.roomChange = roomChange;
+            entry.teacherDotVisible = teacherDotVisible;
+            entry.roomDotVisible = roomDotVisible;
+            entry.lessonDotVisible = lessonDotVisible;
+            entry.specVisible = specVisible;
+            entry.hoursText = hoursText;
             return entry;
         }
 

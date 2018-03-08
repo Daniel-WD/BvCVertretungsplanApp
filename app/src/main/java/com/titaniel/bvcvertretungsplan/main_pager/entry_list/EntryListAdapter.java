@@ -45,22 +45,26 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
     @Override
     public void onBindViewHolder(EntryHolder holder, int position) {
         Database.Entry entry = mEntries.get(position);
-        if(entry.hours.startHour == entry.hours.endHour) {
-            holder.tvHours.setText(String.valueOf(entry.hours.startHour));
-        } else {
-            holder.tvHours.setText(mContext.getString(R.string.temp_hours, entry.hours.startHour, entry.hours.endHour));
-        }
-        holder.tvSpec.setVisibility(entry.course.specification.equals("") ? View.GONE : View.VISIBLE);
 
+        holder.dotLesson.setVisibility(entry.lessonDotVisible);
+        holder.dotTeacher.setVisibility(entry.teacherDotVisible);
+        holder.dotRoom.setVisibility(entry.roomDotVisible);
+        holder.tvSpec.setVisibility(entry.specVisible);
+
+//        holder.tvHours.setText(String.valueOf(position));
+//        holder.tvSpec.setText(String.valueOf(position));
+//        holder.tvLesson.setText(String.valueOf(position));
+//        holder.tvTeacher.setText(String.valueOf(position));
+//        holder.tvRoom.setText(String.valueOf(position));
+//        holder.tvInfo.setText(String.valueOf(position));
+
+        holder.tvHours.setText(entry.hoursText);
         holder.tvSpec.setText(entry.course.specification);
-        holder.tvLesson.setText(entry.lesson == null ? "---" : entry.lesson);
-        holder.tvTeacher.setText(entry.teacher == null ? "---" : entry.teacher);
-        holder.tvRoom.setText(entry.room == null ? "---" : entry.room);
-        holder.tvInfo.setText(entry.info == null ? "keine Info" : entry.info);
+        holder.tvLesson.setText(entry.lesson);
+        holder.tvTeacher.setText(entry.teacher);
+        holder.tvRoom.setText(entry.room);
+        holder.tvInfo.setText(entry.info);
 
-        holder.dotLesson.setVisibility(entry.lessonChange && !holder.tvLesson.getText().equals("---") ? View.VISIBLE : View.GONE);
-        holder.dotTeacher.setVisibility(entry.teacherChange && !holder.tvTeacher.getText().equals("---") ? View.VISIBLE : View.GONE);
-        holder.dotRoom.setVisibility(entry.roomChange && !holder.tvRoom.getText().equals("---") ? View.VISIBLE : View.GONE);
     }
 
     @Override

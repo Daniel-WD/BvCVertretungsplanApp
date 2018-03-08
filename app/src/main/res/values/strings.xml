@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">BvC Vertretungsplan</string>
 
-    <string name="noEntries">Sorry…\nEs ist leider keine Vertretung vorhanden :-(</string>
+    <string name="noEntries">Keine Vertretung für dich an diesem Tag… :-(</string>
 
     <!-- Template -->
     <string name="temp_hours">%1$d-%2$d</string>
@@ -21,7 +21,7 @@
     <string name="run">Run as fast as you can and don\'t look back.</string>
     <string name="runn">Lauf so schnell wie möglich und schau nicht zurück.</string>
 
-    <string name="omg">OMG</string>
+    <string name="omg">OHH</string>
 
     <string name="monday_caps">MONTAG</string>
     <string name="tuesday_caps">DIENSTAG</string>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "936372764470",
+    "firebase_url": "https://bvc-vertretungsplan.firebaseio.com",
+    "project_id": "bvc-vertretungsplan",
+    "storage_bucket": "bvc-vertretungsplan.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:936372764470:android:643080731f53ef4a",
+        "android_client_info": {
+          "package_name": "com.titaniel.bvcvertretungsplan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "936372764470-mte0d73062dupu4o0tufg46qbjrqvif4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.titaniel.bvcvertretungsplan",
+            "certificate_hash": "6dc50ae727daeafb563e8f5938df71bcfb1debb9"
+          }
+        },
+        {
+          "client_id": "936372764470-rfc28uqcjetiif7i8atk6p4d6eab3kpq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgDunYTGD5NRuFz30q6GnPNi5gEGAeQYE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "936372764470-rfc28uqcjetiif7i8atk6p4d6eab3kpq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -170,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
                         if(newPos != oldPos) {
                             ((MainPagerAdapter) mMainPager.getAdapter()).getEntryList(oldPos).scrollToPosition(0);
                         }
+                        oldPos = newPos;
                         break;
                     case ViewPager.SCROLL_STATE_DRAGGING:
                         mFabEnabled = false;
@@ -179,12 +180,9 @@ public class MainActivity extends AppCompatActivity {
                         mFabEnabled = false;
                         mCollapsingEnabled = true;
                         mDayPager.setCurrentItem(newPos, true);
-                        if(newPos != oldPos) {
-                            updateScrollEnabledForPos(newPos);
-                        }
+                        updateScrollEnabledForPos(newPos);
                         break;
                 }
-                oldPos = newPos;
             }
 
             @Override

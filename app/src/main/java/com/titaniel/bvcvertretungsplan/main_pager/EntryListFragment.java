@@ -1,6 +1,7 @@
 package com.titaniel.bvcvertretungsplan.main_pager;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +35,7 @@ public class EntryListFragment extends Fragment {
     public RecyclerView entryList;
     public EntryListAdapter adapter;
     public boolean scrollEnabled = true;
+    private boolean mChildCountZero = false;
 
     @Nullable
     @Override
@@ -52,9 +54,10 @@ public class EntryListFragment extends Fragment {
                 new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false) {
                     @Override
                     public boolean canScrollVertically() {
-                        return scrollEnabled && entryList.getChildCount() != 0;
+                        return scrollEnabled && !mChildCountZero;
                     }
                 };
+        managerEntries.setItemPrefetchEnabled(true);
         entryList.setLayoutManager(managerEntries);
         entryList.addItemDecoration(new EntryItemDecoration(getContext()));
 
@@ -80,7 +83,15 @@ public class EntryListFragment extends Fragment {
         } else {
             tvNoEntries.setVisibility(View.INVISIBLE);
         }
+        mChildCountZero = entries.length == 0;
         adapter.setEntries(entries);
-
+        Handler handler = new Handler();
+        //prevent lags
+        handler.post(() -> {
+            entryList.scrollToPosition(entryList.getAdapter().getItemCount()-1);
+        });
+        handler.postDelayed(() -> {
+            entryList.scrollToPosition(0);
+        }, 100);
     }
 }

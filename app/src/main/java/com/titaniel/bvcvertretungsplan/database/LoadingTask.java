@@ -4,8 +4,10 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.util.Xml;
+import android.view.View;
 
 import com.titaniel.bvcvertretungsplan.MainActivity;
+import com.titaniel.bvcvertretungsplan.R;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -73,7 +75,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
             //read all current existing files
             readData(context, context.fileList());
             if(inputs[0].offline) {
-                prepareEntries();
+                prepareEntries(context);
                 return new LoadingResult(context, false, false);
             }
 
@@ -119,7 +121,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
             readData(context, DataUtils.toStringArray(newFiles));
 
             //prepare all entries for classification
-            prepareEntries();
+            prepareEntries(context);
 
             for(Database.Day day : Database.days) {
                 Log.d("da", "da");
@@ -282,7 +284,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
         }
     }
 
-    private void prepareEntries() {
+    private void prepareEntries(Context context) {
         for(Database.Day day : Database.days) {
             ArrayList<Database.Entry> newEntries = new ArrayList<>();
             for(Database.Entry entry : day.entries) {
@@ -292,11 +294,30 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                 //course processing
                 Database.Course[] courses = DataUtils.findCourses(entry.courseString);
                 entry.course = courses[0];
+
+                if(entry.hours.startHour == entry.hours.endHour) {
+                    entry.hoursText = String.valueOf(entry.hours.startHour);
+                } else {
+                    entry.hoursText = context.getString(R.string.temp_hours, entry.hours.startHour, entry.hours.endHour);
+                }
+
+                entry.specVisible = entry.course.specification.equals("") ? View.GONE : View.VISIBLE;
+
+                entry.lesson = entry.lesson == null ? "---" : entry.lesson;
+                entry.teacher = entry.teacher == null ? "---" : entry.teacher;
+                entry.room = entry.room == null ? "---" : entry.room;
+                entry.info = entry.info == null ? "keine Info" : entry.info;
+
+                entry.lessonDotVisible = entry.lessonChange && !entry.lesson.equals("---") ? View.VISIBLE : View.GONE;
+                entry.teacherDotVisible = entry.teacherChange && !entry.teacher.equals("---") ? View.VISIBLE : View.GONE;
+                entry.roomDotVisible = entry.roomChange && !entry.room.equals("---") ? View.VISIBLE : View.GONE;
+
                 for(int i = 1; i < courses.length; i++) {
                     Database.Entry newEntry = entry.copy();
                     newEntry.course = courses[i];
                     newEntries.add(newEntry);
                 }
+
             }
             day.entries.addAll(newEntries);
         }
