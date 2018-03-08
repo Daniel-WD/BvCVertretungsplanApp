@@ -688,30 +688,37 @@ public class MainActivity extends AppCompatActivity {
 
         //moveIn
         long moveInDur = 300;
-        float ty = mHeight - mTriangle.getY();
+//        float ty = mHeight - mTriangle.getY();
+        float ty = 300;
         mFakeCut.setTranslationY(mFakeCut.getTranslationY() + ty);
         mFakeCut.setVisibility(View.VISIBLE);
+        mFakeCut.setAlpha(0);
         mFakeCut.animate()
                 .setStartDelay(delay)
                 .setDuration(moveInDur)
-                .setInterpolator(new DecelerateInterpolator())
+                .setInterpolator(new FastOutSlowInInterpolator())
                 .withEndAction(() -> {
                     mFakeCut.setVisibility(View.INVISIBLE);
                     mRealCut.setVisibility(View.VISIBLE);
                 })
                 .translationYBy(-ty)
+                .alpha(1)
                 .start();
 
         mListBackground.setTranslationY(mListBackground.getTranslationY() + ty);
         mListBackground.setVisibility(View.VISIBLE);
+        mListBackground.setAlpha(0);
         mListBackground.animate()
                 .setStartDelay(delay)
                 .setDuration(moveInDur)
-                .setInterpolator(new DecelerateInterpolator())
+                .setInterpolator(new FastOutSlowInInterpolator())
                 .translationYBy(-ty)
+                .alpha(1)
                 .start();
 
-        delay += moveInDur - 50;
+        delay += 50;
+
+        //delay += moveInDur-50;
 
         //toolbar
         mToolbar.setVisibility(View.VISIBLE);
@@ -725,7 +732,7 @@ public class MainActivity extends AppCompatActivity {
                 .alpha(1)
                 .start();
 
-        delay += 50;
+        //delay += 50;
 
         //dayPager
         mDayPager.setVisibility(View.VISIBLE);
@@ -733,7 +740,7 @@ public class MainActivity extends AppCompatActivity {
         mDayPager.setAlpha(0);
         mDayPager.animate()
                 .setStartDelay(delay)
-                .setDuration(300)
+                .setDuration(250)
                 .setInterpolator(new DecelerateInterpolator())
                 .translationX(0)
                 .alpha(1)
@@ -743,7 +750,7 @@ public class MainActivity extends AppCompatActivity {
 
         //dateContainer
         mDateContainer.setVisibility(View.VISIBLE);
-        ty = mDateContainer.getHeight()/4;
+        ty = -50;
         mDateContainer.setTranslationY(mDateContainer.getTranslationY() + ty);
         mDateContainer.setAlpha(0);
         mDateContainer.animate()
@@ -754,11 +761,11 @@ public class MainActivity extends AppCompatActivity {
                 .alpha(1)
                 .start();
 
-        delay += 150;
+        delay += 50;
 
         //indicator
         mDayIndicator.setVisibility(View.VISIBLE);
-        ty = -mDayIndicator.getHeight()/2;
+        ty = -50;
         mDayIndicator.setTranslationY(mDayIndicator.getTranslationY() + ty);
         mDayIndicator.setAlpha(0);
         mDayIndicator.animate()
@@ -771,47 +778,26 @@ public class MainActivity extends AppCompatActivity {
 
         delay += 150;
 
+        //pager... content
+        mMainPager.setVisibility(View.VISIBLE);
+        ty = 50;
+        mMainPager.setTranslationY(mMainPager.getTranslationY() + ty);
+        mMainPager.setAlpha(0);
+        mMainPager.animate()
+                .setStartDelay(delay)
+                .setDuration(200)
+                .setInterpolator(new DecelerateInterpolator())
+                .alpha(1)
+                .translationYBy(-ty)
+                .start();
+
+        delay += 150;
+
         //fab
         mHandler.postDelayed(() -> {
             mStarted = true;
             mFab.show();
         }, delay);
-
-        delay += 50;
-
-        /*mHandler.postDelayed(() -> {
-            mMainPager.setVisibility(View.VISIBLE);
-            *//*LayoutAnimationController controller =
-                    AnimationUtils.loadLayoutAnimation(this, R.anim.list_layout_animation);
-
-            RecyclerView list = ((MainPagerAdapter) mMainPager.getAdapter()).getEntryList(0);
-            list.setLayoutAnimation(controller);
-            list.scheduleLayoutAnimation();
-*//*
-
-            float tty = 100;
-            mMainPager.setTranslationY(mMainPager.getTranslationY() + tty);
-            mMainPager.setAlpha(0);
-            mMainPager.animate()
-                    .setStartDelay(0)
-                    .setDuration(300)
-                    .setInterpolator(new DecelerateInterpolator())
-                    .alpha(1)
-                    .translationYBy(-tty)
-                    .start();
-        }, delay);*/
-
-        mMainPager.setVisibility(View.VISIBLE);
-        float tty = 100;
-        mMainPager.setTranslationY(mMainPager.getTranslationY() + tty);
-        mMainPager.setAlpha(0);
-        mMainPager.animate()
-                .setStartDelay(delay)
-                .setDuration(300)
-                .setInterpolator(new DecelerateInterpolator())
-                .alpha(1)
-                .translationYBy(-tty)
-                .start();
 
     }
 
