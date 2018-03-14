@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView mIvBackground;
     private ImageView mIvLogo, mIvLogoBvCFilled, mIvLogoBvCOutline;
     private FrameLayout mLogoContainer;
-    private AVLoadingIndicatorView mLoadingView;
+    private View mLoadingView;
     private ImageView mIvErr;
     private LinearLayout mErrLayout;
     private TextView mTvErr;
@@ -461,7 +461,7 @@ public class MainActivity extends AppCompatActivity {
             mFakeCut.setY(mRealCut.getY());
         });
 
-        initStartAnimState();
+        hideUi();
 
         mHandler.postDelayed(() -> {
             startSplash();
@@ -660,7 +660,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void initStartAnimState() {
+    private void hideUi() {
         mRealCut.setVisibility(View.INVISIBLE);
         mFakeCut.setVisibility(View.INVISIBLE);
         mMainPager.setVisibility(View.INVISIBLE);
@@ -671,32 +671,70 @@ public class MainActivity extends AppCompatActivity {
         mDayIndicator.setVisibility(View.INVISIBLE);
         mFab.setVisibility(View.INVISIBLE);
         mFab.hide();
+    }
+
+    private void initStartAnimState() {
+        float ty = 300;
+        mFakeCut.setTranslationY(mFakeCut.getTranslationY() + ty);
+        mFakeCut.setVisibility(View.VISIBLE);
+        mFakeCut.setAlpha(0);
+
+        mListBackground.setTranslationY(mListBackground.getTranslationY() + ty);
+        mListBackground.setVisibility(View.VISIBLE);
+        mListBackground.setAlpha(0);
+
+        mToolbar.setVisibility(View.VISIBLE);
+        mToolbar.setAlpha(0);
+
+        mDayPager.setVisibility(View.VISIBLE);
+        mDayPager.setTranslationX(120);
+        mDayPager.setAlpha(0);
+
+        ty = -50;
+        mDateContainer.setVisibility(View.VISIBLE);
+        mDateContainer.setTranslationY(mDateContainer.getTranslationY() + ty);
+        mDateContainer.setAlpha(0);
+
+        mDayIndicator.setVisibility(View.VISIBLE);
+        mDayIndicator.setTranslationY(mDayIndicator.getTranslationY() + ty);
+        mDayIndicator.setAlpha(0);
+
+        ty = 50;
+        mMainPager.setVisibility(View.VISIBLE);
+        mMainPager.setTranslationY(mMainPager.getTranslationY() + ty);
+        mMainPager.setAlpha(0);
+
+        mFakeCut.animate().setInterpolator(new DecelerateInterpolator());
+        mListBackground.animate().setInterpolator(new DecelerateInterpolator());
+        mToolbar.animate().setInterpolator(new DecelerateInterpolator());
+        mDayPager.animate().setInterpolator(new DecelerateInterpolator(1.2f));
+        mDateContainer.animate().setInterpolator(new DecelerateInterpolator());
+        mDayIndicator.animate().setInterpolator(new DecelerateInterpolator());
+        mMainPager.animate().setInterpolator(new DecelerateInterpolator());
 
     }
 
     private void enterMainComponents(long delay) {
+        initStartAnimState();
+
         mHandler.postDelayed(() -> {
             refreshMainPager();
         }, delay);
 
-        delay += 400;
+        delay += 200;
 
         mHandler.postDelayed(() -> {
             markIndicators();
         }, delay);
 
+        delay += zoom(delay, 400, false) -100;
 
         //moveIn
-        long moveInDur = 300;
-//        float ty = mHeight - mTriangle.getY();
+        long moveInDur = 350;
         float ty = 300;
-        mFakeCut.setTranslationY(mFakeCut.getTranslationY() + ty);
-        mFakeCut.setVisibility(View.VISIBLE);
-        mFakeCut.setAlpha(0);
         mFakeCut.animate()
                 .setStartDelay(delay)
                 .setDuration(moveInDur)
-                .setInterpolator(new FastOutSlowInInterpolator())
                 .withEndAction(() -> {
                     mFakeCut.setVisibility(View.INVISIBLE);
                     mRealCut.setVisibility(View.VISIBLE);
@@ -705,73 +743,51 @@ public class MainActivity extends AppCompatActivity {
                 .alpha(1)
                 .start();
 
-        mListBackground.setTranslationY(mListBackground.getTranslationY() + ty);
-        mListBackground.setVisibility(View.VISIBLE);
-        mListBackground.setAlpha(0);
         mListBackground.animate()
                 .setStartDelay(delay)
                 .setDuration(moveInDur)
-                .setInterpolator(new FastOutSlowInInterpolator())
                 .translationYBy(-ty)
                 .alpha(1)
                 .start();
 
-        delay += 50;
-
-        //delay += moveInDur-50;
+        delay += 0;
 
         //toolbar
-        mToolbar.setVisibility(View.VISIBLE);
-        mToolbar.setTranslationY(mToolbar.getHeight()/3);
-        mToolbar.setAlpha(0);
         mToolbar.animate()
                 .setStartDelay(delay)
-                .setDuration(100)
-                .setInterpolator(new DecelerateInterpolator())
+                .setDuration(300)
                 .translationY(0)
                 .alpha(1)
                 .start();
 
-        //delay += 50;
+        delay += 0;
 
         //dayPager
-        mDayPager.setVisibility(View.VISIBLE);
-        mDayPager.setTranslationX(-100);
-        mDayPager.setAlpha(0);
         mDayPager.animate()
                 .setStartDelay(delay)
-                .setDuration(250)
-                .setInterpolator(new DecelerateInterpolator())
+                .setDuration(300)
                 .translationX(0)
                 .alpha(1)
                 .start();
 
-        delay += 150;
+        delay += 200;
 
         //dateContainer
-        mDateContainer.setVisibility(View.VISIBLE);
         ty = -50;
-        mDateContainer.setTranslationY(mDateContainer.getTranslationY() + ty);
-        mDateContainer.setAlpha(0);
         mDateContainer.animate()
                 .setStartDelay(delay)
-                .setDuration(200)
-                .setInterpolator(new DecelerateInterpolator())
+                .setDuration(250)
                 .translationYBy(-ty)
                 .alpha(1)
                 .start();
 
-        delay += 50;
+        delay += 100;
 
         //indicator
-        mDayIndicator.setVisibility(View.VISIBLE);
         ty = -50;
-        mDayIndicator.setTranslationY(mDayIndicator.getTranslationY() + ty);
-        mDayIndicator.setAlpha(0);
         mDayIndicator.animate()
                 .setStartDelay(delay)
                 .setDuration(200)
-                .setInterpolator(new DecelerateInterpolator())
                 .translationYBy(-ty)
                 .alpha(1)
                 .start();
@@ -779,19 +795,15 @@ public class MainActivity extends AppCompatActivity {
         delay += 150;
 
         //pager... content
-        mMainPager.setVisibility(View.VISIBLE);
         ty = 50;
-        mMainPager.setTranslationY(mMainPager.getTranslationY() + ty);
-        mMainPager.setAlpha(0);
         mMainPager.animate()
                 .setStartDelay(delay)
-                .setDuration(200)
-                .setInterpolator(new DecelerateInterpolator())
+                .setDuration(250)
                 .alpha(1)
                 .translationYBy(-ty)
                 .start();
 
-        delay += 150;
+        delay += 0;
 
         //fab
         mHandler.postDelayed(() -> {
@@ -1002,7 +1014,6 @@ public class MainActivity extends AppCompatActivity {
     public void onDatabaseLoaded(boolean ioException, boolean otherException) {
         if(!ioException && !otherException) {
             Database.loaded = true;
-            zoom(0, 600, false);
             mLoadingView.animate()
                     .setStartDelay(0)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
@@ -1011,7 +1022,7 @@ public class MainActivity extends AppCompatActivity {
                     .withEndAction(() -> {
                         mLoadingView.setVisibility(View.GONE);
                         mLogoContainer.setVisibility(View.GONE);
-                        enterMainComponents(300);
+                        enterMainComponents(100);
                     })
                     .start();
         } else if(ioException) {
