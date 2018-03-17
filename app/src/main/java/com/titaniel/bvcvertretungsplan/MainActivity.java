@@ -70,8 +70,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout mRealCut;
     private LinearLayout mFakeCut;
     private ImageView mIvBackground;
-    private ImageView mIvLogo, mIvLogoBvCFilled, mIvLogoBvCOutline;
-    private FrameLayout mLogoContainer;
+    private ImageView mIvLogo;
     private View mLoadingView;
     private ImageView mIvErr;
     private LinearLayout mErrLayout;
@@ -135,10 +134,7 @@ public class MainActivity extends AppCompatActivity {
         mFakeCut = findViewById(R.id.fakeCut);
         mIvBackground = findViewById(R.id.background);
         mIvLogo = findViewById(R.id.ivLogo);
-        mIvLogoBvCFilled = findViewById(R.id.ivLogoBvCFilled);
-        mLogoContainer = findViewById(R.id.logoContainer);
         mLoadingView = findViewById(R.id.loadingView);
-        mIvLogoBvCOutline = findViewById(R.id.ivLogoBvCOutline);
         mIvErr = findViewById(R.id.ivErr);
         mErrLayout = findViewById(R.id.errorLayout);
         mTvErr = findViewById(R.id.tvErr);
@@ -854,49 +850,48 @@ public class MainActivity extends AppCompatActivity {
         //draw balls
         mHandler.postDelayed(() -> {
             mIvLogo.setVisibility(View.VISIBLE);
-            AnimatedVectorDrawable avd = (AnimatedVectorDrawable) getDrawable(R.drawable.avd_draw_logo);
+            AnimatedVectorDrawable avd = (AnimatedVectorDrawable) getDrawable(R.drawable.avd_four);
             mIvLogo.setImageDrawable(avd);
             avd.start();
         }, delay);
 
-        delay += 1100;
+        delay += 1600;
+//
+//        //fill with bvc
+//        mIvLogoBvCFilled.setVisibility(View.VISIBLE);
+//        mIvLogoBvCFilled.setAlpha(0f);
+//        mIvLogoBvCFilled.animate()
+//                .setStartDelay(delay)
+//                .setInterpolator(new AccelerateDecelerateInterpolator())
+//                .setDuration(700)
+//                .alpha(1)
+//                .withEndAction(() -> {
+//                    long d = 50;
+//                    //switch fill to outline with bvc ... cross fade
+//                    mIvLogoBvCFilled.animate()
+//                            .setStartDelay(d)
+//                            .setInterpolator(new AccelerateDecelerateInterpolator())
+//                            .setDuration(700)
+//                            .alpha(0)
+//                            .start();
+//                    mIvLogoBvCOutline.setVisibility(View.VISIBLE);
+//                    mIvLogoBvCOutline.setAlpha(0f);
+//                    mIvLogoBvCOutline.animate()
+//                            .setStartDelay(d)
+//                            .setInterpolator(new AccelerateDecelerateInterpolator())
+//                            .setDuration(700)
+//                            .alpha(1)
+//                            .start();
+//                })
+//                .start();
+//        delay += 900;
 
-        //fill with bvc
-        mIvLogoBvCFilled.setVisibility(View.VISIBLE);
-        mIvLogoBvCFilled.setAlpha(0f);
-        mIvLogoBvCFilled.animate()
-                .setStartDelay(delay)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .setDuration(700)
-                .alpha(1)
-                .withEndAction(() -> {
-                    long d = 50;
-                    //switch fill to outline with bvc ... cross fade
-                    mIvLogoBvCFilled.animate()
-                            .setStartDelay(d)
-                            .setInterpolator(new AccelerateDecelerateInterpolator())
-                            .setDuration(700)
-                            .alpha(0)
-                            .start();
-                    mIvLogoBvCOutline.setVisibility(View.VISIBLE);
-                    mIvLogoBvCOutline.setAlpha(0f);
-                    mIvLogoBvCOutline.animate()
-                            .setStartDelay(d)
-                            .setInterpolator(new AccelerateDecelerateInterpolator())
-                            .setDuration(700)
-                            .alpha(1)
-                            .start();
-                })
-                .start();
-        delay += 900;
-        //scale out with alpha
-        mLogoContainer.animate()
+        //fade out
+        mIvLogo.animate()
                 .setInterpolator(new AccelerateDecelerateInterpolator())
                 .setStartDelay(delay)
                 .setDuration(700)
                 .alpha(0)
-                .scaleX(1.1f)
-                .scaleY(1.1f)
                 .start();
 
         delay += 1200;
@@ -1021,7 +1016,7 @@ public class MainActivity extends AppCompatActivity {
                     .alpha(0)
                     .withEndAction(() -> {
                         mLoadingView.setVisibility(View.GONE);
-                        mLogoContainer.setVisibility(View.GONE);
+                        mIvLogo.setVisibility(View.GONE);
                         enterMainComponents(100);
                     })
                     .start();
