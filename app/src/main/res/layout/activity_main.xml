@@ -57,8 +57,7 @@
                         android:fontFamily="sans-serif-light"
                         android:text="BvC Vertretungsplan  -  "
                         android:textColor="@color/snow"
-                        android:textSize="20sp"
-                        android:fontFeatureSettings="smtp"/>
+                        android:textSize="20sp"/>
 
                     <TextView
                         android:id="@+id/tvClass"
