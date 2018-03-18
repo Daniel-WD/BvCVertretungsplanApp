@@ -476,9 +476,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateClassText() {
         if(Integer.parseInt(Database.courseDegree) > 10) {
-            mTvClass.setText("  -  " + getString(R.string.temp_class, Database.courseDegree));
+            mTvClass.setText(getString(R.string.temp_class, Database.courseDegree));
         } else {
-            mTvClass.setText("  -  " + getString(R.string.temp_class, Database.courseDegree + "/" + Database.courseNumber));
+            mTvClass.setText(getString(R.string.temp_class, Database.courseDegree + "/" + Database.courseNumber));
         }
     }
 
@@ -493,6 +493,9 @@ public class MainActivity extends AppCompatActivity {
         long moveDur = 300;
 //        float ty = (mHeight - mTriangle.getY());
         float ty = mCoursePickerLayout.getY() - mTriangle.getY() + mTriangle.getHeight()/2;
+
+        //zoom
+        zoom(delay, 300, true);
 
         mRealCut.setVisibility(View.INVISIBLE);
         mFakeCut.setVisibility(View.VISIBLE);
@@ -545,9 +548,6 @@ public class MainActivity extends AppCompatActivity {
                 .start();
 
         delay += 100;
-
-        //zoom
-        zoom(delay, 300, true);
 
         //show picker
         mCoursePickerLayout.setVisibility(View.VISIBLE);
@@ -723,7 +723,8 @@ public class MainActivity extends AppCompatActivity {
             markIndicators();
         }, delay);
 
-        delay += zoom(delay, 400, false) -100;
+        zoom(delay, 500, false);
+        delay += 0;
 
         //moveIn
         long moveInDur = 350;
@@ -845,7 +846,7 @@ public class MainActivity extends AppCompatActivity {
     private void startSplash() {
         long delay = 0;
 
-        delay += zoom(delay, 600, true) - 100;
+        delay += zoom(delay, 600, true) - 200;
 
         //draw balls
         mHandler.postDelayed(() -> {
@@ -855,46 +856,7 @@ public class MainActivity extends AppCompatActivity {
             avd.start();
         }, delay);
 
-        delay += 1600;
-//
-//        //fill with bvc
-//        mIvLogoBvCFilled.setVisibility(View.VISIBLE);
-//        mIvLogoBvCFilled.setAlpha(0f);
-//        mIvLogoBvCFilled.animate()
-//                .setStartDelay(delay)
-//                .setInterpolator(new AccelerateDecelerateInterpolator())
-//                .setDuration(700)
-//                .alpha(1)
-//                .withEndAction(() -> {
-//                    long d = 50;
-//                    //switch fill to outline with bvc ... cross fade
-//                    mIvLogoBvCFilled.animate()
-//                            .setStartDelay(d)
-//                            .setInterpolator(new AccelerateDecelerateInterpolator())
-//                            .setDuration(700)
-//                            .alpha(0)
-//                            .start();
-//                    mIvLogoBvCOutline.setVisibility(View.VISIBLE);
-//                    mIvLogoBvCOutline.setAlpha(0f);
-//                    mIvLogoBvCOutline.animate()
-//                            .setStartDelay(d)
-//                            .setInterpolator(new AccelerateDecelerateInterpolator())
-//                            .setDuration(700)
-//                            .alpha(1)
-//                            .start();
-//                })
-//                .start();
-//        delay += 900;
-
-        //fade out
-        mIvLogo.animate()
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .setStartDelay(delay)
-                .setDuration(700)
-                .alpha(0)
-                .start();
-
-        delay += 1200;
+        delay += 2400;
         startLoading(delay);
 
     }
@@ -904,13 +866,13 @@ public class MainActivity extends AppCompatActivity {
         mLoadingView.setVisibility(View.VISIBLE);
         mLoadingView.setAlpha(0);
         mLoadingView.animate()
-                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .setInterpolator(new FastOutSlowInInterpolator())
                 .setStartDelay(delay)
                 .setDuration(400)
                 .alpha(1)
                 .start();
 
-        delay += 600;
+        delay += 500;
 
         //load data... internet check
         mHandler.postDelayed(() -> {
@@ -1011,7 +973,7 @@ public class MainActivity extends AppCompatActivity {
             Database.loaded = true;
             mLoadingView.animate()
                     .setStartDelay(0)
-                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setInterpolator(new FastOutSlowInInterpolator())
                     .setDuration(400)
                     .alpha(0)
                     .withEndAction(() -> {

@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name">BvC Vertretungsplan</string>
+    <string name="app_name">BvC\nVertretungsplan</string>
 
-    <string name="noEntries">Keine Vertretung für dich an diesem Tag… :-(</string>
+    <string name="toolbarText">BvC Vertretungsplan -\ </string>
+
+    <string name="noEntries">Keine Vertretung für dich an diesem Tag</string>
 
     <!-- Template -->
     <string name="temp_hours">%1$d-%2$d</string>
