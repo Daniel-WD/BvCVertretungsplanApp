@@ -15,7 +15,7 @@
         android:shadowColor="@color/snow"
         android:shadowDx="0"
         android:shadowDy="0"
-        android:shadowRadius="4"
+        android:shadowRadius="2"
         android:text="DEFAULT"
         android:textColor="@color/snow"
         android:textSize="38sp"
