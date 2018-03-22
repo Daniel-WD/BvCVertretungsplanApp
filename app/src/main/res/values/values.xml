@@ -2,5 +2,6 @@
 <resources>
     <dimen name="entryBlockSize">88dp</dimen>
 
-    <dimen name="dateMarginTop">22dp</dimen>
+    <dimen name="dateMarginTop">14dp</dimen>
+    <dimen name="indicatorMarginTop">8dp</dimen>
 </resources>

@@ -11,7 +11,7 @@ import com.titaniel.bvcvertretungsplan.R;
 
 public class DateShower {
 
-    private TextView mTvPrim, mTvSec;
+    public TextView mTvPrim, mTvSec;
 
     private float mTransY = 0;
 

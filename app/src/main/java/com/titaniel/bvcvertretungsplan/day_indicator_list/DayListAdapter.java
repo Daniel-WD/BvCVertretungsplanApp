@@ -2,12 +2,14 @@ package com.titaniel.bvcvertretungsplan.day_indicator_list;
 
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnticipateInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -71,10 +73,10 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
 
     public class DayHolder extends RecyclerView.ViewHolder {
 
-        private static final float MAX_SCALE = 1.5f;
+        private static final float MAX_SCALE = 1.2f;
         private static final float MIN_ALPHA = 0.7f;
 
-        ImageView ivDot;
+        ImageView ivDot, ivCircle;
         View itemView;
         public TextView text;
 
@@ -96,6 +98,8 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
 
             text = itemView.findViewById(R.id.shortDay);
             ivDot = itemView.findViewById(R.id.dot);
+            ivCircle = itemView.findViewById(R.id.ivCircle);
+
             ivDot.setVisibility(View.INVISIBLE);
         }
 
@@ -108,13 +112,20 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
                     .alpha(1)
                     .start();
             ivDot.animate()
-                    .setInterpolator(new OvershootInterpolator())
-                    .setDuration(300)
+                    .setInterpolator(new OvershootInterpolator(8))
+                    .setDuration(350)
                     .translationY(-10)
                     .alpha(1)
                     .start();
 
-            return 300;
+            ivCircle.setAlpha(0f);
+            ivCircle.animate()
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setDuration(150)
+                    .alpha(1)
+                    .start();
+
+            return 350;
         }
 
         long deselect() {
@@ -126,13 +137,20 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
                     .alpha(MIN_ALPHA)
                     .start();
             ivDot.animate()
-                    .setInterpolator(new AnticipateInterpolator())
-                    .setDuration(300)
+                    .setInterpolator(new AnticipateInterpolator(8))
+                    .setDuration(350)
                     .translationY(0)
                     .alpha(MIN_ALPHA)
                     .start();
 
-            return 300;
+            ivCircle.setAlpha(1f);
+            ivCircle.animate()
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .setDuration(150)
+                    .alpha(0)
+                    .start();
+
+            return 350;
         }
     }
 }

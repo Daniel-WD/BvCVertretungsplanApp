@@ -45,7 +45,7 @@ public class DayManager {
         };
 
         int dayOrderIndex = 0;
-        LocalDate localDate = LocalDate.now();//oisdföoadhjgfalkvjaonfoiv n jf pojfpv if wvof ö
+        LocalDate localDate = LocalDate.now().minusWeeks(3);//todo oisdföoadhjgfalkvjaonfoiv n jf pojfpv if wvof ö
         for(int i = 0; i < 7; i++) {
             switch(localDate.getDayOfWeek()) {
                 case DateTimeConstants.SATURDAY:

@@ -38,10 +38,11 @@ import com.titaniel.bvcvertretungsplan.day_indicator_list.DayListAdapter;
 import com.titaniel.bvcvertretungsplan.day_pager.DayPagerAdapter;
 import com.titaniel.bvcvertretungsplan.day_pager.DayPagerTransformer;
 import com.titaniel.bvcvertretungsplan.main_pager.MainPagerAdapter;
-import com.wang.avi.AVLoadingIndicatorView;
+import com.titaniel.bvcvertretungsplan.my_viewpager.MyViewPager;
 
 import java.util.Random;
 
+import jp.wasabeef.blurry.Blurry;
 import me.everything.android.ui.overscroll.OverScrollDecoratorHelper;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int ERR_OTHER_EXCEPTION = 2;
 
     private RecyclerView mDayIndicator;
-    private ViewPager mDayPager;
+    private MyViewPager mDayPager;
     private Toolbar mToolbar;
     private FloatingActionButton mFab;
     private ImageView mTriangle;
@@ -64,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
     private ConstraintLayout mHeaderContainer;
     private AppBarLayout mAppBarLayout;
     private View mHeaderExtra;
-    private View mHeaderConsumer;
     private TextView mTvClass;
     private FrameLayout mListBackground;
     private LinearLayout mRealCut;
@@ -79,9 +79,9 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout mCoursePickerLayout;
     private RecyclerView mCourseDegreeList, mCourseNumberList;
     private TextView mTvCourseDegree, mTvCourseNumber;
-    private View mGlobalConsumer;
-    private ViewPager mMainPager;
-    private View mPagerConsumer;
+    private MyViewPager mMainPager;
+
+    private View mCurrentDayPagerView, mCurrentMainPagerView;
 
     private DateShower mDateShower;
 
@@ -127,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         mAppBarLayout = findViewById(R.id.appbarlayout);
         mHeaderContainer = findViewById(R.id.headerContainer);
         mHeaderExtra = findViewById(R.id.extra);
-        mHeaderConsumer = findViewById(R.id.headerClickConsumer);
         mTvClass = findViewById(R.id.tvClass);
         mListBackground = findViewById(R.id.listBackground);
         mRealCut = findViewById(R.id.realCut);
@@ -145,14 +144,18 @@ public class MainActivity extends AppCompatActivity {
         mCourseNumberList = findViewById(R.id.courseNumberList);
         mTvCourseDegree = findViewById(R.id.tvCourseDegree);
         mTvCourseNumber = findViewById(R.id.tvCourseNumber);
-        mGlobalConsumer = findViewById(R.id.globalConsumer);
         mMainPager = findViewById(R.id.mainPager);
-        mPagerConsumer = findViewById(R.id.pagerConsumer);
 
+        //background blurr
+        /*mGlobalConsumer.postDelayed(() -> {
+            Blurry.with(MainActivity.this).radius(20).sampling(4).capture(mIvBackground).into(mIvBackground);
+        }, 10000);
+*/
         //mainPager
         OverScrollDecoratorHelper.setUpOverScroll(mMainPager);
         mMainPager.setAdapter(new MainPagerAdapter(getSupportFragmentManager()));
         mMainPager.setOffscreenPageLimit(5);
+        mMainPager.post(this::updateCurrentMainpagerView);
         mMainPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             int oldPos = 0;
 
@@ -186,10 +189,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-
             @Override
             public void onPageSelected(int position) {
-
                 mCollapsingEnabled = true;
 //                ValueAnimator anim = ValueAnimator.ofInt(mAppBarBehavior.getTopAndBottomOffset(), 0);
 //                anim.addUpdateListener(animation -> {
@@ -206,21 +207,28 @@ public class MainActivity extends AppCompatActivity {
                         || mAppBarLayout.getTop() >= -0.1*mAppBarLayout.getHeight()) {
                     mAppBarLayout.setExpanded(true, true);
                 }
+
+                updateCurrentMainpagerView();
             }
         });
 
-        //days pager
+        //daypager
         mDayPager.setAdapter(new DayPagerAdapter(getSupportFragmentManager()));
+        mDayPager.setOffscreenPageLimit(5);
         mDayPager.post(() -> {
+            //dateShower
+            mDateShower = new DateShower(mDateContainer);
+
             DayPagerTransformer transformer = new DayPagerTransformer();
-//            transformer.setRatio(mTriRatio);
             mDayPager.setPageTransformer(false, transformer);
 
             //adjust date container position
-            View v = mDayPager.getChildAt(0).findViewById(R.id.dayText);
+            updateCurrentDayPagerView();
             float topMargin = getResources().getDimensionPixelSize(R.dimen.dateMarginTop);
-            mDateContainer.setY(v.getY() + v.getHeight() + mDayPager.getY() - mDateContainer.getHeight()/2 + topMargin);
+            mDateContainer.setY(mCurrentDayPagerView.getY() + mCurrentDayPagerView.getHeight() + mDayPager.getY() - mDateContainer.getHeight()/2 + topMargin);
 
+            float secTopMargin = getResources().getDimensionPixelSize(R.dimen.indicatorMarginTop);
+            mDayIndicator.setY(mDateContainer.getY() + mDateShower.mTvPrim.getBottom() + secTopMargin);
         });
         mDayPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -236,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
                 mMainPager.setCurrentItem(position, true);
                 ((DayListAdapter) mDayIndicator.getAdapter()).changeSelected(position);
                 mDateShower.show(position);
+                updateCurrentDayPagerView();
             }
         });
 
@@ -328,18 +337,26 @@ public class MainActivity extends AppCompatActivity {
 
         //fab
         mFab.setOnClickListener(v -> {
-            if(!mFabEnabled) return;
+            if(!mFabEnabled || mAppBarBehavior.getTopAndBottomOffset() != 0) return;
             mFabEnabled = false;
             if(mCoursePickerLayout.getVisibility() == View.INVISIBLE) {
                 showCoursePicker();
-                mFab.setImageResource(R.drawable.ic_close);
+
+                //avd
+                AnimatedVectorDrawable sortToCross = (AnimatedVectorDrawable) getResources().getDrawable(R.drawable.avd_sort_to_cross, getTheme());
+                mFab.setImageDrawable(sortToCross);
+                sortToCross.start();
             } else {
                 refreshMainPager();
                 mHandler.postDelayed(() -> {
                     markIndicators();
                     hideCoursePicker();
                     updateScrollEnabledForPos(mMainPager.getCurrentItem());
-                    mFab.setImageResource(R.drawable.ic_sort_variant);
+
+                    //avd
+                    AnimatedVectorDrawable crossToSort = (AnimatedVectorDrawable) getResources().getDrawable(R.drawable.avd_cross_to_sort, getTheme());
+                    mFab.setImageDrawable(crossToSort);
+                    crossToSort.start();
                 }, 100);
             }
         });
@@ -399,11 +416,11 @@ public class MainActivity extends AppCompatActivity {
                             }
                             mFab.setTranslationY(fabTY + verticalOffset);
                             if(verticalOffset < 0) {
-                                mHeaderConsumer.setVisibility(View.VISIBLE);
                                 mFab.hide();
+                                mDayPager.setEnabled(false);
                             } else {
-                                mHeaderConsumer.setVisibility(View.INVISIBLE);
                                 mFab.show();
+                                mDayPager.setEnabled(true);
                             }
                             mHeaderContainer.setAlpha(1 - ((float) Math.abs(verticalOffset)*HEADER_FADE_SPEED)/(float) appBarLayout.getHeight());
                         }
@@ -418,20 +435,18 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-                if(flag) {
+                return false;
+                /*if(flag) {
                     y = mAppBarLayout.getBottom();
                     flag = false;
                 }
 
                 RecyclerView list = ((MainPagerAdapter)
                         mMainPager.getAdapter()).getEntryList(mMainPager.getCurrentItem());
-                return list.getChildCount() != 0 && mCollapsingEnabled && mHeight - y < list.getHeight();
+                return list.getChildCount() != 0 && mCollapsingEnabled && mHeight - y < list.getHeight();*/
             }
         });
         params.setBehavior(mAppBarBehavior);
-
-        //dateShower
-        mDateContainer.post(() -> mDateShower = new DateShower(mDateContainer));
 
         //days indicator
         LinearLayoutManager managerDays =
@@ -446,10 +461,11 @@ public class MainActivity extends AppCompatActivity {
             mTriDegrees = (float) Math.toDegrees(Math.atan(mTriRatio));
             mTriHypot = (float) Math.hypot((double) mTriangle.getHeight(), (double) mTriangle.getWidth());
 
-            adjustViewHeightToTriangle(mFab, mDayIndicator);
+            adjustViewHeightToTriangle(mFab);// TODO: 18.03.2018 change
+            //adjustViewHeightToTriangle(mFab, mDayIndicator);
 
-            mDayIndicator.setTranslationY(mDayIndicator.getTranslationY() - mDayIndicator.getHeight()/4);
-            mDayIndicator.setRotation(mTriDegrees);
+            //mDayIndicator.setTranslationY(mDayIndicator.getTranslationY() - mDayIndicator.getHeight()/4);
+            //mDayIndicator.setRotation(mTriDegrees);
         });
 
         //adjust cut over list background
@@ -462,6 +478,14 @@ public class MainActivity extends AppCompatActivity {
         mHandler.postDelayed(() -> {
             startSplash();
         }, 400);
+    }
+
+    private void updateCurrentDayPagerView() {
+        mCurrentDayPagerView = mDayPager.getChildAt(mDayPager.getCurrentItem()).findViewById(R.id.dayText);
+    }
+
+    private void updateCurrentMainpagerView() {
+        mCurrentMainPagerView = mMainPager.getChildAt(mMainPager.getCurrentItem());
     }
 
     private void updateScrollEnabledForPos(int pos) {
@@ -483,8 +507,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showCoursePicker() {
-        mGlobalConsumer.setVisibility(View.VISIBLE); //only 300 ms
-        mHandler.postDelayed(() -> mGlobalConsumer.setVisibility(View.INVISIBLE), 300/*zoomtime*/);
+        mMainPager.setEnabled(false);
+        mDayPager.setEnabled(false);
+        mFabEnabled = false;
+        mHandler.postDelayed(() -> mFabEnabled = true, 350/*zoomtime*/);
         mCollapsingEnabled = false;
 
         ((MainPagerAdapter) mMainPager.getAdapter()).setScrollEnabled(false);
@@ -513,7 +539,7 @@ public class MainActivity extends AppCompatActivity {
                 .translationYBy(ty)
                 .start();
 
-        mMainPager.animate()
+        mCurrentMainPagerView.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new FastOutSlowInInterpolator())
                 .setDuration(moveDur)
@@ -521,16 +547,7 @@ public class MainActivity extends AppCompatActivity {
                 .alpha(0f)
                 .start();
 
-        mHeaderConsumer.setVisibility(View.VISIBLE);
-        mPagerConsumer.setVisibility(View.VISIBLE);
-        mPagerConsumer.animate()
-                .setStartDelay(delay)
-                .setInterpolator(new FastOutSlowInInterpolator())
-                .setDuration(moveDur)
-                .translationYBy(ty)
-                .alpha(0f)
-                .start();
-
+        //fab
         mFab.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new FastOutSlowInInterpolator())
@@ -539,11 +556,33 @@ public class MainActivity extends AppCompatActivity {
                 .start();
 
         //header out
-        mAppBarLayout.animate()
+        ty = ty/2;
+        mToolbar.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new FastOutSlowInInterpolator())
-                .setDuration(150)
-                .translationYBy(-50)
+                .setDuration(moveDur)
+                .translationYBy(ty)
+                .alpha(0)
+                .start();
+        mCurrentDayPagerView.animate()
+                .setStartDelay(delay)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .setDuration(moveDur)
+                .translationYBy(ty)
+                .alpha(0)
+                .start();
+        mDateContainer.animate()
+                .setStartDelay(delay)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .setDuration(moveDur)
+                .translationYBy(ty)
+                .alpha(0)
+                .start();
+        mDayIndicator.animate()
+                .setStartDelay(delay)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .setDuration(moveDur)
+                .translationYBy(ty)
                 .alpha(0)
                 .start();
 
@@ -556,7 +595,7 @@ public class MainActivity extends AppCompatActivity {
         mCoursePickerLayout.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new FastOutSlowInInterpolator())
-                .setDuration(moveDur)
+                .setDuration(250)
                 .alpha(1)
                 .translationY(0)
                 .withEndAction(() -> mFabEnabled = true)
@@ -565,8 +604,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void hideCoursePicker() {
-        mGlobalConsumer.setVisibility(View.VISIBLE);
-        mHandler.postDelayed(() -> mGlobalConsumer.setVisibility(View.INVISIBLE), 300/*zoomtime*/);
+        mFabEnabled = false;
+        mHandler.postDelayed(() -> mFabEnabled = true, 300/*zoomtime*/);
         ((MainPagerAdapter) mMainPager.getAdapter()).setScrollEnabled(true);
 
         updateClassText();
@@ -578,7 +617,7 @@ public class MainActivity extends AppCompatActivity {
         //zoom
         zoom(delay, 300, false);
 
-        //show picker
+        //hide picker
         mCoursePickerLayout.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new FastOutSlowInInterpolator())
@@ -612,24 +651,12 @@ public class MainActivity extends AppCompatActivity {
                 .translationYBy(-ty)
                 .start();
 
-        mMainPager.animate()
+        mCurrentMainPagerView.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new FastOutSlowInInterpolator())
                 .setDuration(moveDur)
                 .translationYBy(-ty)
                 .alpha(1f)
-                .start();
-
-        mPagerConsumer.animate()
-                .setStartDelay(delay)
-                .setInterpolator(new FastOutSlowInInterpolator())
-                .setDuration(moveDur)
-                .translationYBy(-ty)
-                .alpha(1f)
-                .withEndAction(() -> {
-                    mPagerConsumer.setVisibility(View.INVISIBLE);
-                    mHeaderConsumer.setVisibility(View.INVISIBLE);
-                })
                 .start();
 
         mFab.animate()
@@ -639,18 +666,42 @@ public class MainActivity extends AppCompatActivity {
                 .withEndAction(() -> {
                     mCollapsingEnabled = true;
                     mFabEnabled = true;
+                    mMainPager.setEnabled(true);
+                    mDayPager.setEnabled(true);
                 })
                 .translationYBy(-ty)
                 .start();
 
         delay += 100;
 
-        //header out
-        mAppBarLayout.animate()
+        //header in
+        ty = -ty/2;
+        mToolbar.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new FastOutSlowInInterpolator())
-                .setDuration(150)
-                .translationYBy(50)
+                .setDuration(200)
+                .translationYBy(ty)
+                .alpha(1)
+                .start();
+        mCurrentDayPagerView.animate()
+                .setStartDelay(delay)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .setDuration(200)
+                .translationYBy(ty)
+                .alpha(1)
+                .start();
+        mDateContainer.animate()
+                .setStartDelay(delay)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .setDuration(200)
+                .translationYBy(ty)
+                .alpha(1)
+                .start();
+        mDayIndicator.animate()
+                .setStartDelay(delay)
+                .setInterpolator(new FastOutSlowInInterpolator())
+                .setDuration(200)
+                .translationYBy(ty)
                 .alpha(1)
                 .start();
 
@@ -679,12 +730,15 @@ public class MainActivity extends AppCompatActivity {
         mListBackground.setVisibility(View.VISIBLE);
         mListBackground.setAlpha(0);
 
+        ty = -50;
         mToolbar.setVisibility(View.VISIBLE);
+        mToolbar.setTranslationY(ty);
         mToolbar.setAlpha(0);
 
+        ty = -50;
         mDayPager.setVisibility(View.VISIBLE);
-        mDayPager.setTranslationX(120);
-        mDayPager.setAlpha(0);
+        mCurrentDayPagerView.setTranslationY(ty);
+        mCurrentDayPagerView.setAlpha(0);
 
         ty = -50;
         mDateContainer.setVisibility(View.VISIBLE);
@@ -697,8 +751,8 @@ public class MainActivity extends AppCompatActivity {
 
         ty = 50;
         mMainPager.setVisibility(View.VISIBLE);
-        mMainPager.setTranslationY(mMainPager.getTranslationY() + ty);
-        mMainPager.setAlpha(0);
+        mCurrentMainPagerView.setTranslationY(mMainPager.getTranslationY() + ty);
+        mCurrentMainPagerView.setAlpha(0);
 
         mFakeCut.animate().setInterpolator(new DecelerateInterpolator());
         mListBackground.animate().setInterpolator(new DecelerateInterpolator());
@@ -723,8 +777,8 @@ public class MainActivity extends AppCompatActivity {
             markIndicators();
         }, delay);
 
-        zoom(delay, 500, false);
-        delay += 0;
+        zoom(delay, 1000, false);
+        delay += 100;
 
         //moveIn
         long moveInDur = 350;
@@ -747,7 +801,7 @@ public class MainActivity extends AppCompatActivity {
                 .alpha(1)
                 .start();
 
-        delay += 0;
+        delay += 100;
 
         //toolbar
         mToolbar.animate()
@@ -757,13 +811,13 @@ public class MainActivity extends AppCompatActivity {
                 .alpha(1)
                 .start();
 
-        delay += 0;
+        delay += 50;
 
-        //dayPager
-        mDayPager.animate()
+        //dayPager... or a view inside the viewpager, because of performance
+        mCurrentDayPagerView.animate()
                 .setStartDelay(delay)
                 .setDuration(300)
-                .translationX(0)
+                .translationY(0)
                 .alpha(1)
                 .start();
 
@@ -793,7 +847,7 @@ public class MainActivity extends AppCompatActivity {
 
         //pager... content
         ty = 50;
-        mMainPager.animate()
+        mCurrentMainPagerView.animate()
                 .setStartDelay(delay)
                 .setDuration(250)
                 .alpha(1)
@@ -846,12 +900,14 @@ public class MainActivity extends AppCompatActivity {
     private void startSplash() {
         long delay = 0;
 
-        delay += zoom(delay, 600, true) - 200;
+        zoom(delay, 1300, true);
+
+        delay += 150;
 
         //draw balls
         mHandler.postDelayed(() -> {
             mIvLogo.setVisibility(View.VISIBLE);
-            AnimatedVectorDrawable avd = (AnimatedVectorDrawable) getDrawable(R.drawable.avd_four);
+            AnimatedVectorDrawable avd = (AnimatedVectorDrawable) getDrawable(R.drawable.avd_logo);
             mIvLogo.setImageDrawable(avd);
             avd.start();
         }, delay);
