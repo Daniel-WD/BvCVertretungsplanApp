@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
         //background blurr
         mIvBackground.postDelayed(() -> {
-            Blurry.with(MainActivity.this).radius(25).sampling(2).color(ColorUtils.setAlphaComponent(Color.BLACK, 10)).animate().onto(mBgContainer);
+            Blurry.with(MainActivity.this).radius(10).sampling(2).animate().onto(mBgContainer);
         }, 8000);
 
         //mainPager
