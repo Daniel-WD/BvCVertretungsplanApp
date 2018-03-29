@@ -1,14 +1,19 @@
 <resources>
-    <string name="app_name">BvC\nVertretungsplan</string>
+    <string name="app_name">Cotta Inside</string>
 
-    <string name="toolbarText">BvC Vertretungsplan -\ </string>
+    <string name="title">Cotta Inside</string>
 
     <string name="noEntries">Keine Vertretung für dich an diesem Tag</string>
+
+    <string name="breakOut">Ausfall</string>
+    <string name="lessonChange">Fachänderung</string>
+    <string name="roomChange">Raumänderung</string>
+    <string name="teacherChange">Lehreränderung</string>
 
     <!-- Template -->
     <string name="temp_hours">%1$d-%2$d</string>
     <string name="temp_date">%1$d. %2$s</string>
-    <string name="temp_class">Klasse %1$s</string>
+    <string name="temp_class">%1$s</string>
 
     <string name="err_no_internet">Es konnte keine Verbindung mit dem Internet hergestellt werden</string>
     <string name="err_io_exception">Es konnte keine Verbindung zum Server hergestellt werden</string>

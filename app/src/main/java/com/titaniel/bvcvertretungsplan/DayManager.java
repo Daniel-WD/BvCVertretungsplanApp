@@ -1,7 +1,6 @@
 package com.titaniel.bvcvertretungsplan;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
@@ -11,7 +10,7 @@ public class DayManager {
     public static String[] capsDayList = new String[5];
     public static String[] shortDayList = new String[5];
 
-    public static String[] dateList = new String[5];
+    public static String[] monthList = new String[5];
     public static LocalDate[] dates = new LocalDate[5];
 
     public static void init(Context context) {
@@ -45,7 +44,7 @@ public class DayManager {
         };
 
         int dayOrderIndex = 0;
-        LocalDate localDate = LocalDate.now().minusWeeks(3);//todo oisdföoadhjgfalkvjaonfoiv n jf pojfpv if wvof ö
+        LocalDate localDate = LocalDate.now().minusWeeks(4);//todo oisdföoadhjgfalkvjaonfoiv n jf pojfpv if wvof ö
         for(int i = 0; i < 7; i++) {
             switch(localDate.getDayOfWeek()) {
                 case DateTimeConstants.SATURDAY:
@@ -61,8 +60,7 @@ public class DayManager {
         fillWeekDays(dates, srcShortDays, shortDayList);
 
         for(int i = 0; i < dates.length; i++) {
-            dateList[i] = context.getString(R.string.temp_date,
-                    dates[i].getDayOfMonth(), srcMonths[dates[i].getMonthOfYear()-1]);
+            monthList[i] = srcMonths[dates[i].getMonthOfYear()-1];
         }
 
     }

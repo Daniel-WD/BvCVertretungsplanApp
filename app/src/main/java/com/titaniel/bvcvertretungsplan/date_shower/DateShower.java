@@ -2,12 +2,9 @@ package com.titaniel.bvcvertretungsplan.date_shower;
 
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import com.titaniel.bvcvertretungsplan.DayManager;
-import com.titaniel.bvcvertretungsplan.R;
 
 public class DateShower {
 
@@ -18,8 +15,8 @@ public class DateShower {
     private int mLastIndex = -1;
 
     public DateShower(View container) {
-        mTvPrim = container.findViewById(R.id.tvDatePrim);
-        mTvSec = container.findViewById(R.id.tvDateSec);
+        //mTvPrim = container.findViewById(R.id.tvDatePrim);
+        //mTvSec = container.findViewById(R.id.tvDateSec);
 
         mTransY = 0.5f*mTvPrim.getHeight();
         show(0);
@@ -27,7 +24,7 @@ public class DateShower {
 
     public void show(int index) {
         if(index == mLastIndex) return;
-        String date = DayManager.dateList[index];
+        String date = DayManager.monthList[index];
         if(index < mLastIndex) {
             move(date, -mTransY); //down
         } else {

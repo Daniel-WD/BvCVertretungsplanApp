@@ -1,7 +1,6 @@
 package com.titaniel.bvcvertretungsplan.main_pager.entry_list;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,10 +12,8 @@ import android.widget.TextView;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.EntryHolder> {
 
@@ -45,11 +42,16 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
     @Override
     public void onBindViewHolder(EntryHolder holder, int position) {
         Database.Entry entry = mEntries.get(position);
-
-        holder.dotLesson.setVisibility(entry.lessonDotVisible);
-        holder.dotTeacher.setVisibility(entry.teacherDotVisible);
-        holder.dotRoom.setVisibility(entry.roomDotVisible);
-        holder.tvSpec.setVisibility(entry.specVisible);
+//
+        holder.dotLesson.setVisibility(entry.lessonChangeVisible);
+        holder.dotTeacher.setVisibility(entry.teacherChangeVisible);
+        holder.dotRoom.setVisibility(entry.roomChangeVisible);
+//
+//        holder.tvSpec.setVisibility(entry.specVisible);
+//        holder.tvTeacherChange.setVisibility(entry.teacherChangeVisible);
+//        holder.tvRoomChange.setVisibility(entry.roomChangeVisible);
+//        holder.tvLessonChange.setVisibility(entry.lessonChangeVisible);
+        holder.tvBreakOut.setVisibility(entry.breakOutVisible);
 
 //        holder.tvHours.setText(String.valueOf(position));
 //        holder.tvSpec.setText(String.valueOf(position));
@@ -74,7 +76,7 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
 
     class EntryHolder extends RecyclerView.ViewHolder {
 
-        TextView tvRoom, tvSpec, tvHours, tvLesson, tvTeacher, tvInfo;
+        TextView tvRoom, tvSpec, tvHours, tvLesson, tvTeacher, tvInfo, tvBreakOut, tvTeacherChange, tvLessonChange, tvRoomChange;
         ImageView dotLesson, dotTeacher, dotRoom;
 
         EntryHolder(View itemView) {
@@ -86,6 +88,11 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
             tvLesson = itemView.findViewById(R.id.tvLesson);
             tvTeacher = itemView.findViewById(R.id.tvTeacher);
             tvInfo = itemView.findViewById(R.id.tvInfo);
+
+            tvBreakOut = itemView.findViewById(R.id.tvBreakOut);
+            tvTeacherChange = itemView.findViewById(R.id.tvTeacherChange);
+            tvLessonChange = itemView.findViewById(R.id.tvLessonChange);
+            tvRoomChange = itemView.findViewById(R.id.tvRoomChange);
 
             dotLesson = itemView.findViewById(R.id.dotLesson);
             dotTeacher = itemView.findViewById(R.id.dotTeacher);

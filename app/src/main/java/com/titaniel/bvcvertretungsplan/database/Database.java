@@ -48,10 +48,11 @@ public class Database {
         public String courseString, hoursString, lesson, teacher, room, info;
         public String hoursText;
         public boolean lessonChange = false, teacherChange = false, roomChange = false;
-        public int lessonDotVisible = View.VISIBLE;
-        public int teacherDotVisible = View.VISIBLE;
-        public int roomDotVisible = View.VISIBLE;
+        public int lessonChangeVisible = View.VISIBLE;
+        public int teacherChangeVisible = View.VISIBLE;
+        public int roomChangeVisible = View.VISIBLE;
         public int specVisible = View.VISIBLE;
+        public int breakOutVisible = View.VISIBLE;
 
         @Override
         public int compareTo(@NonNull Entry o) {
@@ -71,11 +72,12 @@ public class Database {
             entry.lessonChange = lessonChange;
             entry.teacherChange = teacherChange;
             entry.roomChange = roomChange;
-            entry.teacherDotVisible = teacherDotVisible;
-            entry.roomDotVisible = roomDotVisible;
-            entry.lessonDotVisible = lessonDotVisible;
+            entry.teacherChangeVisible = teacherChangeVisible;
+            entry.roomChangeVisible = roomChangeVisible;
+            entry.lessonChangeVisible = lessonChangeVisible;
             entry.specVisible = specVisible;
             entry.hoursText = hoursText;
+            entry.breakOutVisible = breakOutVisible;
             return entry;
         }
 

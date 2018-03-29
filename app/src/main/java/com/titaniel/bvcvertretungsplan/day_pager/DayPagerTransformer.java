@@ -3,6 +3,8 @@ package com.titaniel.bvcvertretungsplan.day_pager;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
+import com.titaniel.bvcvertretungsplan.R;
+
 public class DayPagerTransformer implements ViewPager.PageTransformer {
 
     private static final float FADE_SPEED = 3;
@@ -24,7 +26,7 @@ public class DayPagerTransformer implements ViewPager.PageTransformer {
 
             view.setRotation((float)Math.toDegrees(Math.atan(mRatio)));
 
-            view.setTranslationX(-pageWidth*position *BLOCK_VALUE);
+            view.setTranslationX(-pageWidth*position/* *BLOCK_VALUE*/);
 
             float xDist = position * pageWidth;
 

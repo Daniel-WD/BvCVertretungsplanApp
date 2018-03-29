@@ -5,9 +5,17 @@
 
     <color name="messageBg">#64000000</color>
 
-    <color name="mainBackground">#9f000000</color>
+    <color name="mainBackground">#aa000000</color>
+
+    <color name="backgroundTint">#59000000</color>
 
     <color name="backgroundZoomTint">#5a000000</color>
+
+    <color name="border_break_out">#10CED9</color>
+    <color name="border_course">#18C29C</color>
+    <color name="border_lesson_change">#178cc2</color>
+    <color name="border_room_change">#17c26d</color>
+    <color name="border_teacher_change">#17c23c</color>
 
     <color name="one">#031727</color>
     <color name="two">#126872</color>

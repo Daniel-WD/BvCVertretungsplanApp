@@ -59,7 +59,7 @@ public class EntryListFragment extends Fragment {
                 };
         managerEntries.setItemPrefetchEnabled(true);
         entryList.setLayoutManager(managerEntries);
-        entryList.addItemDecoration(new EntryItemDecoration(getContext()));
+        //entryList.addItemDecoration(new EntryItemDecoration(getContext()));
 
         adapter = new EntryListAdapter(getContext());
         entryList.setAdapter(adapter);

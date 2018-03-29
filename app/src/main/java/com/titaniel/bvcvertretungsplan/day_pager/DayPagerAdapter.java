@@ -14,7 +14,10 @@ public class DayPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return DayPagerFragment.newInstance(DayManager.capsDayList[position]);
+        String number = String.valueOf(DayManager.dates[position].getDayOfMonth());
+        String month = DayManager.monthList[position] + " " + DayManager.dates[position].getYear();
+        return DayPagerFragment.newInstance(
+                DayManager.capsDayList[position], month, number);
     }
 
     @Override

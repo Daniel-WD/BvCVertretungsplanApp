@@ -9,6 +9,7 @@ import android.view.View;
 import com.titaniel.bvcvertretungsplan.MainActivity;
 import com.titaniel.bvcvertretungsplan.R;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.joda.time.LocalDate;
@@ -16,9 +17,16 @@ import org.joda.time.LocalDateTime;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -72,6 +80,28 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
         try {
             // TODO: 15.02.2018 delete all outdated files
 
+/*            try {
+
+                ReadableByteChannel in= Channels.newChannel(
+                        new URL("ftp://www.cottagym.selfhost.eu/var/www/html/images/cottaintern/vp/k180326.xml").openStream());
+
+
+                    out.transferFrom(in, 0, Long.MAX_VALUE);
+
+                URL url = new URL("http://www.cottagym.selfhost.eu/var/www/htm/images/cottaintern/vp/k180326.xml");
+                FileUtils.copyURLToFile(url, new File(""));
+
+                InetAddress addr;
+                Socket sock = new Socket("www.cottagym.selfhost.eu", 80);
+                addr = sock.getInetAddress();
+                System.out.println("Connected to " + addr);
+                sock.close();
+                System.out.println("Connected to " + addr);
+            } catch (java.io.IOException e) {
+                System.out.println("Can't connect");
+                System.out.println(e);
+            }*/
+
             //read all current existing files
             readData(context, context.fileList());
             if(inputs[0].offline) {
@@ -80,11 +110,11 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
             }
 
             //connect
-            ftpClient.connect("w00a1664.kasserver.com");
+            ftpClient.connect("www.cottagym.selfhost.eu");
 
             //login
-            boolean loggedIn = ftpClient.login("f00c8ff8", "7C3wC69ThhQhGpuB");
-            if(!loggedIn) return null;
+            boolean loggedIn = ftpClient.login("schueler", "vpcotta_18");
+            if(!loggedIn) return new LoadingResult(context, true, false);
 
             //list files
             FTPFile[] allFiles = ftpClient.listFiles();
@@ -308,9 +338,13 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                 entry.room = entry.room == null ? "---" : entry.room;
                 entry.info = entry.info == null ? "keine Info" : entry.info;
 
-                entry.lessonDotVisible = entry.lessonChange && !entry.lesson.equals("---") ? View.VISIBLE : View.GONE;
-                entry.teacherDotVisible = entry.teacherChange && !entry.teacher.equals("---") ? View.VISIBLE : View.GONE;
-                entry.roomDotVisible = entry.roomChange && !entry.room.equals("---") ? View.VISIBLE : View.GONE;
+                entry.lessonChangeVisible = entry.lessonChange && !entry.lesson.equals("---") ? View.VISIBLE : View.GONE;
+                entry.teacherChangeVisible = entry.teacherChange && !entry.teacher.equals("---") ? View.VISIBLE : View.GONE;
+                entry.roomChangeVisible = entry.roomChange && !entry.room.equals("---") ? View.VISIBLE : View.GONE;
+                entry.breakOutVisible =
+                        entry.room.equals("---") &&
+                        entry.lesson.equals("---") &&
+                        entry.teacher.equals("---") ? View.VISIBLE : View.GONE;
 
                 for(int i = 1; i < courses.length; i++) {
                     Database.Entry newEntry = entry.copy();

@@ -11,19 +11,20 @@
         android:layout_height="match_parent">
 
         <ImageView
+            android:tint="@color/backgroundTint"
             android:id="@+id/background"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@drawable/_real" />
+            android:src="@drawable/_test2" />
 
     </FrameLayout>
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbarlayout"
         android:layout_width="match_parent"
-        android:layout_height="340dp"
-        android:background="@android:color/transparent"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -46,154 +47,90 @@
                 android:layout_height="match_parent"
                 android:clipChildren="false"
                 android:clipToPadding="false"
+                android:paddingTop="25dp"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7">
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?android:actionBarSize"
-                    android:layout_marginTop="25dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
-                        android:text="BvC Vertretungsplan  -  "
-                        android:textColor="@color/snow"
-                        android:textSize="20sp"/>
-
-                    <TextView
-                        android:id="@+id/tvClass"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-light"
-                        android:text="@string/temp_class"
-                        android:textColor="@color/snow"
-                        android:textSize="20sp" />
-
-                </android.support.v7.widget.Toolbar>
-
-                <FrameLayout
-                    android:id="@+id/dateContainer"
-                    android:layout_width="250dp"
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clipChildren="false"
-                    android:clipToPadding="false"
-                    android:paddingBottom="28sp"
-                    android:paddingTop="28sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/dayPager"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/title"
+                    android:textColor="@color/snow"
+                    android:textSize="20sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/dayPager"
-                    app:layout_constraintVertical_bias="0.75">
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tvDatePrim"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="sans-serif"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:textColor="@color/snow"
-                        android:textSize="14sp" />
+                <TextView
+                    android:visibility="invisible"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:id="@+id/tvClass"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/temp_class"
+                    android:textColor="@color/snow"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toEndOf="@id/tvTitle"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
-                        android:id="@+id/tvDateSec"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="sans-serif"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:textColor="@color/snow"
-                        android:textSize="14sp" />
-
-                </FrameLayout>
+                <ImageView
+                    android:visibility="invisible"
+                    android:id="@+id/ivChangeCourse"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="0dp"
+                    android:layout_marginTop="6dp"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_sort_variant"
+                    android:tint="@color/snow"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <com.titaniel.bvcvertretungsplan.my_viewpager.MyViewPager
                     android:id="@+id/dayPager"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_marginBottom="70dp"
-                    android:clipToPadding="false"
+                    android:layout_height="90dp"
                     android:clipChildren="false"
+                    android:clipToPadding="false"
                     android:overScrollMode="never"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
                 <android.support.v7.widget.RecyclerView
+                    android:visibility="invisible"
                     android:id="@+id/listDays"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:overScrollMode="never"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/dayPager"
+                    android:layout_marginBottom="16dp"/>
 
             </android.support.constraint.ConstraintLayout>
-
-            <include
-                android:id="@+id/realCut"
-                layout="@layout/layout_cut"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                app:layout_collapseMode="none"
-                app:layout_collapseParallaxMultiplier="0.2" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
-    <include
-        android:id="@+id/fakeCut"
-        layout="@layout/layout_cut"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:elevation="8dp">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_sort_variant"
-            android:tint="@color/snow"
-            app:backgroundTint="@color/four"
-            app:fabSize="normal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.87"
-            app:layout_constraintStart_toStartOf="parent" />
-
-    </android.support.constraint.ConstraintLayout>
-
     <FrameLayout
         android:id="@+id/listBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/mainBackground"
+        android:background="#00000000"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <com.titaniel.bvcvertretungsplan.my_viewpager.MyViewPager
         android:id="@+id/mainPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-70dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
