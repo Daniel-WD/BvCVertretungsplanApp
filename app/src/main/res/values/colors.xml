@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="dayListBgOne">#50000000</color>
+    <color name="dayListBgTwo">#78000000</color>
+
+    <color name="dayBg">#32000000</color>
+    <color name="accent">#00ffff</color>
+
     <color name="splashButtonBg">#64000000</color>
 
-    <color name="messageBg">#64000000</color>
+    <color name="errorBackground">#32000000</color>
 
     <color name="mainBackground">#aa000000</color>
 
-    <color name="backgroundTint">#59000000</color>
+    <color name="defaultBackgroundTint">#6e000000</color>
+    <color name="backgroundZoomTint">#96000000</color>
 
-    <color name="backgroundZoomTint">#5a000000</color>
+
+    <color name="backgroundOverlay">#96000000</color>
+
+    <color name="headerBackground">#64000000</color>
+
+    <!-- Indicator -->
+    <color name="indicatorSelected">#fff</color>
+    <color name="indicatorUnselected">#64ffffff</color>
+
 
     <color name="border_break_out">#10CED9</color>
     <color name="border_course">#18C29C</color>
@@ -20,7 +35,8 @@
     <color name="one">#031727</color>
     <color name="two">#126872</color>
     <color name="three">#0B877D</color>
-    <color name="four">#18C29C</color>
+    <color name="four">#00ffff</color>
+    <color name="_four">#18C29C</color>
     <color name="five">#88F9D4</color>
 
     <color name="four_dark">#1ACFA6</color>

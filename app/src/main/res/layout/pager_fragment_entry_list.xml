@@ -12,16 +12,4 @@
         android:clipToPadding="false"
         android:overScrollMode="never"/>
 
-    <TextView
-        android:layout_marginTop="100dp"
-        android:id="@+id/tvNoEntries"
-        android:alpha="0.6"
-        android:gravity="center"
-        android:textColor="@color/snow"
-        android:textSize="16sp"
-        android:text="@string/noEntries"
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
 </FrameLayout>

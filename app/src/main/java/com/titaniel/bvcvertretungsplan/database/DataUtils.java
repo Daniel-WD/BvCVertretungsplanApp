@@ -2,9 +2,9 @@ package com.titaniel.bvcvertretungsplan.database;
 
 import android.provider.ContactsContract;
 
-import org.apache.commons.net.ftp.FTPFile;
 import org.joda.time.LocalDateTime;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,20 +52,11 @@ public class DataUtils {
                 cal.get(Calendar.SECOND));
     }
 
-    static Database.Day findDay(FTPFile file) {
+    static Database.Day findDay(File file) {
         for(Database.Day day : Database.days) {
             if(day.name.equals(file.getName())) return day;
         }
         return null;
-    }
-
-    static String[] toStringArray(ArrayList<FTPFile> files) {
-        if(files == null) return null;
-        String[] res = new String[files.size()];
-        for(int i = 0; i < files.size(); i++) {
-            res[i] = files.get(i).getName();
-        }
-        return res;
     }
 
     static Database.Course[] findCourses(String courseString) {
@@ -91,20 +82,17 @@ public class DataUtils {
                 }
             }
         } else {
-            if(builder.toString().contains("-")) {
-                blocks.add(builder.substring(0, 9));
-            } else {
-                blocks.add(builder.substring(0, 4));
-            }
+            //index to end or to '/'
+            int dex = builder.indexOf("/");
+            dex = dex == -1 ? builder.length() : dex;
+            blocks.add(builder.substring(0, dex));
+//            if(builder.toString().contains("-")) {
+//                blocks.add(builder.substring(0, 9));
+//            } else {
+//                blocks.add(builder.substring(0, 4));
+//            }
         }
 
-/*        blocks.add(builder.substring(0, 4));
-        builder.replace(0, 4, "");
-
-        while(builder.toString().contains(",")) {
-            blocks.add(builder.substring(1, 5));
-            builder.replace(0, 5, "");
-        }*/
         //specification
         if(courseString.contains("/")) {
             specification = courseString.substring(courseString.indexOf("/")+1).trim();

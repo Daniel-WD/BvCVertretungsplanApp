@@ -28,7 +28,7 @@
     <string name="run">Run as fast as you can and don\'t look back.</string>
     <string name="runn">Lauf so schnell wie möglich und schau nicht zurück.</string>
 
-    <string name="omg">OHH</string>
+    <string name="omg">OH!</string>
 
     <string name="monday_caps">MONTAG</string>
     <string name="tuesday_caps">DIENSTAG</string>
@@ -36,11 +36,11 @@
     <string name="thursday_caps">DONNERSTAG</string>
     <string name="friday_caps">FREITAG</string>
 
-    <string name="monday_short">mo</string>
-    <string name="tuesday_short">di</string>
-    <string name="wednesday_short">mi</string>
-    <string name="thursday_short">do</string>
-    <string name="friday_short">fr</string>
+    <string name="monday_short">MO</string>
+    <string name="tuesday_short">DI</string>
+    <string name="wednesday_short">MI</string>
+    <string name="thursday_short">DO</string>
+    <string name="friday_short">FR</string>
 
     <string name="january">Januar</string>
     <string name="february">Februar</string>

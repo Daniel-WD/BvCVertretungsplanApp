@@ -6,12 +6,11 @@ import android.util.Log;
 import android.util.Xml;
 import android.view.View;
 
-import com.titaniel.bvcvertretungsplan.MainActivity;
+import com.titaniel.bvcvertretungsplan.DateManager;
 import com.titaniel.bvcvertretungsplan.R;
+import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.xmlpull.v1.XmlPullParser;
@@ -21,13 +20,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.Socket;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.nio.channels.Channels;
-import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import static com.titaniel.bvcvertretungsplan.database.Database.KEY_COURSE;
@@ -45,13 +44,26 @@ import static com.titaniel.bvcvertretungsplan.database.Database.KEY_TRUE;
 public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.LoadingResult> {
 
     private static final String TAG = LoadingTask.class.getSimpleName();
+    private static final String BASE_STRING = "http://www.cottagym.selfhost.eu/images/cottaintern/vp/";
+
+    private static final int M_BYTE = 1048576;
+
+    static class UrlHolder {
+        URL url;
+        String name;
+
+        UrlHolder(URL url, String name) {
+            this.url = url;
+            this.name = name;
+        }
+    }
 
     static class LoadingResult {
         Context context;
         boolean ioException;
         boolean otherException;
 
-        public LoadingResult(Context context, boolean ioException, boolean otherException) {
+        LoadingResult(Context context, boolean ioException, boolean otherException) {
             this.context = context;
             this.ioException = ioException;
             this.otherException = otherException;
@@ -76,115 +88,101 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
     @Override
     protected LoadingResult doInBackground(LoadingTask.Input... inputs) {
         Context context = inputs[0].context;
-        FTPClient ftpClient = new FTPClient();
         try {
             // TODO: 15.02.2018 delete all outdated files
 
-/*            try {
-
-                ReadableByteChannel in= Channels.newChannel(
-                        new URL("ftp://www.cottagym.selfhost.eu/var/www/html/images/cottaintern/vp/k180326.xml").openStream());
-
-
-                    out.transferFrom(in, 0, Long.MAX_VALUE);
-
-                URL url = new URL("http://www.cottagym.selfhost.eu/var/www/htm/images/cottaintern/vp/k180326.xml");
-                FileUtils.copyURLToFile(url, new File(""));
-
-                InetAddress addr;
-                Socket sock = new Socket("www.cottagym.selfhost.eu", 80);
-                addr = sock.getInetAddress();
-                System.out.println("Connected to " + addr);
-                sock.close();
-                System.out.println("Connected to " + addr);
-            } catch (java.io.IOException e) {
-                System.out.println("Can't connect");
-                System.out.println(e);
-            }*/
-
-            //read all current existing files
-            readData(context, context.fileList());
+            //offline
+            //we are offline and we only load already downloaded data
             if(inputs[0].offline) {
+                //read all current existing files
+                readData(context, context.fileList());
                 prepareEntries(context);
+
+                //Day Manager
+                DateManager.prepare(context);
+
                 return new LoadingResult(context, false, false);
             }
 
-            //connect
-            ftpClient.connect("www.cottagym.selfhost.eu");
+            //online
 
-            //login
-            boolean loggedIn = ftpClient.login("schueler", "vpcotta_18");
-            if(!loggedIn) return new LoadingResult(context, true, false);
+            Authenticator.setDefault(new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication("schueler", "vpcotta_18".toCharArray());
+                }
+            });
+
+            deleteAllFiles(context);
 
             //list files
-            FTPFile[] allFiles = ftpClient.listFiles();
-
-            //filter new files... checking if file already exist and if it is already up to date
-            ArrayList<FTPFile> newFiles = new ArrayList<>();
-            for(FTPFile file : allFiles) {
-                if(file.getType() != FTPFile.FILE_TYPE || file.getName().charAt(0) != 'k') {
-                    continue;
-                }
-                Database.Day day;
-                if((day = DataUtils.findDay(file)) == null ||
-                        !DataUtils.calendarToLocalDateTime(file.getTimestamp()).isEqual(day.lastUpdate)) {
-                    Database.days.remove(day);
-                    newFiles.add(file);
+            ArrayList<UrlHolder> allUrls = new ArrayList<>();
+            for(String name : DateManager.serverFileList) {
+                try {
+                    URL url = new URL(BASE_STRING + name);
+                    String t = url.getFile();
+                    url.openStream().close();
+                    allUrls.add(new UrlHolder(url, name));
+                } catch (Exception ignored) {
                 }
             }
 
-
-/*            for(FTPFile file : allFiles) {
-                if(file.getType() == FTPFile.FILE_TYPE &&
-                        !Database.savedFiles.contains(file.getName()) &&
-                        file.getName().charAt(0) == 'k') {
-                    newFiles.add(file);
-                }
-            }*/
-
-            //download new files
-            for(FTPFile newFile : newFiles) {
-                downloadFile(context, ftpClient, newFile);
+            //download all files
+            for(UrlHolder newFile : allUrls) {
+                downloadFile(context, newFile);
             }
 
-            //read all updated and new files
-            readData(context, DataUtils.toStringArray(newFiles));
+            //read all files
+            readData(context, context.fileList());
 
             //prepare all entries for classification
             prepareEntries(context);
 
-            for(Database.Day day : Database.days) {
+            //Day Manager
+            DateManager.prepare(context);
+
+            /*for(Database.Day day : Database.days) {
                 Log.d("da", "da");
                 for(Database.Entry entry : day.entries) {
                     Log.d("hallo?", "str::" + entry.courseString + " --- " + entry.course.toString());
                 }
-            }
+            }*/
 
-            //logout
-            ftpClient.logout();
         } catch (IOException e) {
             e.printStackTrace();
             return new LoadingResult(context, true, false);
         } catch (Exception e) {
             e.printStackTrace();
             return new LoadingResult(context, false, true);
-        } finally {
-            try {
-                ftpClient.disconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
         return new LoadingResult(context, false, false);
     }
 
-    private boolean downloadFile(Context context, FTPClient client, FTPFile file) {
-        context.deleteFile(file.getName());
-        try(FileOutputStream fos = context.openFileOutput(file.getName(), Context.MODE_PRIVATE)) {
-            return client.retrieveFile(file.getName(), fos);
+    private void deleteAllFiles(Context context) {
+        for(String name : context.fileList()) {
+            if(name.charAt(0) == 'k') {
+                context.deleteFile(name);
+            }
+        }
+    }
+
+    private void downloadFile(Context context, UrlHolder urlHolder) {
+        //                BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
+//                String line = null;
+//                while((line = br.readLine())!= null){
+//                    System.out.println(line);
+//                }
+//                br.close();
+
+        try/*(InputStream is = urlHolder.url.openStream();
+                FileOutputStream fos = context.openFileOutput(urlHolder.name, Context.MODE_PRIVATE);
+                ReadableByteChannel rbc = Channels.newChannel(urlHolder.url.openStream()))*/ {
+            //fos.getChannel().transferFrom(rbc, 0, 10*M_BYTE);
+
+            File file = new File(context.getFilesDir(), urlHolder.name);
+            FileUtils.copyURLToFile(urlHolder.url, file);
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
@@ -196,7 +194,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
     }
 
     private void readFile(Context context, String _name) throws IOException, XmlPullParserException {
-        if(_name.charAt(0) != 'k') return;
+        if(!Arrays.asList(DateManager.serverFileList).contains(_name)) return;
         Database.Day day = new Database.Day();
         day.name = _name;
         Database.Entry entry = null;
@@ -343,8 +341,8 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                 entry.roomChangeVisible = entry.roomChange && !entry.room.equals("---") ? View.VISIBLE : View.GONE;
                 entry.breakOutVisible =
                         entry.room.equals("---") &&
-                        entry.lesson.equals("---") &&
-                        entry.teacher.equals("---") ? View.VISIBLE : View.GONE;
+                                entry.lesson.equals("---") &&
+                                entry.teacher.equals("---") ? View.VISIBLE : View.GONE;
 
                 for(int i = 1; i < courses.length; i++) {
                     Database.Entry newEntry = entry.copy();

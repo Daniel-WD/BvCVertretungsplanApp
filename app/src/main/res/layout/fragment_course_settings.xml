@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/coursePickerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="48dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:fontFamily="sans-serif-thin"
+        android:text="@string/chooseCurse"
+        android:textColor="@color/snow"
+        android:textSize="20sp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="6dp">
+
+        <TextView
+            android:id="@+id/tvCourseDegree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-thin"
+            android:text="5"
+            android:textColor="@color/four"
+            android:textSize="70sp" />
+
+        <TextView
+            android:id="@+id/tvCourseNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/tvCourseDegree"
+            android:layout_marginBottom="2dp"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@id/tvCourseDegree"
+            android:fontFamily="sans-serif-black"
+            android:text="2"
+            android:textColor="@color/four_dark"
+            android:textSize="30sp" />
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/courseDegreeList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="2dp"
+        android:overScrollMode="never" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/courseNumberList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:overScrollMode="never" />
+
+</LinearLayout>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginEnd="16dp"
+    android:layout_marginStart="16dp"
+    android:background="@drawable/error_background"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
+    android:paddingTop="16dp">
+
+    <ImageView
+        android:id="@+id/ivErr"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:tint="@color/accent" />
+
+    <TextView
+        android:id="@+id/ivTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/nunito_semi_bold"
+        android:includeFontPadding="false"
+        android:text="@string/omg"
+        android:letterSpacing="0.1"
+        android:textAlignment="center"
+        android:textColor="@color/snow"
+        android:textSize="30sp" />
+
+    <TextView
+        android:layout_marginTop="4dp"
+        android:id="@+id/tvErr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:alpha="1"
+        android:fontFamily="@font/nunito_regular"
+        android:includeFontPadding="false"
+        android:text="@string/err_io_exception"
+        android:textAlignment="center"
+        android:textColor="@color/snow"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnErrAgain"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.5"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/nunito_extra_bold"
+            android:includeFontPadding="false"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="@string/res_try_again"
+            android:textColor="@color/snow"
+            android:textSize="13sp" />
+
+        <Button
+            android:id="@+id/btnErrOffline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.5"
+            android:background="@android:color/transparent"
+            android:fontFamily="@font/nunito_extra_bold"
+            android:includeFontPadding="false"
+            android:paddingEnd="16dp"
+            android:paddingStart="16dp"
+            android:text="@string/res_offline"
+            android:textColor="@color/accent"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

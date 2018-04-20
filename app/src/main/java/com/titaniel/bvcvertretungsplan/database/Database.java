@@ -155,9 +155,7 @@ public class Database {
     }
 
     public static void fetchData(Context context, boolean offline) {
-
         new LoadingTask().execute(new LoadingTask.Input(context, offline));
-
     }
 
     public static Entry[] findEntriesByCourseAndDate(LocalDate date, int degree, int number) {
@@ -179,10 +177,13 @@ public class Database {
     public static void load() {
         courseDegree = sPrefs.getString(KEY_COURSE_DEGREE, "5");
         courseNumber = sPrefs.getString(KEY_COURSE_NUMBER , "1");
+
+        courseDegree = "11";// TODO: 06.04.2018 ohh
     }
 
     public static void save() {
-        sPrefs.edit().putString(KEY_COURSE_DEGREE, courseDegree).putString(KEY_COURSE_NUMBER, courseNumber).apply();
+        sPrefs.edit().putString(KEY_COURSE_DEGREE, courseDegree)
+                .putString(KEY_COURSE_NUMBER, courseNumber).apply();
     }
 
 }
