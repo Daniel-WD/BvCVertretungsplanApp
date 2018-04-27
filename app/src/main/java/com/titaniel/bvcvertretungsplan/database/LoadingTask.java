@@ -99,7 +99,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                 prepareEntries(context);
 
                 //Day Manager
-                DateManager.prepare(context);
+                DateManager.prepare();
 
                 return new LoadingResult(context, false, false);
             }
@@ -139,7 +139,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
             prepareEntries(context);
 
             //Day Manager
-            DateManager.prepare(context);
+            DateManager.prepare();
 
             /*for(Database.Day day : Database.days) {
                 Log.d("da", "da");
@@ -336,13 +336,15 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                 entry.room = entry.room == null ? "---" : entry.room;
                 entry.info = entry.info == null ? "keine Info" : entry.info;
 
-                entry.lessonChangeVisible = entry.lessonChange && !entry.lesson.equals("---") ? View.VISIBLE : View.GONE;
-                entry.teacherChangeVisible = entry.teacherChange && !entry.teacher.equals("---") ? View.VISIBLE : View.GONE;
-                entry.roomChangeVisible = entry.roomChange && !entry.room.equals("---") ? View.VISIBLE : View.GONE;
-                entry.breakOutVisible =
-                        entry.room.equals("---") &&
-                                entry.lesson.equals("---") &&
-                                entry.teacher.equals("---") ? View.VISIBLE : View.GONE;
+                entry.lessonChangeVisible = entry.lessonChange && !entry.lesson.equals("---") ? View.VISIBLE : View.INVISIBLE;
+                entry.teacherChangeVisible = entry.teacherChange && !entry.teacher.equals("---") ? View.VISIBLE : View.INVISIBLE;
+                entry.roomChangeVisible = entry.roomChange && !entry.room.equals("---") ? View.VISIBLE : View.INVISIBLE;
+
+                /*if(entry.room.equals("---") && entry.lesson.equals("---") && entry.teacher.equals("---")) {
+                    entry.lesson = "Ausfall";
+                    entry.room = "";
+                    entry.teacher = "";
+                }*/
 
                 for(int i = 1; i < courses.length; i++) {
                     Database.Entry newEntry = entry.copy();

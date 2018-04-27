@@ -1,4 +1,4 @@
-package com.titaniel.bvcvertretungsplan.main_activity.detail_fragment.list_pager;
+package com.titaniel.bvcvertretungsplan.main_activity._old_detail_fragment.list_pager;
 
 import android.os.Handler;
 import android.support.v4.app.Fragment;

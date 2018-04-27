@@ -1,4 +1,4 @@
-package com.titaniel.bvcvertretungsplan.main_activity.detail_fragment.list_pager;
+package com.titaniel.bvcvertretungsplan.main_activity._old_detail_fragment.list_pager;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,12 +9,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.titaniel.bvcvertretungsplan.DateManager;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
-import com.titaniel.bvcvertretungsplan.main_activity.detail_fragment.list_pager.entry_list.EntryListAdapter;
+import com.titaniel.bvcvertretungsplan.main_activity._old_detail_fragment.list_pager.entry_list.EntryListAdapter;
 
 public class EntryPagerFragment extends Fragment {
 
@@ -43,7 +42,7 @@ public class EntryPagerFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        entryList = getView().findViewById(R.id.entryList);
+        entryList = getView().findViewById(R.id.dayList);
 
         LinearLayoutManager managerEntries =
                 new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false) {

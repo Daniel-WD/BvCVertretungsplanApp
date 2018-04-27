@@ -1,6 +1,7 @@
 package com.titaniel.bvcvertretungsplan;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 
 import com.titaniel.bvcvertretungsplan.database.Database;
 
@@ -11,19 +12,29 @@ import java.util.ArrayList;
 
 public class DateManager {
 
-    public static String[] preparedCapsDayList = new String[5];
-    public static String[] preparedShortDayList = new String[5];
-    public static String[] preparedMonthList = new String[5];
-    public static LocalDate[] preparedDates = new LocalDate[5];
+    public static String[] preparedCapsDayList;
+    public static String[] preparedShortDayList;
+    public static String[] preparedMonthList;
+    public static LocalDate[] preparedDates;
+    public static Integer[] preparedColors;
 
     private static String[] capsDayList = new String[5];
     public static String[] shortDayList = new String[5];
     private static String[] monthList = new String[5];
     private static LocalDate[] dates = new LocalDate[5];
+    private static int[] colors = new int[5];
 
     public static String[] serverFileList = new String[5];
 
     public static void init(Context context) {
+
+        int[] srcColors =  {
+                ContextCompat.getColor(context, R.color.monday),
+                ContextCompat.getColor(context, R.color.tuesday),
+                ContextCompat.getColor(context, R.color.wednesday),
+                ContextCompat.getColor(context, R.color.thursday),
+                ContextCompat.getColor(context, R.color.friday)
+        };
         String[] srcCapsDays = {
                 context.getString(R.string.monday_caps),
                 context.getString(R.string.tuesday_caps),
@@ -73,6 +84,7 @@ public class DateManager {
 
         fillWeekDays(dates, srcCapsDays, capsDayList);
         fillWeekDays(dates, srcShortDays, shortDayList);
+        fillColors(dates, srcColors, colors);
 
         for(int i = 0; i < dates.length; i++) {
             monthList[i] = srcMonths[dates[i].getMonthOfYear()-1];
@@ -80,11 +92,12 @@ public class DateManager {
 
     }
 
-    public static void prepare(Context context) {
+    public static void prepare() {
         ArrayList<String> pCapsDayList = new ArrayList<>();
         ArrayList<String> pShortDayList = new ArrayList<>();
         ArrayList<String> pMonthList = new ArrayList<>();
         ArrayList<LocalDate> pDates = new ArrayList<>();
+        ArrayList<Integer> pColors = new ArrayList<>();
 
         for(int i = 0; i < dates.length; i++) {
             Database.Entry[] entries = Database.findEntriesByCourseAndDate(
@@ -94,6 +107,7 @@ public class DateManager {
                 pShortDayList.add(shortDayList[i]);
                 pMonthList.add(monthList[i]);
                 pDates.add(dates[i]);
+                pColors.add(colors[i]);
             }
         }
 
@@ -101,14 +115,22 @@ public class DateManager {
         preparedShortDayList = new String[pShortDayList.size()];
         preparedMonthList = new String[pMonthList.size()];
         preparedDates = new LocalDate[pDates.size()];
+        preparedColors = new Integer[pColors.size()];
 
         preparedCapsDayList = pCapsDayList.toArray(preparedCapsDayList);
         preparedShortDayList = pShortDayList.toArray(preparedShortDayList);
         preparedMonthList = pMonthList.toArray(preparedMonthList);
         preparedDates = pDates.toArray(preparedDates);
+        preparedColors = pColors.toArray(preparedColors);
     }
 
     private static void fillWeekDays(LocalDate[] order, String[] src, String[] target) {
+        for(int i = 0; i < order.length; i++) {
+            target[i] = src[order[i].getDayOfWeek()-1];
+        }
+    }
+
+    private static void fillColors(LocalDate[] order, int[] src, int[] target) {
         for(int i = 0; i < order.length; i++) {
             target[i] = src[order[i].getDayOfWeek()-1];
         }

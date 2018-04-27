@@ -1,7 +1,11 @@
 <resources>
     <string name="app_name">Cotta Inside</string>
-
     <string name="title">Cotta Inside</string>
+
+    <!--  -->
+    <string name="ok">OK</string>
+    <string name="back">ZURÜCK</string>
+    <string name="courses">KURSE</string>
 
     <string name="noEntries">Keine Vertretung für dich an diesem Tag</string>
 
@@ -26,7 +30,7 @@
     <string name="number">Nummer</string>
 
     <string name="run">Run as fast as you can and don\'t look back.</string>
-    <string name="runn">Lauf so schnell wie möglich und schau nicht zurück.</string>
+    <string name="runn">Lauf so schnell wie du kannst und schau nicht zurück.</string>
 
     <string name="omg">OH!</string>
 

@@ -1,219 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/backgroundContainer"
+    <ImageView
+        android:id="@+id/ivBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
-
-        <ImageView
-            android:id="@+id/ivBackground"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/smt"
-            android:tint="@color/defaultBackgroundTint" />
-
-    </FrameLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:id="@+id/rvDays"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:foregroundGravity="center_horizontal"
-        android:overScrollMode="never"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dividerLayout" />
-
-    <TextView
-        android:visibility="invisible"
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:fontFamily="@font/lobster_regular"
-        android:includeFontPadding="false"
-        android:letterSpacing="0.13"
-        android:text="@string/app_name"
-        android:textColor="@color/snow"
-        android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/dividerLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.44" />
-
-    <LinearLayout
-        android:visibility="invisible"
-        android:id="@+id/lyClass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle">
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"
-            android:alpha="1"
-            android:src="@drawable/ic_class"
-            android:tint="@color/snow" />
-
-        <TextView
-            android:id="@+id/tvClass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:alpha="1"
-            android:fontFamily="@font/nunito_regular"
-            android:letterSpacing="0.1"
-            android:text="11"
-            android:textColor="@color/snow"
-            android:textSize="15sp" />
-
-    </LinearLayout>
+        android:scaleType="centerCrop"
+        android:src="@drawable/smt"
+        android:tint="@color/mainBackgroundTint" />
 
     <RelativeLayout
-        android:id="@+id/dividerLayout"
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:orientation="horizontal"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.19999999">
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-light"
+            android:letterSpacing="0.12"
+            android:text="@string/app_name"
+            android:textColor="@color/snow"
+            android:textSize="23sp" />
+
+        <LinearLayout
+            android:id="@+id/lyClass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="8dp"
+                android:alpha="1"
+                android:src="@drawable/ic_class"
+                android:tint="@color/snow" />
+
+            <TextView
+                android:id="@+id/tvClass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:alpha="1"
+                android:fontFamily="sans-serif"
+                android:textColor="@color/snow"
+                android:textSize="15sp"
+                tools:text="11" />
+
+        </LinearLayout>
 
         <ImageView
-            android:visibility="invisible"
             android:id="@+id/ivEdit"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/edit_background"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"
             android:padding="16dp"
             android:src="@drawable/ic_edit"
             android:tint="@color/snow" />
 
         <View
-            android:visibility="invisible"
-            android:id="@+id/vDividerLeft"
+            android:id="@+id/toolbarBottomLine"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_toStartOf="@+id/ivEdit"
-            android:background="@color/snow" />
-
-        <View
-            android:visibility="invisible"
-            android:id="@+id/vDividerRight"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_toEndOf="@+id/ivEdit"
+            android:layout_height="0.5dp"
+            android:layout_below="@id/lyClass"
+            android:layout_marginTop="12dp"
             android:background="@color/snow" />
 
     </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:paddingTop="6dp"
+        android:id="@+id/dayList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/header"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:overScrollMode="never"/>
 
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/loadingView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_centerInParent="true"
         android:visibility="invisible"
-        app:indicatorName="BallPulseIndicator"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/ivLogo"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:layout_gravity="center"
-        android:tint="@color/snow"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:visibility="invisible"
-        android:background="@color/backgroundOverlay"
-        android:id="@+id/vBgOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:indicatorName="BallPulseIndicator" />
 
     <fragment
         android:id="@+id/fragmentErr"
         android:name="com.titaniel.bvcvertretungsplan.main_activity.error_fragment.ErrorFragment"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_centerInParent="true"
         tools:layout="@layout/fragment_error" />
 
     <fragment
         android:id="@+id/fragmentCourseSettings"
         android:name="com.titaniel.bvcvertretungsplan.main_activity.course_settings_fragment.CourseSettingsFragment"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
         tools:layout="@layout/fragment_course_settings" />
 
-    <fragment
-        android:id="@+id/fragmentDetail"
-        android:name="com.titaniel.bvcvertretungsplan.main_activity.detail_fragment.DetailFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="25dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout="@layout/fragment_detail" />
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

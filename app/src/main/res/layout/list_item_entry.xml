@@ -1,143 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:paddingBottom="16dp"
-    android:paddingTop="20dp">
-    <!-- man beachte die 4 dp unterschied zwischen top und bottom-->
-
-    <org.apmem.tools.layouts.FlowLayout
-        android:id="@+id/tags"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
-
-        <TextView
-            android:id="@+id/tvSpec"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/_border_course"
-            android:fontFamily="sans-serif"
-            android:includeFontPadding="false"
-            android:paddingBottom="7dp"
-            android:paddingEnd="24dp"
-            android:paddingStart="24dp"
-            android:paddingTop="7dp"
-            android:text="Pnwi"
-            android:textColor="@color/accent"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tvBreakOut"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/_border_break_out"
-            android:fontFamily="sans-serif"
-            android:includeFontPadding="false"
-            android:paddingBottom="7dp"
-            android:paddingEnd="24dp"
-            android:paddingStart="24dp"
-            android:paddingTop="7dp"
-            android:text="@string/breakOut"
-            android:textColor="@color/border_break_out"
-            android:textSize="16sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvTeacherChange"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/_border_teacher_change"
-            android:fontFamily="sans-serif"
-            android:includeFontPadding="false"
-            android:paddingBottom="7dp"
-            android:paddingEnd="24dp"
-            android:paddingStart="24dp"
-            android:paddingTop="7dp"
-            android:text="@string/teacherChange"
-            android:textColor="@color/border_teacher_change"
-            android:textSize="16sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvLessonChange"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/_border_lesson_change"
-            android:fontFamily="sans-serif"
-            android:includeFontPadding="false"
-            android:paddingBottom="7dp"
-            android:paddingEnd="24dp"
-            android:paddingStart="24dp"
-            android:paddingTop="7dp"
-            android:text="@string/lessonChange"
-            android:textColor="@color/border_lesson_change"
-            android:textSize="16sp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tvRoomChange"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="12dp"
-            android:layout_marginStart="12dp"
-            android:background="@drawable/_border_room_change"
-            android:fontFamily="sans-serif"
-            android:includeFontPadding="false"
-            android:paddingBottom="7dp"
-            android:paddingEnd="24dp"
-            android:paddingStart="24dp"
-            android:paddingTop="7dp"
-            android:text="@string/roomChange"
-            android:textColor="@color/border_room_change"
-            android:textSize="16sp"
-            android:visibility="gone" />
-
-    </org.apmem.tools.layouts.FlowLayout>
+    android:paddingBottom="22dp"
+    android:paddingTop="22dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tags">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tvHours"
-            android:layout_width="82dp"
-            android:layout_height="40dp"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="sans-serif"
+            android:letterSpacing="0.2"
+            android:textAlignment="center"
+            android:textColor="@color/accent"
+            android:textSize="18sp"
             android:layout_centerVertical="true"
-            android:fontFamily="sans-serif-thin"
-            android:gravity="center"
-            android:letterSpacing="0.1"
-            android:text="1-2"
-            android:textColor="@color/snow"
-            android:textSize="28sp" />
+            tools:text="1-2" />
+
+        <View
+            android:visibility="invisible"
+            android:id="@+id/dividerHours"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/tvInfo"
+            android:layout_alignStart="@id/tvHours"
+            android:layout_below="@id/tvHours"
+            android:layout_marginBottom="2dp"
+            android:layout_marginStart="29dp"
+            android:layout_marginTop="2dp"
+            android:background="@color/accent" />
 
         <LinearLayout
             android:id="@+id/layoutLesson"
-            android:layout_width="62dp"
+            android:layout_width="66dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_toEndOf="@id/tvHours"
             android:orientation="horizontal">
 
@@ -148,16 +53,17 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="4dp"
                 android:src="@drawable/ic_dot"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/tvLesson"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="MA"
+                android:fontFamily="sans-serif-light"
+                android:includeFontPadding="false"
                 android:textColor="@color/snow"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                tools:text="MA" />
 
         </LinearLayout>
 
@@ -176,16 +82,18 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="4dp"
                 android:src="@drawable/ic_dot"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <TextView
+
                 android:id="@+id/tvRoom"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="304"
+                android:fontFamily="sans-serif-light"
+                android:includeFontPadding="false"
                 android:textColor="@color/snow"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                tools:text="304" />
 
         </LinearLayout>
 
@@ -205,16 +113,18 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="4dp"
                 android:src="@drawable/ic_dot"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <TextView
+
                 android:id="@+id/tvTeacher"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
-                android:text="Frau Bellmann"
+                android:fontFamily="sans-serif-light"
+                android:includeFontPadding="false"
                 android:textColor="@color/snow"
-                android:textSize="18sp" />
+                android:textSize="18sp"
+                tools:text="Frau Bellmann" />
 
         </LinearLayout>
 
@@ -224,14 +134,15 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/layoutTeacher"
             android:layout_marginEnd="16dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:layout_toEndOf="@id/tvHours"
             android:fontFamily="sans-serif-light"
             android:includeFontPadding="false"
-            android:text="Ausfall"
-            android:textColor="@color/snow"
-            android:textSize="16sp" />
+            android:textColor="@color/infoColor"
+            android:textSize="14sp"
+            android:lineSpacingMultiplier="1.2"
+            tools:text="Ausfall" />
 
     </RelativeLayout>
 

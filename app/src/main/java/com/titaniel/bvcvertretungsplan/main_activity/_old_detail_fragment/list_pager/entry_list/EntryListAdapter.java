@@ -1,7 +1,6 @@
-package com.titaniel.bvcvertretungsplan.main_activity.detail_fragment.list_pager.entry_list;
+package com.titaniel.bvcvertretungsplan.main_activity._old_detail_fragment.list_pager.entry_list;
 
 import android.content.Context;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -9,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -118,16 +116,11 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
             super(itemView);
 
             tvRoom = itemView.findViewById(R.id.tvRoom);
-            tvSpec = itemView.findViewById(R.id.tvSpec);
             tvHours = itemView.findViewById(R.id.tvHours);
             tvLesson = itemView.findViewById(R.id.tvLesson);
             tvTeacher = itemView.findViewById(R.id.tvTeacher);
             tvInfo = itemView.findViewById(R.id.tvInfo);
 
-            tvBreakOut = itemView.findViewById(R.id.tvBreakOut);
-            tvTeacherChange = itemView.findViewById(R.id.tvTeacherChange);
-            tvLessonChange = itemView.findViewById(R.id.tvLessonChange);
-            tvRoomChange = itemView.findViewById(R.id.tvRoomChange);
 
             dotLesson = itemView.findViewById(R.id.dotLesson);
             dotTeacher = itemView.findViewById(R.id.dotTeacher);

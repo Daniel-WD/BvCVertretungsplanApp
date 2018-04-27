@@ -1,4 +1,4 @@
-package com.titaniel.bvcvertretungsplan.main_activity.detail_fragment;
+package com.titaniel.bvcvertretungsplan.main_activity._old_detail_fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,13 +18,11 @@ import android.widget.RelativeLayout;
 
 import com.rd.PageIndicatorView;
 import com.titaniel.bvcvertretungsplan.R;
-import com.titaniel.bvcvertretungsplan.ViewUtils;
 import com.titaniel.bvcvertretungsplan.database.Database;
-import com.titaniel.bvcvertretungsplan.main_activity.course_settings_fragment.NumberAdapter;
-import com.titaniel.bvcvertretungsplan.main_activity.detail_fragment.header_pager.HeaderPagerAdapter;
-import com.titaniel.bvcvertretungsplan.main_activity.detail_fragment.header_pager.HeaderPagerTransformer;
-import com.titaniel.bvcvertretungsplan.main_activity.detail_fragment.list_pager.EntryPagerAdapter;
-import com.titaniel.bvcvertretungsplan.main_activity.detail_fragment.list_pager.entry_list.EntryListAdapter;
+import com.titaniel.bvcvertretungsplan.main_activity._old_detail_fragment.header_pager.HeaderPagerAdapter;
+import com.titaniel.bvcvertretungsplan.main_activity._old_detail_fragment.header_pager.HeaderPagerTransformer;
+import com.titaniel.bvcvertretungsplan.main_activity._old_detail_fragment.list_pager.EntryPagerAdapter;
+import com.titaniel.bvcvertretungsplan.main_activity._old_detail_fragment.list_pager.entry_list.EntryListAdapter;
 import com.titaniel.bvcvertretungsplan.my_viewpager.MyViewPager;
 
 public class DetailFragment extends Fragment {
@@ -323,7 +321,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void updateCurrentMainPagerView() {
-        mMainPagerList = mMainPager.getChildAt(mMainPager.getCurrentItem()).findViewById(R.id.entryList);
+        mMainPagerList = mMainPager.getChildAt(mMainPager.getCurrentItem()).findViewById(R.id.dayList);
     }
 
     private void updateScrollEnabledForPos(int pos) {

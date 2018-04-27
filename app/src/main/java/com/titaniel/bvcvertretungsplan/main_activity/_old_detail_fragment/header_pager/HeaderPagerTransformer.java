@@ -1,4 +1,4 @@
-package com.titaniel.bvcvertretungsplan.main_activity.detail_fragment.header_pager;
+package com.titaniel.bvcvertretungsplan.main_activity._old_detail_fragment.header_pager;
 
 import android.support.v4.view.ViewPager;
 import android.view.View;

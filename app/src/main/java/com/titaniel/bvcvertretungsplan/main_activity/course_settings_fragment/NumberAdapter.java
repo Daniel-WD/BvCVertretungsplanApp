@@ -1,9 +1,7 @@
 package com.titaniel.bvcvertretungsplan.main_activity.course_settings_fragment;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,40 +17,24 @@ public class NumberAdapter extends RecyclerView.Adapter<NumberAdapter.NumberHold
         void onClick(String number);
     }
 
-    private Handler mHandler = new Handler();
-    private final String[] mNumbers;
-    private final Context mContext;
-    private final int mClickColor;
     private NumberListener mListener;
-    private final int mLayout;
-    private int mSelected = -1;
-    private boolean mClickable = true;
+
     private RecyclerView mList;
+    private Context mContext;
+    private String[] mNumbers;
+    private int mLayout;
+
+    private int mSelected = -1;
     private boolean mEnabled = true;
 
-    public NumberAdapter(RecyclerView list, String[] numbers, Context context, int clickColor, int layout, NumberListener listener) {
-        mList = list;
+    NumberAdapter(Context context, String[] numbers, int layout, NumberListener listener) {
         this.mNumbers = numbers;
         this.mContext = context;
-        mClickColor = clickColor;
         mListener = listener;
         mLayout = layout;
     }
 
-    public void setNumber(String number) {
-        //tvNumber is null instead
-        mHandler.postDelayed(() -> {
-            for(int i = 0; i < getItemCount(); i++) {
-                NumberHolder holder = (NumberHolder) mList.findViewHolderForAdapterPosition(i);
-               // if(true) return; // TODO: 31.03.2018 södjföad
-                if(holder.tvNumber.getText().equals(number)) {
-                    holder.itemView.callOnClick();
-                    break;
-                }
-            }
-        }, 100);
-    }
-
+    @NonNull
     @Override
     public NumberHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mContext).inflate(mLayout, parent, false);
@@ -69,9 +51,20 @@ public class NumberAdapter extends RecyclerView.Adapter<NumberAdapter.NumberHold
         return mNumbers.length;
     }
 
-    private void disableClickable(long duration) {
-        mClickable = false;
-        mHandler.postDelayed(() -> mClickable = true, duration);
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mList = recyclerView;
+    }
+
+    public void setNumber(String number) {
+        for(int i = 0; i < getItemCount(); i++) {
+            NumberHolder holder = (NumberHolder) mList.findViewHolderForAdapterPosition(i);
+            if(holder.tvNumber.getText().equals(number)) {
+                holder.itemView.callOnClick();
+                break;
+            }
+        }
     }
 
     public void setEnabled(boolean enabled) {
@@ -79,23 +72,23 @@ public class NumberAdapter extends RecyclerView.Adapter<NumberAdapter.NumberHold
         mEnabled = enabled;
         NumberHolder cur = (NumberHolder) mList.findViewHolderForAdapterPosition(mSelected);
         if(enabled) {
-            disableClickable(cur.select());
+            cur.select();
         } else {
-            disableClickable(cur.deselect());
+            cur.deselect();
         }
     }
 
-    public void changeSelected(int toPosition) {
+    private void changeSelected(int toPosition) {
         if(toPosition == mSelected) return;
         //deselect
         if(mSelected != -1) {
             NumberHolder oldHolder = (NumberHolder) mList.findViewHolderForAdapterPosition(mSelected);
-            disableClickable(oldHolder.deselect());
+            oldHolder.deselect();
         }
 
         //select
         NumberHolder newHolder = (NumberHolder) mList.findViewHolderForAdapterPosition(toPosition);
-        disableClickable(newHolder.select());
+        newHolder.select();
 
         mSelected = toPosition;
     }
@@ -104,58 +97,48 @@ public class NumberAdapter extends RecyclerView.Adapter<NumberAdapter.NumberHold
 
         TextView tvNumber;
 
-        public NumberHolder(View itemView) {
+        NumberHolder(View itemView) {
             super(itemView);
 
             tvNumber = itemView.findViewById(R.id.number);
 
             itemView.setOnClickListener(v -> {
-                if(!mClickable || !mEnabled) return;
+                if(!mEnabled || mSelected == getAdapterPosition()) return;
                 mListener.onClick(tvNumber.getText().toString());
                 changeSelected(getAdapterPosition());
             });
-
-            itemView.post(() -> {
-                tvNumber.setPivotY(tvNumber.getHeight());
-            });
         }
 
-        long select() {
-            ValueAnimator colorAnim = ValueAnimator.ofArgb(Color.WHITE, mClickColor);
-            colorAnim.addUpdateListener(animation -> {
-                tvNumber.setTextColor((int)animation.getAnimatedValue());
-            });
-            colorAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-            colorAnim.setDuration(200);
-            colorAnim.start();
-
+        void select() {
+//            ValueAnimator colorAnim = ValueAnimator.ofArgb(Color.WHITE, mClickColor);
+//            colorAnim.addUpdateListener(animation -> {
+//                tvNumber.setTextColor((int)animation.getAnimatedValue());
+//            });
+//            colorAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+//            colorAnim.setDuration(200);
+//            colorAnim.start();
             tvNumber.animate()
+                    .setDuration(100)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
-                    .setDuration(150)
-                    .scaleY(1.3f)
-                    .scaleX(1.3f)
+                    .alpha(1)
                     .start();
 
-            return 150;
         }
 
-        long deselect() {
-            ValueAnimator colorAnim = ValueAnimator.ofArgb(mClickColor, Color.WHITE);
-            colorAnim.addUpdateListener(animation -> {
-                tvNumber.setTextColor((int)animation.getAnimatedValue());
-            });
-            colorAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-            colorAnim.setDuration(200);
-            colorAnim.start();
-
+        void deselect() {
+//            ValueAnimator colorAnim = ValueAnimator.ofArgb(mClickColor, Color.WHITE);
+//            colorAnim.addUpdateListener(animation -> {
+//                tvNumber.setTextColor((int)animation.getAnimatedValue());
+//            });
+//            colorAnim.setInterpolator(new AccelerateDecelerateInterpolator());
+//            colorAnim.setDuration(200);
+//            colorAnim.start();
             tvNumber.animate()
+                    .setDuration(100)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
-                    .setDuration(150)
-                    .scaleY(1f)
-                    .scaleX(1f)
+                    .alpha(0.4f)
                     .start();
 
-            return 150;
         }
     }
 
