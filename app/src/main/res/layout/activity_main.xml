@@ -12,19 +12,33 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/smt"
+        android:src="@drawable/road"
         android:tint="@color/mainBackgroundTint" />
+
+
+    <ImageView
+        android:elevation="1dp"
+        android:id="@+id/ivEdit"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:padding="16dp"
+        android:src="@drawable/ic_edit"
+        android:tint="@color/snow" />
+
 
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="150dp">
 
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
             android:layout_marginTop="8dp"
             android:fontFamily="sans-serif-light"
             android:letterSpacing="0.12"
@@ -62,37 +76,17 @@
                 tools:text="11" />
 
         </LinearLayout>
-
-        <ImageView
-            android:id="@+id/ivEdit"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="8dp"
-            android:padding="16dp"
-            android:src="@drawable/ic_edit"
-            android:tint="@color/snow" />
-
-        <View
-            android:id="@+id/toolbarBottomLine"
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_below="@id/lyClass"
-            android:layout_marginTop="12dp"
-            android:background="@color/snow" />
-
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:paddingTop="6dp"
+        android:paddingTop="130dp"
         android:id="@+id/dayList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/header"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:overScrollMode="never"/>
+        android:overScrollMode="never"
+        android:paddingBottom="8dp"/>
 
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/loadingView"

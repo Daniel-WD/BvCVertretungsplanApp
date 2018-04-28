@@ -34,6 +34,12 @@
 
     <string name="omg">OH!</string>
 
+    <!--<string name="monday_caps">Montag</string>-->
+    <!--<string name="tuesday_caps">Dienstag</string>-->
+    <!--<string name="wednesday_caps">Mittwoch</string>-->
+    <!--<string name="thursday_caps">Donnerstag</string>-->
+    <!--<string name="friday_caps">Freitag</string>-->
+
     <string name="monday_caps">MONTAG</string>
     <string name="tuesday_caps">DIENSTAG</string>
     <string name="wednesday_caps">MITTWOCH</string>

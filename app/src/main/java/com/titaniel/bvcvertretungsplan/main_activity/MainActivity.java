@@ -22,6 +22,7 @@ import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.Utils;
 import com.titaniel.bvcvertretungsplan.database.Database;
 import com.titaniel.bvcvertretungsplan.main_activity.course_settings_fragment.CourseSettingsFragment;
+import com.titaniel.bvcvertretungsplan.main_activity.day_list.DayListAdapter;
 import com.titaniel.bvcvertretungsplan.main_activity.entry_list_adapter.EntryItemDecoration;
 import com.titaniel.bvcvertretungsplan.main_activity.entry_list_adapter.EntryListAdapter;
 import com.titaniel.bvcvertretungsplan.main_activity.error_fragment.ErrorFragment;
@@ -37,12 +38,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTvClass;
     private ImageView mIvEdit;
     private LinearLayout mLyClass;
-    private View mToolbarBottomLine;
 
     //list
     private RecyclerView mDayList;
     private LinearLayoutManager mLayoutManager;
-    private EntryListAdapter mEntryAdapter;
+    private DayListAdapter mDayListAdapter;
+    //private EntryListAdapter mEntryAdapter;
 
     private ErrorFragment mErrorFragment;
     private CourseSettingsFragment mCourseSettingsFragment;
@@ -62,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
         mIvEdit = findViewById(R.id.ivEdit);
         mLyClass = findViewById(R.id.lyClass);
         mDayList = findViewById(R.id.dayList);
-        mToolbarBottomLine = findViewById(R.id.toolbarBottomLine);
 
         //init fragments
         mErrorFragment = (ErrorFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentErr);
@@ -142,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void fillList() {
-        mEntryAdapter = new EntryListAdapter(this);
-        mDayList.setAdapter(mEntryAdapter);
+        mDayListAdapter = new DayListAdapter(this);
+        mDayList.setAdapter(mDayListAdapter);
     }
 
     private void errorOnLoading(int errorCode) {
@@ -242,14 +242,6 @@ public class MainActivity extends AppCompatActivity {
                 .alpha(0)
                 .start();
 
-        //edit imageview
-        mToolbarBottomLine.animate()
-                .setStartDelay(delay)
-                .setDuration(300)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .alpha(0)
-                .start();
-
         mCourseSettingsFragment.show(delay);
     }
 
@@ -286,14 +278,6 @@ public class MainActivity extends AppCompatActivity {
 
         //edit imageview
         mDayList.animate()
-                .setStartDelay(delay)
-                .setDuration(300)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .alpha(1)
-                .start();
-
-        //edit imageview
-        mToolbarBottomLine.animate()
                 .setStartDelay(delay)
                 .setDuration(300)
                 .setInterpolator(new AccelerateDecelerateInterpolator())

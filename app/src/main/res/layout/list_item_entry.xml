@@ -6,8 +6,8 @@
     android:background="@android:color/transparent"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:paddingBottom="22dp"
-    android:paddingTop="22dp">
+    android:paddingBottom="18dp"
+    android:paddingTop="18dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -41,7 +41,7 @@
 
         <LinearLayout
             android:id="@+id/layoutLesson"
-            android:layout_width="66dp"
+            android:layout_width="54dp"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/tvHours"
             android:orientation="horizontal">
@@ -62,7 +62,7 @@
                 android:fontFamily="sans-serif-light"
                 android:includeFontPadding="false"
                 android:textColor="@color/snow"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 tools:text="MA" />
 
         </LinearLayout>
@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="20dp"
             android:orientation="horizontal">
 
             <ImageView
@@ -92,7 +92,7 @@
                 android:fontFamily="sans-serif-light"
                 android:includeFontPadding="false"
                 android:textColor="@color/snow"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 tools:text="304" />
 
         </LinearLayout>
@@ -123,7 +123,7 @@
                 android:fontFamily="sans-serif-light"
                 android:includeFontPadding="false"
                 android:textColor="@color/snow"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 tools:text="Frau Bellmann" />
 
         </LinearLayout>

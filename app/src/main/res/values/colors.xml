@@ -6,10 +6,7 @@
 
     <!-- entry not changed color-->
     <color name="notChangedColor">#ffffff</color>
-    <color name="infoColor">#a7a7a7</color>
-
-    <!-- divider color -->
-    <color name="entryDivider">#2b2b2b</color>
+    <color name="infoColor">#cacaca</color>
 
     <!-- Day Colors-->
     <color name="monday">#00ffff</color>
@@ -19,7 +16,10 @@
     <color name="friday">#00ffff</color>
 
     <!-- background tint-->
-    <color name="mainBackgroundTint">#a0000000</color>
+    <color name="mainBackgroundTint">#5a000000</color>
+
+    <!-- day background -->
+    <color name="dayBackground">#32000000</color>
 
     <!-- divider Color-->
     <color name="dividerColor">#64ffffff</color>
@@ -28,7 +28,7 @@
     <color name="dayListBgTwo">#78000000</color>
 
     <color name="dayBg">#32000000</color>
-    <color name="accent">#00ffff</color>
+    <color name="accent">#36D7B7</color>
 
     <color name="splashButtonBg">#64000000</color>
 

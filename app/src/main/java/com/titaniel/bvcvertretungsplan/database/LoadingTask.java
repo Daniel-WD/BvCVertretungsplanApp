@@ -336,6 +336,8 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                 entry.room = entry.room == null ? "---" : entry.room;
                 entry.info = entry.info == null ? "keine Info" : entry.info;
 
+                entry.teacher = DataUtils.wrapByComma(entry.teacher);
+
                 entry.lessonChangeVisible = entry.lessonChange && !entry.lesson.equals("---") ? View.VISIBLE : View.INVISIBLE;
                 entry.teacherChangeVisible = entry.teacherChange && !entry.teacher.equals("---") ? View.VISIBLE : View.INVISIBLE;
                 entry.roomChangeVisible = entry.roomChange && !entry.room.equals("---") ? View.VISIBLE : View.INVISIBLE;

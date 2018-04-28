@@ -149,4 +149,8 @@ public class DataUtils {
         return res;
     }
 
+    static String wrapByComma(String in) {
+        return in.replace(", ", ",\n");
+    }
+
 }

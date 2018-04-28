@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.titaniel.bvcvertretungsplan.DateManager;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
+import com.titaniel.bvcvertretungsplan.main_activity.CustomLinearLayoutManager;
 
 import java.util.Arrays;
 
@@ -53,9 +55,9 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
 
         holder.tvDay.setText(DateManager.preparedCapsDayList[position]);
 
-        if(position == 0) holder.leftDivider.setVisibility(View.GONE);
-        else holder.leftDivider.setVisibility(View.VISIBLE);
-
+        //adatper
+        EntryListAdapter adapter = new EntryListAdapter(mContext, Database.findEntriesByCourseAndDate(DateManager.preparedDates[position]));
+        holder.entryList.setAdapter(adapter);
     }
 
     @Override
@@ -72,13 +74,21 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
     static class DayHolder extends RecyclerView.ViewHolder {
 
         TextView tvDay;
-        View leftDivider, rightDivider;
+        RecyclerView entryList;
+
+        private LinearLayoutManager mLayoutManager;
+        private EntryListAdapter mAdapter;
 
         DayHolder(View itemView) {
             super(itemView);
             tvDay = itemView.findViewById(R.id.tvDay);
-            leftDivider = itemView.findViewById(R.id.dividerLeft);
-            rightDivider = itemView.findViewById(R.id.dividerRight);
+            entryList = itemView.findViewById(R.id.entryList);
+
+            //layoutmanager
+            mLayoutManager = new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.VERTICAL, false);
+
+            entryList.setLayoutManager(mLayoutManager);
+            entryList.addItemDecoration(new EntryItemDecoration(itemView.getContext()));
         }
 
     }

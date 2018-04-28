@@ -246,8 +246,8 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.MyHo
         DayHolder(View itemView) {
             super(itemView);
             tvDay = itemView.findViewById(R.id.tvDay);
-            leftDivider = itemView.findViewById(R.id.dividerLeft);
-            rightDivider = itemView.findViewById(R.id.dividerRight);
+//            leftDivider = itemView.findViewById(R.id.dividerLeft);
+//            rightDivider = itemView.findViewById(R.id.dividerRight);
         }
 
     }

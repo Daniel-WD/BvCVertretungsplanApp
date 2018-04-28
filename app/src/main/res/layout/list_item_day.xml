@@ -5,40 +5,32 @@
     android:layout_height="wrap_content"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:layout_marginTop="-5dp"
-    android:layout_marginBottom="-11dp">
-
-    <View
-        android:id="@+id/dividerLeft"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginTop="6dp"
-        android:background="@color/snow" />
+    android:background="@drawable/day_background"
+    android:layout_marginTop="26dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:paddingBottom="4dp">
 
     <TextView
         android:id="@+id/tvDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dividerLeft"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="13dp"
+        android:layout_marginTop="14dp"
         android:fontFamily="sans-serif-medium"
         android:includeFontPadding="false"
-        android:letterSpacing="0.2"
-        android:textColor="@color/snow"
-        android:textSize="13sp"
-        tools:text="MONTAG" />
+        android:textColor="#e6e6e6"
+        android:layout_marginStart="10dp"
+        android:textSize="14sp"
+        android:letterSpacing="0.05"
+        tools:text="Montag" />
 
-    <View
-        android:visibility="gone"
-        android:id="@+id/dividerRight"
-        android:layout_width="match_parent"
-        android:layout_height="0.2dp"
-        android:layout_marginTop="4dp"
+    <android.support.v7.widget.RecyclerView
         android:layout_below="@id/tvDay"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
-        android:alpha="0.4"
-        android:background="@color/snow" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/entryList"
+        android:overScrollMode="never"
+        android:clipChildren="false"
+        android:clipToPadding="false"/>
 
 </RelativeLayout>

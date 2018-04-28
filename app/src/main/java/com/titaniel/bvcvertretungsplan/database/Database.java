@@ -158,6 +158,10 @@ public class Database {
         new LoadingTask().execute(new LoadingTask.Input(context, offline));
     }
 
+    public static Entry[] findEntriesByCourseAndDate(LocalDate date) {
+        return findEntriesByCourseAndDate(date, Integer.parseInt(courseDegree), Integer.parseInt(courseNumber));
+    }
+
     public static Entry[] findEntriesByCourseAndDate(LocalDate date, int degree, int number) {
         Day curDay = null;
         for(Day day : days) {
