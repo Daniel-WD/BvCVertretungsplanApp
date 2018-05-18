@@ -12,12 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.titaniel.bvcvertretungsplan.DateManager;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.EntryHolder> {
 
@@ -68,7 +64,7 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
 //            entryHolder.dotTeacher.setVisibility(entry.teacherChangeVisible);
 //            entryHolder.dotRoom.setVisibility(entry.roomChangeVisible);
 //
-        //entryHolder.tvSpec.setVisibility(entry.specVisible);
+        entryHolder.tvSpec.setVisibility(entry.specVisible);
 //        entryHolder.tvTeacherChange.setVisibility(entry.teacherChangeVisible);
 //        entryHolder.tvRoomChange.setVisibility(entry.roomChangeVisible);
 //        entryHolder.tvLessonChange.setVisibility(entry.lessonChangeVisible);
@@ -81,6 +77,7 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
 //        entryHolder.tvRoom.setText(String.valueOf(position));
 //        entryHolder.tvInfo.setText(String.valueOf(position));
 
+        entryHolder.tvSpec.setText(entry.course.specification);
         entryHolder.tvHours.setText(entry.hoursText);
         entryHolder.tvLesson.setText(entry.lesson);
         entryHolder.tvTeacher.setText(entry.teacher);
@@ -126,7 +123,6 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
 
         TextView tvRoom, tvSpec, tvHours, tvLesson, tvTeacher, tvInfo, tvBreakOut, tvTeacherChange, tvLessonChange, tvRoomChange;
         ImageView dotLesson, dotTeacher, dotRoom;
-        View hoursDivider;
 
         EntryHolder(View itemView) {
             super(itemView);
@@ -136,12 +132,11 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
             tvLesson = itemView.findViewById(R.id.tvLesson);
             tvTeacher = itemView.findViewById(R.id.tvTeacher);
             tvInfo = itemView.findViewById(R.id.tvInfo);
+            tvSpec = itemView.findViewById(R.id.tvSpec);
 
             dotLesson = itemView.findViewById(R.id.dotLesson);
             dotTeacher = itemView.findViewById(R.id.dotTeacher);
             dotRoom = itemView.findViewById(R.id.dotRoom);
-
-            hoursDivider = itemView.findViewById(R.id.dividerHours);
         }
 
     }

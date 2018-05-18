@@ -1,22 +1,30 @@
 <resources>
-    <string name="app_name">Cotta Inside</string>
-    <string name="title">Cotta Inside</string>
+    <string name="title">BvC Vertretungsplan</string>
+    <string name="app_name">BvC\nVertretungsplan</string>
+
+    <!-- login -->
+    <string name="login">Log In</string>
+    <string name="username">Nutzername</string>
+    <string name="password">Passwort</string>
+    <string name="fail">Die eingegebenen Daten sind falsch</string>
+    <string name="fail_offline">Du bist offline</string>
 
     <!--  -->
     <string name="ok">OK</string>
     <string name="back">ZURÜCK</string>
+    <string name="skipCourses">Alle Kurse</string>
+    <string name="skip">ÜBERSPRINGEN</string>
     <string name="courses">KURSE</string>
+    <string name="cancel">ABBRECHEN</string>
+    <string name="additional">Zusatz</string>
+    <string name="additionalInfo">Trage hier einzeln Kurse ein, die noch nicht angezeigt wurden, wie zum Beispiel Sportkurse oder Kurse mit mehreren Ziffern (en21).</string>
+    <string name="onwards">WEITER</string>
+    <string name="complete">FERTIG</string>
 
-    <string name="noEntries">Keine Vertretung für dich an diesem Tag</string>
-
-    <string name="breakOut">Ausfall</string>
-    <string name="lessonChange">Fachänderung</string>
-    <string name="roomChange">Raumänderung</string>
-    <string name="teacherChange">Lehreränderung</string>
+    <string name="noEntries">Es ist keine Vertretung vorhanden</string>
 
     <!-- Template -->
     <string name="temp_hours">%1$d-%2$d</string>
-    <string name="temp_date">%1$d. %2$s</string>
     <string name="temp_class">%1$s</string>
 
     <string name="err_no_internet">Es konnte keine Verbindung mit dem Internet hergestellt werden</string>
@@ -25,20 +33,9 @@
     <string name="res_offline">OFFLINE MODUS</string>
     <string name="res_try_again">NOCHMAL</string>
 
-    <string name="chooseCurse">Wähle deine Klasse</string>
-    <string name="degree">Stufe</string>
-    <string name="number">Nummer</string>
-
-    <string name="run">Run as fast as you can and don\'t look back.</string>
-    <string name="runn">Lauf so schnell wie du kannst und schau nicht zurück.</string>
-
+    <string name="chooseClass">Wähle deine Klasse</string>
+    <string name="chooseCourses">Wähle deine Kurse</string>
     <string name="omg">OH!</string>
-
-    <!--<string name="monday_caps">Montag</string>-->
-    <!--<string name="tuesday_caps">Dienstag</string>-->
-    <!--<string name="wednesday_caps">Mittwoch</string>-->
-    <!--<string name="thursday_caps">Donnerstag</string>-->
-    <!--<string name="friday_caps">Freitag</string>-->
 
     <string name="monday_caps">MONTAG</string>
     <string name="tuesday_caps">DIENSTAG</string>

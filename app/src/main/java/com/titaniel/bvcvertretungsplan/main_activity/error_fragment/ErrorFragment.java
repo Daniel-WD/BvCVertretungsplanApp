@@ -11,6 +11,7 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.DecelerateInterpolator;
@@ -109,27 +110,24 @@ public class ErrorFragment extends Fragment {
         Random r = new Random();
         mIvErr.setImageResource(r.nextInt(2) == 0 ? R.drawable.ic_emj_angry : R.drawable.ic_emj_sad);
         mRoot.setVisibility(View.VISIBLE);
+        mRoot.setTranslationY(-100);
         mRoot.setAlpha(0);
-        mRoot.setScaleX(0.5f);
-        mRoot.setScaleY(0.5f);
         mRoot.animate()
                 .setStartDelay(delay)
-                .setInterpolator(new OvershootInterpolator())
-                .setDuration(300)
-                .scaleX(1)
-                .scaleY(1)
+                .setInterpolator(new DecelerateInterpolator())
+                .setDuration(200)
                 .alpha(1)
+                .translationY(0)
                 .start();
     }
 
     public void hide(long delay) {
         mRoot.animate()
                 .setStartDelay(delay)
-                .setInterpolator(new FastOutLinearInInterpolator())
-                .setDuration(110)
-                .scaleX(0.75f)
-                .scaleY(0.75f)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .setDuration(200)
                 .alpha(0)
+                .translationY(100)
                 .withEndAction(() -> mRoot.setVisibility(View.INVISIBLE))
                 .start();
     }

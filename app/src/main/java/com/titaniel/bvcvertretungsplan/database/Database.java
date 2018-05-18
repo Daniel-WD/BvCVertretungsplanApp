@@ -4,14 +4,25 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.ArraySet;
+import android.util.Log;
 import android.view.View;
 
 import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Database {
+
+
+    public static final String SERVER_LOCATION = "http://www.cottagym.selfhost.eu/images/cottaintern/vp/";
 
     //Day
     static final String KEY_LAST_UPDATED = "datum";
@@ -142,9 +153,17 @@ public class Database {
 
     private static final String KEY_COURSE_DEGREE = "key_course_degree";
     private static final String KEY_COURSE_NUMBER = "key_course_number";
+    private static final String KEY_USERNAME = "key_username";
+    private static final String KEY_PASSWORD = "key_password";
+    private static final String KEY_SELECTED_COURSES = "key_selected_courses";
+    private static final String KEY_COURSE_CHOSEN = "key_course_chosen";
 
     public static String courseDegree = "5";
     public static String courseNumber = "1";
+    public static String username = "";
+    public static String password = "";
+    public static boolean courseChosen = false;
+    public static ArrayList<String> selectedCourses = new ArrayList<>(); //11/12 only
 
     private static SharedPreferences sPrefs;
 
@@ -170,24 +189,42 @@ public class Database {
         if(curDay == null) return null;
         ArrayList<Entry> res = new ArrayList<>();
         for(Entry entry : curDay.entries) {
-            if(entry.course.degree == degree && (degree > 10 || entry.course.number == number)) {
-                res.add(entry);
-            }
+                if(entry.course.degree == degree
+                        && (degree > 10 || entry.course.number == number)
+                        && (selectedCourses.isEmpty() || degree <= 10 || selectedCourses.contains(entry.course.specification))) {
+                    res.add(entry);
+                }
         }
         Entry[] output = new Entry[res.size()];
         return res.toArray(output);
     }
 
     public static void load() {
-        courseDegree = sPrefs.getString(KEY_COURSE_DEGREE, "5");
-        courseNumber = sPrefs.getString(KEY_COURSE_NUMBER , "1");
+        courseDegree = sPrefs.getString(KEY_COURSE_DEGREE, courseDegree);
+        courseNumber = sPrefs.getString(KEY_COURSE_NUMBER , courseNumber);
+        username = sPrefs.getString(KEY_USERNAME, username);
+        password = sPrefs.getString(KEY_PASSWORD, password);
+        courseChosen = sPrefs.getBoolean(KEY_COURSE_CHOSEN, courseChosen);
 
-        courseDegree = "11";// TODO: 06.04.2018 ohh
+        HashSet<String> courseSet = (HashSet<String>) sPrefs.getStringSet(KEY_SELECTED_COURSES, new HashSet<>());
+        selectedCourses.addAll(Arrays.asList(courseSet.toArray(new String[courseSet.size()])));
+
+//        username = "";
+//        password = "";
+//        courseDegree = "5";
+//        courseNumber = "1";
+//        courseChosen = false;
     }
 
     public static void save() {
-        sPrefs.edit().putString(KEY_COURSE_DEGREE, courseDegree)
-                .putString(KEY_COURSE_NUMBER, courseNumber).apply();
+        HashSet<String> courseSet = new HashSet<>(selectedCourses);
+        sPrefs.edit()
+                .putBoolean(KEY_COURSE_CHOSEN, courseChosen)
+                .putStringSet(KEY_SELECTED_COURSES, courseSet)
+                .putString(KEY_COURSE_DEGREE, courseDegree)
+                .putString(KEY_COURSE_NUMBER, courseNumber)
+                .putString(KEY_USERNAME, username)
+                .putString(KEY_PASSWORD, password).apply();
     }
 
 }

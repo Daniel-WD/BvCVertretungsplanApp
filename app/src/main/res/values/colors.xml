@@ -1,78 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="toolbarColor">#1c1c1c</color>
-    <color name="backgroundMain">#121212</color>
+    <!-- course picker real -->
+    <color name="additionalInfo">#b0b0b0</color>
+    <color name="selectedCourses">#96ffffff</color>
+    <color name="selectedCoursesBorder">#c8ffffff</color>
 
-    <!-- entry not changed color-->
+    <!-- course picker -->
+    <color name="itemSelected">#ffffff</color>
+    <color name="itemNotSelected">#6affffff</color>
+
+    <!-- entry not changed color -->
     <color name="notChangedColor">#ffffff</color>
     <color name="infoColor">#cacaca</color>
 
-    <!-- Day Colors-->
+    <!-- NOT USED -->
+    <!-- Day Colors -->
     <color name="monday">#00ffff</color>
     <color name="tuesday">#00ffff</color>
     <color name="wednesday">#00ffff</color>
     <color name="thursday">#00ffff</color>
     <color name="friday">#00ffff</color>
+    <!-- NOT USED -->
 
-    <!-- background tint-->
-    <color name="mainBackgroundTint">#5a000000</color>
+    <!-- background tint -->
+    <color name="mainBackgroundTint">#6e000000</color>
+
+    <!-- background overlay tint -->
+    <color name="backgroundOverlayLoading">#64000000</color>
+    <color name="backgroundOverlayHeaderHidden">#46000000</color>
+
+    <!-- Login background -->
+    <color name="fullscreenDialogBg">#82000000</color>
+    <color name="hintColor">#6effffff</color>
+
+    <color name="loginIcon">#82ffffff</color>
+    <color name="loginIconFocused">#ffffff</color>
 
     <!-- day background -->
-    <color name="dayBackground">#32000000</color>
+    <color name="cardBackground">#32000000</color>
 
-    <!-- divider Color-->
+    <!-- divider Color -->
     <color name="dividerColor">#64ffffff</color>
 
-    <color name="dayListBgOne">#50000000</color>
-    <color name="dayListBgTwo">#78000000</color>
 
-    <color name="dayBg">#32000000</color>
     <color name="accent">#36D7B7</color>
-
-    <color name="splashButtonBg">#64000000</color>
-
-    <color name="errorBackground">#32000000</color>
-
-    <color name="mainBackground">#aa000000</color>
-
-    <color name="defaultBackgroundTint">#6e000000</color>
-    <color name="backgroundZoomTint">#96000000</color>
-
-
-    <color name="backgroundOverlay">#96000000</color>
-
-    <color name="headerBackground">#64000000</color>
-
-    <!-- Indicator -->
-    <color name="indicatorSelected">#fff</color>
-    <color name="indicatorUnselected">#64ffffff</color>
-
-
-    <color name="border_break_out">#10CED9</color>
-    <color name="border_course">#18C29C</color>
-    <color name="border_lesson_change">#178cc2</color>
-    <color name="border_room_change">#17c26d</color>
-    <color name="border_teacher_change">#17c23c</color>
-
-    <color name="one">#031727</color>
-    <color name="two">#126872</color>
-    <color name="three">#0B877D</color>
-    <color name="four">#00ffff</color>
-    <color name="_four">#18C29C</color>
-    <color name="five">#88F9D4</color>
-
-    <color name="four_dark">#1ACFA6</color>
-
-    <color name="prim">#1abc9c</color>
-    <color name="prim_dark">#16a085</color>
-
-    <color name="one_trans">#28031727</color>
-    <color name="two_trans">#28126872</color>
-    <color name="three_trans">#280b877d</color>
-    <color name="four_trans">#2818c29c</color>
-    <color name="five_trans">#cc88F9D4</color>
-
     <color name="snow">#ffffff</color><!--FEFCFC--><!--f0f0f1-->
 
 </resources>

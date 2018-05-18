@@ -3,6 +3,7 @@ package com.titaniel.bvcvertretungsplan.main_activity.day_list;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,14 +11,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
-import com.titaniel.bvcvertretungsplan.DateManager;
+import com.titaniel.bvcvertretungsplan.utils.DateManager;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
-import com.titaniel.bvcvertretungsplan.main_activity.CustomLinearLayoutManager;
-
-import java.util.Arrays;
 
 public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolder> {
 
@@ -26,19 +26,10 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
 
     private int mCount;
 
-    private final int sNotChangedColor;
-    private final Typeface mLightFont, mRegularFont;
+    private Handler mHandler = new Handler();
 
     public DayListAdapter(Context context) {
         mContext = context;
-
-        //typefaces
-        mLightFont = Typeface.create("sans-serif-light", Typeface.NORMAL);
-        mRegularFont = Typeface.create("sans-serif", Typeface.NORMAL);
-
-        //colors
-        sNotChangedColor = ContextCompat.getColor(context, R.color.notChangedColor);
-
         mCount = DateManager.preparedDates.length;
     }
 
@@ -50,9 +41,13 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
     }
 
     @Override
+    public void onViewRecycled(@NonNull DayHolder holder) {
+        super.onViewRecycled(holder);
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull DayHolder holder, int position) {
         int color = DateManager.preparedColors[position];
-
         holder.tvDay.setText(DateManager.preparedCapsDayList[position]);
 
         //adatper
@@ -71,13 +66,38 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
         return mCount;
     }
 
+    public void show(long delay) {
+        mRecyclerView.setVisibility(View.VISIBLE);
+        long additionalDelay = 50;
+        for(int i = 0; i < mCount; i++) {
+            DayHolder holder = (DayHolder) mRecyclerView.findViewHolderForAdapterPosition(i);
+            if(holder != null) {
+                holder.show(delay);
+                delay += additionalDelay;
+            }
+        }
+    }
+
+    public void hide(long delay) {
+        long additionalDelay = 0;
+        for(int i = 0; i < mCount; i++) {
+            DayHolder holder = (DayHolder) mRecyclerView.findViewHolderForAdapterPosition(i);
+            if(holder != null) {
+                holder.hide(delay);
+                delay += additionalDelay;
+            }
+        }
+        mHandler.postDelayed(() -> {
+            mRecyclerView.setVisibility(View.INVISIBLE);
+        }, delay + 150);
+    }
+
     static class DayHolder extends RecyclerView.ViewHolder {
 
         TextView tvDay;
         RecyclerView entryList;
 
         private LinearLayoutManager mLayoutManager;
-        private EntryListAdapter mAdapter;
 
         DayHolder(View itemView) {
             super(itemView);
@@ -89,6 +109,29 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
 
             entryList.setLayoutManager(mLayoutManager);
             entryList.addItemDecoration(new EntryItemDecoration(itemView.getContext()));
+        }
+
+        void show(long delay) {
+            itemView.setVisibility(View.VISIBLE);
+            itemView.setAlpha(0);
+            itemView.setTranslationY(50);
+            itemView.animate()
+                    .setStartDelay(delay)
+                    .setDuration(250)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .alpha(1)
+                    .translationY(0)
+                    .start();
+        }
+
+        void hide(long delay) {
+            itemView.setVisibility(View.VISIBLE);
+            itemView.animate()
+                    .setStartDelay(delay)
+                    .setDuration(150)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .alpha(0)
+                    .start();
         }
 
     }

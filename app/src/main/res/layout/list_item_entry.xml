@@ -13,37 +13,43 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tvHours"
+        <LinearLayout
+            android:id="@+id/lyHoursSpec"
             android:layout_width="64dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:fontFamily="sans-serif"
-            android:letterSpacing="0.2"
-            android:textAlignment="center"
-            android:textColor="@color/accent"
-            android:textSize="18sp"
             android:layout_centerVertical="true"
-            tools:text="1-2" />
+            android:layout_marginStart="10dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
-        <View
-            android:visibility="invisible"
-            android:id="@+id/dividerHours"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_alignBottom="@+id/tvInfo"
-            android:layout_alignStart="@id/tvHours"
-            android:layout_below="@id/tvHours"
-            android:layout_marginBottom="2dp"
-            android:layout_marginStart="29dp"
-            android:layout_marginTop="2dp"
-            android:background="@color/accent" />
+            <TextView
+                android:id="@+id/tvHours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:letterSpacing="0.2"
+                android:textAlignment="center"
+                android:textColor="@color/accent"
+                android:textSize="18sp"
+                tools:text="1-2" />
+
+            <TextView
+                android:id="@+id/tvSpec"
+                android:fontFamily="sans-serif"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                tools:text="Pnwi"
+                android:textColor="@color/accent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/layoutLesson"
             android:layout_width="54dp"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/tvHours"
+            android:layout_toEndOf="@id/lyHoursSpec"
             android:orientation="horizontal">
 
             <ImageView
@@ -136,12 +142,12 @@
             android:layout_marginEnd="16dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
-            android:layout_toEndOf="@id/tvHours"
+            android:layout_toEndOf="@id/lyHoursSpec"
             android:fontFamily="sans-serif-light"
             android:includeFontPadding="false"
+            android:lineSpacingMultiplier="1.2"
             android:textColor="@color/infoColor"
             android:textSize="14sp"
-            android:lineSpacingMultiplier="1.2"
             tools:text="Ausfall" />
 
     </RelativeLayout>

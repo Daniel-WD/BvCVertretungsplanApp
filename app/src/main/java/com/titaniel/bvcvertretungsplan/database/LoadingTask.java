@@ -6,9 +6,10 @@ import android.util.Log;
 import android.util.Xml;
 import android.view.View;
 
-import com.titaniel.bvcvertretungsplan.DateManager;
+import com.titaniel.bvcvertretungsplan.utils.DateManager;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
+import com.titaniel.bvcvertretungsplan.utils.Utils;
 
 import org.apache.commons.io.FileUtils;
 import org.joda.time.LocalDate;
@@ -17,14 +18,11 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -44,7 +42,6 @@ import static com.titaniel.bvcvertretungsplan.database.Database.KEY_TRUE;
 public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.LoadingResult> {
 
     private static final String TAG = LoadingTask.class.getSimpleName();
-    private static final String BASE_STRING = "http://www.cottagym.selfhost.eu/images/cottaintern/vp/";
 
     private static final int M_BYTE = 1048576;
 
@@ -62,11 +59,13 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
         Context context;
         boolean ioException;
         boolean otherException;
+        boolean internetCut;
 
-        LoadingResult(Context context, boolean ioException, boolean otherException) {
+        LoadingResult(Context context, boolean ioException, boolean otherException, boolean internetCut) {
             this.context = context;
             this.ioException = ioException;
             this.otherException = otherException;
+            this.internetCut = internetCut;
         }
     }
 
@@ -82,7 +81,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
 
     @Override
     protected void onPostExecute(LoadingResult result) {
-        ((MainActivity) result.context).onDatabaseLoaded(result.ioException, result.otherException);
+        ((MainActivity) result.context).onDatabaseLoaded(result.ioException, result.otherException, result.internetCut);
     }
 
     @Override
@@ -101,17 +100,17 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                 //Day Manager
                 DateManager.prepare();
 
-                return new LoadingResult(context, false, false);
+                return new LoadingResult(context, false, false, false);
             }
 
             //online
 
-            Authenticator.setDefault(new Authenticator() {
+            /*Authenticator.setDefault(new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication("schueler", "vpcotta_18".toCharArray());
                 }
-            });
+            });*/
 
             deleteAllFiles(context);
 
@@ -119,17 +118,19 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
             ArrayList<UrlHolder> allUrls = new ArrayList<>();
             for(String name : DateManager.serverFileList) {
                 try {
-                    URL url = new URL(BASE_STRING + name);
+                    URL url = new URL(Database.SERVER_LOCATION + name);
                     String t = url.getFile();
                     url.openStream().close();
                     allUrls.add(new UrlHolder(url, name));
-                } catch (Exception ignored) {
+                } catch (Exception e) {
+                    if(!Utils.isOnline(context)) new LoadingResult(context, false, false, true);
                 }
             }
 
             //download all files
             for(UrlHolder newFile : allUrls) {
-                downloadFile(context, newFile);
+                boolean success = downloadFile(context, newFile);
+                if(!success) return new LoadingResult(context, false, false, true);
             }
 
             //read all files
@@ -150,12 +151,12 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
 
         } catch (IOException e) {
             e.printStackTrace();
-            return new LoadingResult(context, true, false);
+            return new LoadingResult(context, true, false, false);
         } catch (Exception e) {
             e.printStackTrace();
-            return new LoadingResult(context, false, true);
+            return new LoadingResult(context, false, true, false);
         }
-        return new LoadingResult(context, false, false);
+        return new LoadingResult(context, false, false, false);
     }
 
     private void deleteAllFiles(Context context) {
@@ -166,7 +167,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
         }
     }
 
-    private void downloadFile(Context context, UrlHolder urlHolder) {
+    private boolean downloadFile(Context context, UrlHolder urlHolder) {
         //                BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
 //                String line = null;
 //                while((line = br.readLine())!= null){
@@ -180,10 +181,12 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
             //fos.getChannel().transferFrom(rbc, 0, 10*M_BYTE);
 
             File file = new File(context.getFilesDir(), urlHolder.name);
-            FileUtils.copyURLToFile(urlHolder.url, file);
+            FileUtils.copyURLToFile(urlHolder.url, file); // todo new old techno
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     private void readData(Context context, String[] filenames) throws IOException, XmlPullParserException {
@@ -212,8 +215,6 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
         }
 
         try(InputStream is = context.openFileInput(_name)) {
-
-
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(is, null);
@@ -308,7 +309,6 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
             Log.d(TAG, day.date.toString());
             Log.d(TAG, day.lastUpdate.toString());
             Database.days.add(day);
-
         }
     }
 
@@ -337,6 +337,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                 entry.info = entry.info == null ? "keine Info" : entry.info;
 
                 entry.teacher = DataUtils.wrapByComma(entry.teacher);
+                entry.room = DataUtils.wrapByComma(entry.room);
 
                 entry.lessonChangeVisible = entry.lessonChange && !entry.lesson.equals("---") ? View.VISIBLE : View.INVISIBLE;
                 entry.teacherChangeVisible = entry.teacherChange && !entry.teacher.equals("---") ? View.VISIBLE : View.INVISIBLE;

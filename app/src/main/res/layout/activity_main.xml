@@ -15,86 +15,96 @@
         android:src="@drawable/road"
         android:tint="@color/mainBackgroundTint" />
 
+    <View
+        android:id="@+id/vBackgroundOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/backgroundOverlayLoading" />
 
     <ImageView
-        android:elevation="1dp"
         android:id="@+id/ivEdit"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:padding="16dp"
-        android:src="@drawable/ic_edit"
+        android:elevation="1dp"
+        android:padding="14dp"
+        android:src="@drawable/ic_filter_variant"
         android:tint="@color/snow" />
-
 
     <RelativeLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="150dp">
+        android:layout_height="130dp">
 
         <TextView
+            android:layout_centerInParent="true"
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif-light"
-            android:letterSpacing="0.12"
-            android:text="@string/app_name"
+            android:fontFamily="@font/aqua"
+            android:text="@string/title"
             android:textColor="@color/snow"
-            android:textSize="23sp" />
+            android:textSize="19sp" />
 
         <LinearLayout
+            android:layout_marginTop="4dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/tvTitle"
             android:id="@+id/lyClass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/tvTitle"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="4dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
             <ImageView
                 android:layout_width="18dp"
                 android:layout_height="18dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="8dp"
-                android:alpha="1"
-                android:src="@drawable/ic_class"
+                android:src="@drawable/ic_account_group"
                 android:tint="@color/snow" />
 
             <TextView
+                android:letterSpacing="0.1"
                 android:id="@+id/tvClass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:alpha="1"
-                android:fontFamily="sans-serif"
+                android:layout_marginStart="4dp"
+                android:fontFamily="sans-serif-medium"
                 android:textColor="@color/snow"
-                android:textSize="15sp"
-                tools:text="11" />
+                android:textSize="13sp"
+                tools:text="6/4" />
 
         </LinearLayout>
+
     </RelativeLayout>
 
+    <TextView
+        android:visibility="gone"
+        android:textSize="14sp"
+        android:layout_marginTop="32dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/header"
+        android:id="@+id/tvNothing"
+        android:textColor="@color/snow"
+        android:text="@string/noEntries"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <android.support.v7.widget.RecyclerView
-        android:paddingTop="130dp"
         android:id="@+id/dayList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:overScrollMode="never"
-        android:paddingBottom="8dp"/>
+        android:paddingTop="134dp" />
 
-    <com.wang.avi.AVLoadingIndicatorView
+    <com.victor.loading.rotate.RotateLoading
         android:id="@+id/loadingView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_centerInParent="true"
-        android:visibility="invisible"
-        app:indicatorName="BallPulseIndicator" />
+        app:loading_color="@color/snow"
+        app:loading_width="3dp" />
 
     <fragment
         android:id="@+id/fragmentErr"
@@ -102,15 +112,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        tools:layout="@layout/fragment_error" />
+        android:layout_marginEnd="-4dp"
+        android:layout_marginStart="-4dp"
+        tools:layout="@layout/fragment_error"
+        tools:visibility="invisible" />
 
     <fragment
         android:id="@+id/fragmentCourseSettings"
-        android:name="com.titaniel.bvcvertretungsplan.main_activity.course_settings_fragment.CourseSettingsFragment"
+        android:name="com.titaniel.bvcvertretungsplan.main_activity.course_settings.CourseSettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        tools:layout="@layout/fragment_course_settings" />
+        tools:layout="@layout/fragment_course_settings"
+        tools:visibility="invisible" />
 
+    <fragment
+        android:id="@+id/fragmentLogin"
+        android:name="com.titaniel.bvcvertretungsplan.main_activity.login_fragment.LoginFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        tools:layout="@layout/fragment_course_settings"
+        tools:visibility="invisible" />
 
 </RelativeLayout>
