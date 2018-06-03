@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout für das Login Fragment... siehe LoginFragment -->
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -22,7 +23,7 @@
         android:id="@+id/ivIcon"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/a_logo"
+        android:src="@drawable/login"
         android:tint="@color/snow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

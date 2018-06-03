@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +28,10 @@ import com.titaniel.bvcvertretungsplan.database.Database;
 import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
 import com.titaniel.bvcvertretungsplan.utils.Utils;
 
+/**
+ * @author Daniel Weidensdörfer
+ * Fragment für das Login
+ */
 public class LoginFragment extends Fragment {
 
     private View mRoot;
@@ -45,18 +48,32 @@ public class LoginFragment extends Fragment {
     private LinearLayout mLyLogin;
     private TextView mTvTitle;
 
-    private int colorAccent, colorNormal = Color.WHITE;
+    private int colorFocused, colorNormal = Color.WHITE;
 
     private Handler mHandler = new Handler();
 
     private MainActivity mActivity;
 
+    /**
+     * Von Android aufgerufen wenn die <code>View</code> erstellt werden soll
+     * Liefert die <code>View</code> zurück
+     *
+     * @param inflater LayoutInflater
+     * @param container Container
+     * @param savedInstanceState SavedInstanceState
+     * @return View
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
+    /**
+     * Von Android aufgerufen wenn das Fragment startet
+     *
+     * Enthält die Initialisierungen
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -64,7 +81,7 @@ public class LoginFragment extends Fragment {
         mActivity = (MainActivity) getActivity();
 
         colorNormal = ContextCompat.getColor(getContext(), R.color.loginIcon);
-        colorAccent = ContextCompat.getColor(getContext(), R.color.loginIconFocused);
+        colorFocused = ContextCompat.getColor(getContext(), R.color.loginIconFocused);
 
         //init
         mRoot = getView();
@@ -129,6 +146,10 @@ public class LoginFragment extends Fragment {
         mRoot.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * Anzeigen des Texts, welcher einen Fehler enthält(Falsches Login oder keine Internet Verbindung)
+     * @param delay Zeitverzögerung
+     */
     private void showFail(long delay) {
         mTvFail.animate()
                 .setStartDelay(delay)
@@ -138,6 +159,10 @@ public class LoginFragment extends Fragment {
                 .alpha(1);
     }
 
+    /**
+     * Verstecken des Fehler Texts
+     * @param delay Zeitverzögerung
+     */
     private void hideFail(long delay) {
         mTvFail.animate()
                 .setStartDelay(delay)
@@ -146,6 +171,9 @@ public class LoginFragment extends Fragment {
                 .alpha(0);
     }
 
+    /**
+     * Versteckt den OK Button und zeigt die Lade Anzeige an
+     */
     private void showLoadingBar() {
         mTUser.setEnabled(false);
         mTPassword.setEnabled(false);
@@ -173,6 +201,9 @@ public class LoginFragment extends Fragment {
                 .start();
     }
 
+    /**
+     * Zeigt den OK Button und versteckt die Lade Anzeige
+     */
     private void hideLoadingBar() {
         mTUser.setEnabled(true);
         mTPassword.setEnabled(true);
@@ -196,6 +227,10 @@ public class LoginFragment extends Fragment {
                 .start();
     }
 
+    /**
+     * Anzeige dieses Fragments
+     * @param delay Zeitverzögerung
+     */
     public void show(long delay) {
         mRoot.setVisibility(View.VISIBLE);
 
@@ -281,6 +316,10 @@ public class LoginFragment extends Fragment {
 
     }
 
+    /**
+     * Verstecken dieses Fragments
+     * @param delay Zeitverzögerung
+     */
     public void hide(long delay) {
         mRoot.animate()
                 .setStartDelay(delay)
@@ -295,13 +334,22 @@ public class LoginFragment extends Fragment {
         mActivity.startLoading(delay);
     }
 
+    /**
+     * Beim Login gibt es links bei den Eingabefeldern supergeile Icons...
+     * Wenn etwas in dem Eingabefeld steht ist das jeweilige Icon vollständig weiß... ansonsten ist es gräulich
+     *
+     * Die Methode ändert also die Farbe des Bildes einer ImageView(View in der ein Bild eingezeigt wird)
+     *
+     * @param iv ImageView
+     * @param focus true wenn das Icon weiß werden soll, ansonsten wird es gräulich
+     */
     private void changeIvColor(ImageView iv, boolean focus) {
         int colorFrom, colorTo;
         if(focus) {
             colorFrom = colorNormal;
-            colorTo = colorAccent;
+            colorTo = colorFocused;
         } else {
-            colorFrom = colorAccent;
+            colorFrom = colorFocused;
             colorTo = colorNormal;
         }
         ValueAnimator colorAnim = ValueAnimator.ofArgb(colorFrom, colorTo);

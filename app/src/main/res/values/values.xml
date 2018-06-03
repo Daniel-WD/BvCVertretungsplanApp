@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- enthält diverse Werte -->
 <resources>
     <dimen name="dividerStartMargin">8dp</dimen>
     <dimen name="dividerEndMargin">8dp</dimen>

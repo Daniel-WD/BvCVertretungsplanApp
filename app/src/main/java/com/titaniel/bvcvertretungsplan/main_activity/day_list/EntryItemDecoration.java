@@ -11,15 +11,21 @@ import android.view.View;
 
 import com.titaniel.bvcvertretungsplan.R;
 
+/**
+ * @author Daniel Weidensdörfer
+ * Helferklasse, von android gestellt
+ * Ist dafür da, Linien zwischen den VP-Einträgen zu zeichenen (fürs Design)
+ */
 public class EntryItemDecoration extends RecyclerView.ItemDecoration {
 
-    private Paint mDividerPaint, mBottomLinePaint;
+    private Paint mDividerPaint;
+    private final float endMargin, startMargin; //linker und rechter Abstand der Linie zum Rand
 
-    private final float endMargin, startMargin;
-
-//    private static final float SCALE = 0.95f;
-
-    public EntryItemDecoration(Context context) {
+    /**
+     * Konstruktor
+     * @param context
+     */
+    EntryItemDecoration(Context context) {
         int dividerColor = ContextCompat.getColor(context, R.color.dividerColor);
 
         endMargin = context.getResources().getDimensionPixelSize(R.dimen.dividerEndMargin);
@@ -29,13 +35,14 @@ public class EntryItemDecoration extends RecyclerView.ItemDecoration {
         mDividerPaint.setColor(dividerColor);
         mDividerPaint.setStyle(Paint.Style.STROKE);
         mDividerPaint.setStrokeWidth(1);
-
-        mBottomLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mBottomLinePaint.setColor(Color.WHITE);
-        mBottomLinePaint.setStyle(Paint.Style.STROKE);
-        mBottomLinePaint.setStrokeWidth(2);
     }
 
+    /**
+     * Zeichnen der Linien auf die List
+     * @param c Canvas... also die Zeichenoberfläche
+     * @param parent RecyclerView... die Liste
+     * @param state Status der Liste... (im Scroll, im Aus-Scrollen, oder Nicht-Scrollend)
+     */
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDrawOver(c, parent, state);
@@ -43,24 +50,18 @@ public class EntryItemDecoration extends RecyclerView.ItemDecoration {
         for(int i = 0; i < parent.getChildCount() - 1; i++) {
             View child = parent.getChildAt(i);
             float y = child.getY() - mDividerPaint.getStrokeWidth()/2 + child.getHeight();
-//            float dx = (c.getWidth()*(1 - SCALE))/2;
-//            int[] loc = new int[2];
-//            child.findViewById(R.id.layoutLesson).getLocationOnScreen(loc);
-//            float startX = loc[0];
             c.drawLine(startMargin, y, c.getWidth() - endMargin, y, mDividerPaint);
         }
-
-        //bottom line
-        /*View child = parent.getChildAt(parent.getChildCount() - 1);
-        if(child != null) {
-            RecyclerView.ViewHolder holder = parent.findContainingViewHolder(child);
-            if(holder != null) {
-                float y = child.getY() - mBottomLinePaint.getStrokeWidth()/2 + child.getHeight();
-                c.drawLine(0, y, c.getWidth(), y, mBottomLinePaint);
-            }
-        }*/
     }
 
+    /**
+     * Methode um der Liste zu "sagen", welchen zusätzlichen Abstand die Dekorationen (in diesem Fall die Linie)
+     * pro Element einnehmen
+     * @param outRect Rect um abstände mitzuteilen
+     * @param view View, jeweiliges Listenelement
+     * @param parent RecyclerView... die Liste
+     * @param state Status der Liste
+     */
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         super.getItemOffsets(outRect, view, parent, state);

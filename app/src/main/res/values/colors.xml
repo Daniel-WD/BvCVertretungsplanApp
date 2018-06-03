@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- enthält alle Farben -->
 <resources>
 
     <!-- course picker real -->
@@ -11,7 +12,6 @@
     <color name="itemNotSelected">#6affffff</color>
 
     <!-- entry not changed color -->
-    <color name="notChangedColor">#ffffff</color>
     <color name="infoColor">#cacaca</color>
 
     <!-- NOT USED -->

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Layout für das Klassenwahl Fragment, siehe ClassSettingsFragment-->
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true">
+
+    <View
+        android:id="@+id/vBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/fullscreenDialogBg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingTop="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvChooseClass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/chooseClass"
+            android:textColor="@color/snow"
+            android:textSize="19sp"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <RelativeLayout
+            android:id="@+id/lyClass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/tvCourseDegree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
+                android:textColor="@color/accent"
+                android:textSize="40sp"
+                tools:text="10" />
+
+            <TextView
+                android:id="@+id/tvCourseNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tvCourseDegree"
+                android:layout_marginBottom="0dp"
+                android:layout_marginStart="2dp"
+                android:layout_toEndOf="@id/tvCourseDegree"
+                android:fontFamily="sans-serif-light"
+                android:textColor="@color/accent"
+                android:textSize="20sp"
+                tools:text="3" />
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/courseDegreeList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="18dp"
+            android:overScrollMode="never"
+            tools:layout_height="40dp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/courseNumberList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="4dp"
+            android:overScrollMode="never"
+            tools:layout_height="40dp" />
+
+        <LinearLayout
+            android:id="@+id/lyButtons"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="130dp"
+                android:layout_height="40dp"
+                android:layout_marginEnd="40dp"
+                android:alpha="0.6"
+                android:background="@android:color/transparent"
+                android:text="@string/back"
+                android:textColor="@color/snow"
+                android:textSize="13sp" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/btnOk"
+                    android:layout_width="130dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/btn_outline_background"
+                    android:includeFontPadding="false"
+                    android:text="@string/ok"
+                    android:textColor="@color/accent"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnCourses"
+                    android:layout_width="130dp"
+                    android:layout_height="40dp"
+                    android:alpha="0"
+                    android:background="@drawable/btn_outline_background"
+                    android:includeFontPadding="false"
+                    android:text="@string/courses"
+                    android:textColor="@color/accent"
+                    android:textSize="13sp" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:visibility="invisible"
+            android:id="@+id/btnSkipCourses"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:alpha="0.6"
+            android:background="@android:color/transparent"
+            android:text="@string/skipCourses"
+            android:textColor="@color/snow"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
+    <fragment
+        android:id="@+id/fragmentCoursePicker"
+        android:name="com.titaniel.bvcvertretungsplan.main_activity.class_settings.course_picker.CoursePickerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_course_picker"
+        tools:visibility="invisible" />
+
+</android.support.constraint.ConstraintLayout>

@@ -15,114 +15,60 @@ import android.widget.TextView;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
 
+/**
+ * @author Daniel Weidensdörfer
+ * Adapter für die VP-Einträge in jedem Tag-Element
+ */
 public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.EntryHolder> {
 
     private Context mContext;
-    private RecyclerView mRecyclerView;
-
     private Database.Entry[] mEntries;
 
-    private final int sNotChangedColor;
-    private final Typeface mLightFont, mRegularFont;
-
-    public EntryListAdapter(Context context, Database.Entry[] entries) {
+    /**
+     * Konstruktor
+     * @param context Context
+     * @param entries Einträge Array
+     */
+    EntryListAdapter(Context context, Database.Entry[] entries) {
         mContext = context;
         mEntries = entries;
-
-        //typefaces
-        mLightFont = Typeface.create("sans-serif-light", Typeface.NORMAL);
-        mRegularFont = Typeface.create("sans-serif", Typeface.NORMAL);
-
-        //colors
-        sNotChangedColor = ContextCompat.getColor(context, R.color.notChangedColor);
-
     }
 
+    /*
+ IM FOLGENDEN SEHEN SIE METHODEN DIE SEHR ADAPTER SPEZIFISCH SIND UND DAHER NUR VERSTANDEN
+ WERDEN KÖNNEN, WENN MAN SICH MIT ANDROID BESCHÄFTIGT. AUS DIESEM GRUND LASSE ICH DIE ERLÄUTERUNG
+ DER METHODEN HIER WEG, DA DIESE VIEL ZU UMFANGREICH WERDEN WÜRDEN
+  */
     @NonNull
     @Override
     public EntryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.list_item_entry, parent, false);
         return new EntryHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull EntryHolder holder, int position) {
 
-        EntryHolder entryHolder = (EntryHolder) holder;
-
         Database.Entry entry = mEntries[position];
-//
-//            entryHolder.dotLesson.setColorFilter(color);
-//            entryHolder.dotTeacher.setColorFilter(color);
-//            entryHolder.dotRoom.setColorFilter(color);
+        holder.tvSpec.setVisibility(entry.specVisible);
 
-        entryHolder.dotLesson.setVisibility(View.INVISIBLE);
-        entryHolder.dotTeacher.setVisibility(View.INVISIBLE);
-        entryHolder.dotRoom.setVisibility(View.INVISIBLE);
-
-//            entryHolder.dotLesson.setVisibility(entry.lessonChangeVisible);
-//            entryHolder.dotTeacher.setVisibility(entry.teacherChangeVisible);
-//            entryHolder.dotRoom.setVisibility(entry.roomChangeVisible);
-//
-        entryHolder.tvSpec.setVisibility(entry.specVisible);
-//        entryHolder.tvTeacherChange.setVisibility(entry.teacherChangeVisible);
-//        entryHolder.tvRoomChange.setVisibility(entry.roomChangeVisible);
-//        entryHolder.tvLessonChange.setVisibility(entry.lessonChangeVisible);
-        //entryHolder.tvBreakOut.setVisibility(entry.breakOutVisible);
-
-//        entryHolder.tvHours.setText(String.valueOf(position));
-//        entryHolder.tvSpec.setText(String.valueOf(position));
-//        entryHolder.tvLesson.setText(String.valueOf(position));
-//        entryHolder.tvTeacher.setText(String.valueOf(position));
-//        entryHolder.tvRoom.setText(String.valueOf(position));
-//        entryHolder.tvInfo.setText(String.valueOf(position));
-
-        entryHolder.tvSpec.setText(entry.course.specification);
-        entryHolder.tvHours.setText(entry.hoursText);
-        entryHolder.tvLesson.setText(entry.lesson);
-        entryHolder.tvTeacher.setText(entry.teacher);
-        entryHolder.tvRoom.setText(entry.room);
-        entryHolder.tvInfo.setText(entry.info);
-
-        if(entry.lessonChange) {
-            entryHolder.tvLesson.setTextColor(Color.WHITE);
-            entryHolder.tvLesson.setTypeface(mRegularFont);
-        } else {
-            entryHolder.tvLesson.setTextColor(sNotChangedColor);
-            entryHolder.tvLesson.setTypeface(mRegularFont);//todo
-        }
-        if(entry.roomChange) {
-            entryHolder.tvRoom.setTextColor(Color.WHITE);
-            entryHolder.tvRoom.setTypeface(mRegularFont);
-        } else {
-            entryHolder.tvRoom.setTextColor(sNotChangedColor);
-            entryHolder.tvRoom.setTypeface(mRegularFont);//todo
-        }
-        if(entry.teacherChange) {
-            entryHolder.tvTeacher.setTextColor(Color.WHITE);
-            entryHolder.tvTeacher.setTypeface(mRegularFont);
-        } else {
-            entryHolder.tvTeacher.setTextColor(sNotChangedColor);
-            entryHolder.tvTeacher.setTypeface(mRegularFont);//todo
-        }
-
+        holder.tvSpec.setText(entry.course.specification);
+        holder.tvHours.setText(entry.hoursText);
+        holder.tvLesson.setText(entry.lesson);
+        holder.tvTeacher.setText(entry.teacher);
+        holder.tvRoom.setText(entry.room);
+        holder.tvInfo.setText(entry.info);
     }
-
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        mRecyclerView = recyclerView;
-    }
-
     @Override
     public int getItemCount() {
         return mEntries.length;
     }
 
+    /**
+     * Repräsentiert einen VP Eintrag
+     */
     static class EntryHolder extends RecyclerView.ViewHolder {
 
-        TextView tvRoom, tvSpec, tvHours, tvLesson, tvTeacher, tvInfo, tvBreakOut, tvTeacherChange, tvLessonChange, tvRoomChange;
-        ImageView dotLesson, dotTeacher, dotRoom;
+        TextView tvRoom, tvSpec, tvHours, tvLesson, tvTeacher, tvInfo;
 
         EntryHolder(View itemView) {
             super(itemView);
@@ -133,10 +79,6 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
             tvTeacher = itemView.findViewById(R.id.tvTeacher);
             tvInfo = itemView.findViewById(R.id.tvInfo);
             tvSpec = itemView.findViewById(R.id.tvSpec);
-
-            dotLesson = itemView.findViewById(R.id.dotLesson);
-            dotTeacher = itemView.findViewById(R.id.dotTeacher);
-            dotRoom = itemView.findViewById(R.id.dotRoom);
         }
 
     }

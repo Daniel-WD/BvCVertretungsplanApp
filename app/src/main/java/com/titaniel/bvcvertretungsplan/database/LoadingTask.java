@@ -20,8 +20,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.Authenticator;
-import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,12 +37,23 @@ import static com.titaniel.bvcvertretungsplan.database.Database.KEY_ROOM;
 import static com.titaniel.bvcvertretungsplan.database.Database.KEY_TEACHER;
 import static com.titaniel.bvcvertretungsplan.database.Database.KEY_TRUE;
 
+/**
+ * @author Daniel Weidensdörfer
+ *
+ * Klasse für das Downloaden der Daten und Verarbeiten dieser Daten
+ *
+ * Man beachte, dass diese Klasse von AsyncTask ableitet, was eine Klasse aus dem Android SDK ist.
+ * Sie ist dafür da, relativ kurze Operationen in einem separaten Thread zu erledigen und ein
+ * Ergebnis an den Hauptthread zurückzuliefern.
+ *
+ */
 public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.LoadingResult> {
 
     private static final String TAG = LoadingTask.class.getSimpleName();
 
-    private static final int M_BYTE = 1048576;
-
+    /**
+     * Repräsentiert eine URL mit dem jeweiligen Dateinamen
+     */
     static class UrlHolder {
         URL url;
         String name;
@@ -55,6 +64,9 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
         }
     }
 
+    /**
+     * Ergebnis dieses Tasks
+     */
     static class LoadingResult {
         Context context;
         boolean ioException;
@@ -69,9 +81,12 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
         }
     }
 
+    /**
+     * Eingabe für den Task
+     */
     static class Input {
         Context context;
-        boolean offline;
+        boolean offline; //ob man offline ist, wenn ja dann nur Daten lesen und keinen Fehler werfen wenn keine Internetverbind da ist
 
         Input(Context context, boolean offline) {
             this.context = context;
@@ -79,20 +94,20 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
         }
     }
 
-    @Override
-    protected void onPostExecute(LoadingResult result) {
-        ((MainActivity) result.context).onDatabaseLoaded(result.ioException, result.otherException, result.internetCut);
-    }
-
+    /**
+     * Download und Lesen der Daten.
+     * Wird von AsyncTask aufgerufen und in einem separaten Thread ausgeführt.
+     *
+     * @param inputs Input Daten
+     * @return Ergebnis über Erfolg oder Fehlertyp
+     */
     @Override
     protected LoadingResult doInBackground(LoadingTask.Input... inputs) {
         Context context = inputs[0].context;
         try {
-            // TODO: 15.02.2018 delete all outdated files
 
-            //offline
-            //we are offline and we only load already downloaded data
-            if(inputs[0].offline) {
+            //@me we are offline and we only load already downloaded data
+            if(inputs[0].offline) { //OFFLINE
                 //read all current existing files
                 readData(context, context.fileList());
                 prepareEntries(context);
@@ -100,65 +115,67 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                 //Day Manager
                 DateManager.prepare();
 
-                return new LoadingResult(context, false, false, false);
+                return new LoadingResult(context, false, false, false); // Erfolg
             }
 
-            //online
-
-            /*Authenticator.setDefault(new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication("schueler", "vpcotta_18".toCharArray());
-                }
-            });*/
+            //ONLINE
 
             deleteAllFiles(context);
 
-            //list files
+            //Alle Dateien auflisten, die erreichbar sind
             ArrayList<UrlHolder> allUrls = new ArrayList<>();
             for(String name : DateManager.serverFileList) {
                 try {
                     URL url = new URL(Database.SERVER_LOCATION + name);
-                    String t = url.getFile();
+                    url.getFile();
                     url.openStream().close();
                     allUrls.add(new UrlHolder(url, name));
                 } catch (Exception e) {
-                    if(!Utils.isOnline(context)) new LoadingResult(context, false, false, true);
+                    if(!Utils.isOnline(context)) return new LoadingResult(context, false, false, true);
                 }
             }
 
-            //download all files
+            //Erreichbare Dateien Downloaden
             for(UrlHolder newFile : allUrls) {
                 boolean success = downloadFile(context, newFile);
                 if(!success) return new LoadingResult(context, false, false, true);
             }
 
-            //read all files
+            //read all files //Daten lesen
             readData(context, context.fileList());
 
-            //prepare all entries for classification
+            //prepare all entries for classification // Daten vorbereiten
             prepareEntries(context);
 
-            //Day Manager
+            //Day Manager // Datumssachen vorbereiten
             DateManager.prepare();
-
-            /*for(Database.Day day : Database.days) {
-                Log.d("da", "da");
-                for(Database.Entry entry : day.entries) {
-                    Log.d("hallo?", "str::" + entry.courseString + " --- " + entry.course.toString());
-                }
-            }*/
 
         } catch (IOException e) {
             e.printStackTrace();
-            return new LoadingResult(context, true, false, false);
+            return new LoadingResult(context, true, false, false); //Lesefehler/Netzwerkfehler
         } catch (Exception e) {
             e.printStackTrace();
-            return new LoadingResult(context, false, true, false);
+            return new LoadingResult(context, false, true, false); //anderer Fehler
         }
-        return new LoadingResult(context, false, false, false);
+        return new LoadingResult(context, false, false, false);//kein Fehler
     }
 
+    /**
+     * Der <code>Activity</code> sagen, dass das Laden fertig ist/bzw fehlgeschlagen ist
+     * Wird von AsyncTask aufgerufen und im Hauptthread ausgeführt nachdem <code>doInBackground</code>
+     * ausgeführt wurde
+     *
+     * @param result Ergebnis von <code>doInBackground</code>
+     */
+    @Override
+    protected void onPostExecute(LoadingResult result) {
+        ((MainActivity) result.context).onDatabaseLoaded(result.ioException, result.otherException, result.internetCut);
+    }
+
+    /**
+     * Alle gespeicherten Daten löschen
+     * @param context
+     */
     private void deleteAllFiles(Context context) {
         for(String name : context.fileList()) {
             if(name.charAt(0) == 'k') {
@@ -167,19 +184,15 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
         }
     }
 
+    /**
+     * Eine Datei downloaden
+     *
+     * @param context Context
+     * @param urlHolder UrlHolder
+     * @return
+     */
     private boolean downloadFile(Context context, UrlHolder urlHolder) {
-        //                BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()));
-//                String line = null;
-//                while((line = br.readLine())!= null){
-//                    System.out.println(line);
-//                }
-//                br.close();
-
-        try/*(InputStream is = urlHolder.url.openStream();
-                FileOutputStream fos = context.openFileOutput(urlHolder.name, Context.MODE_PRIVATE);
-                ReadableByteChannel rbc = Channels.newChannel(urlHolder.url.openStream()))*/ {
-            //fos.getChannel().transferFrom(rbc, 0, 10*M_BYTE);
-
+        try {
             File file = new File(context.getFilesDir(), urlHolder.name);
             FileUtils.copyURLToFile(urlHolder.url, file); // todo new old techno
         } catch (IOException e) {
@@ -189,6 +202,13 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
         return true;
     }
 
+    /**
+     * Lesen aller daten
+     * @param context Context
+     * @param filenames Dateinamen
+     * @throws IOException Lesefehler
+     * @throws XmlPullParserException XMLFehler
+     */
     private void readData(Context context, String[] filenames) throws IOException, XmlPullParserException {
         if(filenames == null) return;
         for(String name : filenames) {
@@ -196,6 +216,14 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
         }
     }
 
+    /**
+     * Lesen einer XML Datei
+     *
+     * @param context Context
+     * @param _name Name
+     * @throws IOException Lesefehler
+     * @throws XmlPullParserException XMLFehler
+     */
     private void readFile(Context context, String _name) throws IOException, XmlPullParserException {
         if(!Arrays.asList(DateManager.serverFileList).contains(_name)) return;
         Database.Day day = new Database.Day();
@@ -206,13 +234,13 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                 DataUtils.monthInName(_name),
                 DataUtils.dayInName(_name));
 
-        try(InputStream is = context.openFileInput(_name)) {
+/*        try(InputStream is = context.openFileInput(_name)) { //für mich
             Scanner s = new Scanner(is);
 
             while(s.hasNextLine()) {
                 Log.d("hallo", s.nextLine());
             }
-        }
+        }*/
 
         try(InputStream is = context.openFileInput(_name)) {
             XmlPullParser parser = Xml.newPullParser();
@@ -221,7 +249,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
             parser.next();
 
             parser.require(XmlPullParser.START_TAG, null, "vp");
-            while(parser.next() != XmlPullParser.END_DOCUMENT) {
+            while(parser.next() != XmlPullParser.END_DOCUMENT) { //geht alle Zeilen durch und guckt was da drin steht :D, dementsprechend werden bestimmte Operationen durchgeführt
                 switch(parser.getEventType()) {
                     case XmlPullParser.START_TAG:
                         switch(parser.getName()) {
@@ -238,7 +266,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
 
                             case KEY_DISABLED_COURSES:
                                 parser.next();
-                                day.disabledCourses = parser.getText();
+                                day.disabledClasses = parser.getText();
                                 continue;
 
                             case KEY_DISABLED_ROOMS:
@@ -306,12 +334,16 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                         break;
                 }
             }
-            Log.d(TAG, day.date.toString());
-            Log.d(TAG, day.lastUpdate.toString());
             Database.days.add(day);
         }
     }
 
+    /**
+     * Essentiel um das Filtern zu ermöglichen
+     * Geht alle Einträge in jedem Tag durch und bestimmt <code>Hours</code> und <code>Course</code> Objekte
+     *
+     * @param context Context
+     */
     private void prepareEntries(Context context) {
         for(Database.Day day : Database.days) {
             ArrayList<Database.Entry> newEntries = new ArrayList<>();
@@ -329,7 +361,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                     entry.hoursText = context.getString(R.string.temp_hours, entry.hours.startHour, entry.hours.endHour);
                 }
 
-                entry.specVisible = entry.course.specification.equals("") ? View.GONE : View.VISIBLE;
+                entry.specVisible = entry.course.specification.equals("") ? View.GONE : View.VISIBLE; //für angezeigte Liste
 
                 entry.lesson = entry.lesson == null ? "---" : entry.lesson;
                 entry.teacher = entry.teacher == null ? "---" : entry.teacher;
@@ -339,9 +371,9 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                 entry.teacher = DataUtils.wrapByComma(entry.teacher);
                 entry.room = DataUtils.wrapByComma(entry.room);
 
-                entry.lessonChangeVisible = entry.lessonChange && !entry.lesson.equals("---") ? View.VISIBLE : View.INVISIBLE;
-                entry.teacherChangeVisible = entry.teacherChange && !entry.teacher.equals("---") ? View.VISIBLE : View.INVISIBLE;
-                entry.roomChangeVisible = entry.roomChange && !entry.room.equals("---") ? View.VISIBLE : View.INVISIBLE;
+//                entry.lessonChangeVisible = entry.lessonChange && !entry.lesson.equals("---") ? View.VISIBLE : View.INVISIBLE;
+//                entry.teacherChangeVisible = entry.teacherChange && !entry.teacher.equals("---") ? View.VISIBLE : View.INVISIBLE;
+//                entry.roomChangeVisible = entry.roomChange && !entry.room.equals("---") ? View.VISIBLE : View.INVISIBLE;
 
                 /*if(entry.room.equals("---") && entry.lesson.equals("---") && entry.teacher.equals("---")) {
                     entry.lesson = "Ausfall";
@@ -349,6 +381,10 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                     entry.teacher = "";
                 }*/
 
+                //Vervielfältigund eines Eintrags wenn er für mehrere Klassen bestimmt ist
+                //Beispiel:
+                // Ein Eintrag mit der Angabe: "10.1,10.2,10.4/ SpJu"
+                // wird in 3 Einträge mit den Angaben "10.1/ SpJu", "10.2/ SpJu", "10.4/ SpJu" umgewandelt
                 for(int i = 1; i < courses.length; i++) {
                     Database.Entry newEntry = entry.copy();
                     newEntry.course = courses[i];

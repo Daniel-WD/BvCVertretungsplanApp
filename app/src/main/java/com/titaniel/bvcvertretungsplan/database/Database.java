@@ -19,10 +19,16 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * @author Daniel Weidensdörfer
+ *
+ * Enthält alle Daten für die Auslesung der XML Dateien (wie Tags) und speichert Objekte aller
+ * Einträge der Vertretungspläne in geordneter Datenstruktur.
+ */
 public class Database {
-
-
     public static final String SERVER_LOCATION = "http://www.cottagym.selfhost.eu/images/cottaintern/vp/";
+
+    // DIE FOLGENDEN KONSTANTEN SIND SCHLÜSSELWORTER IN DER VERTRETUNGSPLAN XML
 
     //Day
     static final String KEY_LAST_UPDATED = "datum";
@@ -44,26 +50,27 @@ public class Database {
     static final String KEY_ROOM_CHANGE = "rageaendert";
     static final String KEY_TRUE = "ae";
 
+    /**
+     * Repräsentiert einen Tag mit Vertretung
+     */
     public static class Day {
-        public String name;
-        public ArrayList<Entry> entries = new ArrayList<>();
-        public LocalDate date;
-        public LocalDateTime lastUpdate;
-        public String disabledCourses;
-        public String disabledRooms;
+        public String name; //Dateiname
+        public ArrayList<Entry> entries = new ArrayList<>(); //Einträge
+        public LocalDate date; //Datum
+        public LocalDateTime lastUpdate;  //zuletzt aktuallisiert
+        public String disabledClasses; //nicht anwesende Klassen
+        public String disabledRooms; //nicht betretbare Räume :D
     }
 
+    /**
+     * Repräsentiert einen Eintrag im Vertretungsplan
+     */
     public static class Entry implements Comparable<Entry> {
-        public Course course;
-        public Hours hours;
-        public String courseString, hoursString, lesson, teacher, room, info;
-        public String hoursText;
-        public boolean lessonChange = false, teacherChange = false, roomChange = false;
-        public int lessonChangeVisible = View.VISIBLE;
-        public int teacherChangeVisible = View.VISIBLE;
-        public int roomChangeVisible = View.VISIBLE;
-        public int specVisible = View.VISIBLE;
-        public int breakOutVisible = View.VISIBLE;
+        public Course course; //Klasse (auch wenn da Course steht ist Klasse gemeint, da Class ein Java Schlüsselwort ist und deshalb nicht als Klassenname verwendet werden kann)
+        public Hours hours; //betreffende Stunden
+        public String courseString, hoursString, hoursText, lesson, teacher, room, info; //Rohe ausgelesene Daten aus dem XML
+        public boolean lessonChange = false, teacherChange = false, roomChange = false; //was sich verändert hat
+        public int specVisible = View.VISIBLE; //Layout bezogen... sagt ob das layout mit der sogenannten Specification also zum Bsp Pnw1, MA1 sichtbar ist
 
         @Override
         public int compareTo(@NonNull Entry o) {
@@ -83,20 +90,22 @@ public class Database {
             entry.lessonChange = lessonChange;
             entry.teacherChange = teacherChange;
             entry.roomChange = roomChange;
-            entry.teacherChangeVisible = teacherChangeVisible;
-            entry.roomChangeVisible = roomChangeVisible;
-            entry.lessonChangeVisible = lessonChangeVisible;
             entry.specVisible = specVisible;
             entry.hoursText = hoursText;
-            entry.breakOutVisible = breakOutVisible;
             return entry;
         }
 
     }
 
+    /**
+     * Repräsentiert eine Klasse oder Klassenstufe, je nachdem was als <code>degree</code> eingetragen
+     * ist. Dient der Zuordnung für den Kurs- und Klassenfilter
+     *
+     * Class als Name der Klasse geht nicht, da class ein Schlüsselwort in Java ist, also steht Course hier eigentlich für Klasse
+     */
     public static class Course {
-        public int degree = 0, number = 0;
-        public String specification = "";
+        public int degree = 0/*Klasse (5-12)*/, number = 0 /*für Klassen 5-10 als Anhängsel ... 5/1, 7/4*/;
+        public String specification = ""; // Zum Beispiel MA1, de4, bwl2, Pspo2...
 
         Course copy() {
             Course res = new Course();
@@ -116,21 +125,30 @@ public class Database {
         }
     }
 
+    /**
+     * Repräsentiert die Stunden für die jeweilige Vertretung
+     */
     public static class Hours implements Comparable<Hours> {
-        public int startHour = 0, endHour = 0;
+        public int startHour = 0, endHour = 0; //selbsterklärend
 
+        /**
+         * Vergleich der Einträge aufsteigend nach Stunden
+         * @param other stunde mit der Verglichen wird
+         * @return negativ wenn diese Klasse unter <code>other</code> steht, positiv wenn darüber, 0 wenn gleich
+         */
         @Override
-        public int compareTo(@NonNull Hours o) {
-            if((startHour == endHour && o.startHour == o.endHour) || (startHour != endHour && o.startHour != o.endHour)) {
-                return Integer.compare(startHour, o.startHour);
+        public int compareTo(@NonNull Hours other) {
+            if((startHour == endHour && other.startHour == other.endHour)
+                    || (startHour != endHour && other.startHour != other.endHour)) {
+                return Integer.compare(startHour, other.startHour);
             } else if(startHour == endHour) {
-                if(startHour <= o.endHour) {
+                if(startHour <= other.endHour) {
                     return -1;
                 } else {
                     return +1;
                 }
             } else {
-                if(o.startHour <= endHour) {
+                if(other.startHour <= endHour) {
                     return +1;
                 } else {
                     return -1;
@@ -151,6 +169,7 @@ public class Database {
 
     public static final ArrayList<Day> days = new ArrayList<>();
 
+    //SCHLÜSSEL WÖRTER FÜR DAS SPEICHERN DER DATEN AUF DEM GERÄT
     private static final String KEY_COURSE_DEGREE = "key_course_degree";
     private static final String KEY_COURSE_NUMBER = "key_course_number";
     private static final String KEY_USERNAME = "key_username";
@@ -162,23 +181,28 @@ public class Database {
     public static String courseNumber = "1";
     public static String username = "";
     public static String password = "";
-    public static boolean courseChosen = false;
-    public static ArrayList<String> selectedCourses = new ArrayList<>(); //11/12 only
+    public static boolean courseChosen = false; //ob bereits ein Kurs gewählt wurde... relevant für den ersten Start und wenn die Login Daten verändert werden
+    public static ArrayList<String> selectedCourses = new ArrayList<>(); //11/12 only  // Whitelist für Kursefilter für Klasse 11/12
 
     private static SharedPreferences sPrefs;
 
-    public static boolean loaded = false;
+    public static boolean loaded = false; //ob alle Daten gedownloaded und gelesen wurden
 
+    /**
+     * Initialisierung
+     * @param context Context
+     */
     public static void init(Context context) {
         sPrefs = ((AppCompatActivity) context).getPreferences(Context.MODE_PRIVATE);
     }
 
+    /**
+     * Ruft den Thread auf, der die XML Daten runterläd und liest
+     * @param context Context
+     * @param offline ob man offline ist, wenn ja, dann wird nur gelesen(vorhandene Daten) und nichts heruntergeladen
+     */
     public static void fetchData(Context context, boolean offline) {
         new LoadingTask().execute(new LoadingTask.Input(context, offline));
-    }
-
-    public static Entry[] findEntriesByCourseAndDate(LocalDate date) {
-        return findEntriesByCourseAndDate(date, Integer.parseInt(courseDegree), Integer.parseInt(courseNumber));
     }
 
     public static Entry[] findEntriesByCourseAndDate(LocalDate date, int degree, int number) {
@@ -199,6 +223,19 @@ public class Database {
         return res.toArray(output);
     }
 
+    /**
+     * @see Database#findEntriesByCourseAndDate(LocalDate, int, int)
+     * Aufruf der oben genannten Methode mit aktuell gewählter Klasse
+     * @param date Datum
+     * @return Array mit allen Einträgen für das Datum
+     */
+    public static Entry[] findEntriesByCourseAndDate(LocalDate date) {
+        return findEntriesByCourseAndDate(date, Integer.parseInt(courseDegree), Integer.parseInt(courseNumber));
+    }
+
+    /**
+     * Laden der lokal gespeicherten Daten, wie Klasse, Nutzername, Passwort und Whitelist der Kurse
+     */
     public static void load() {
         courseDegree = sPrefs.getString(KEY_COURSE_DEGREE, courseDegree);
         courseNumber = sPrefs.getString(KEY_COURSE_NUMBER , courseNumber);
@@ -209,6 +246,7 @@ public class Database {
         HashSet<String> courseSet = (HashSet<String>) sPrefs.getStringSet(KEY_SELECTED_COURSES, new HashSet<>());
         selectedCourses.addAll(Arrays.asList(courseSet.toArray(new String[courseSet.size()])));
 
+        //für mich zum Testen
 //        username = "";
 //        password = "";
 //        courseDegree = "5";
@@ -216,6 +254,9 @@ public class Database {
 //        courseChosen = false;
     }
 
+    /**
+     * Speichern der lokal gespeicherten Daten, wie Klasse, Nutzername, Passwort und Whitelist der Kurse
+     */
     public static void save() {
         HashSet<String> courseSet = new HashSet<>(selectedCourses);
         sPrefs.edit()

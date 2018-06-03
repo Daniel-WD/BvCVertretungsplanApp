@@ -6,33 +6,32 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.animation.FastOutLinearInInterpolator;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnticipateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.titaniel.bvcvertretungsplan.R;
-import com.titaniel.bvcvertretungsplan.database.Database;
-import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
 
 import java.util.Random;
 
+/**
+ * @author Daniel Weidensdörfer
+ * Fragment, welches dem Nutzer Fehler mitteilt(zum Beispiel ein fehlende Internet Verbindung)
+ */
 public class ErrorFragment extends Fragment {
 
     public static final int ERR_NO_INTERNET = 0;
     public static final int ERR_IO_EXCEPTION = 1;
     public static final int ERR_OTHER_EXCEPTION = 2;
 
+    /**
+     * Callback...wenn ein Button dieses Fragments geklickt wurde
+     */
     public interface ErrorFragmentCallback {
         void onBtnAgainClicked(Button button);
         void onBtnOfflineClicked(Button button);
@@ -46,12 +45,26 @@ public class ErrorFragment extends Fragment {
     private TextView mTvErr;
     private TextView mTvTitle;
 
+    /**
+     * Von Android aufgerufen wenn die <code>View</code> erstellt werden soll
+     * Liefert die <code>View</code> zurück
+     *
+     * @param inflater LayoutInflater
+     * @param container Container
+     * @param savedInstanceState SavedInstanceState
+     * @return View
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_error, container, false);
     }
 
+    /**
+     * Von Android aufgerufen wenn das Fragment startet
+     *
+     * Enthält die Initialisierungen
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -60,7 +73,7 @@ public class ErrorFragment extends Fragment {
         mRoot = getView();
         mIvErr = mRoot.findViewById(R.id.ivErr);
         mTvErr = mRoot.findViewById(R.id.tvErr);
-        mTvTitle = mRoot.findViewById(R.id.tvTitle);
+        mTvTitle = mRoot.findViewById(R.id.ivTit);
         mBtnErrAgain = mRoot.findViewById(R.id.btnErrAgain);
         mBtnErrOffline = mRoot.findViewById(R.id.btnErrOffline);
 
@@ -78,10 +91,18 @@ public class ErrorFragment extends Fragment {
         mRoot.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * Setzt das Callback
+     * @param callback Callback
+     */
     public void setErrorFragmentCallback(ErrorFragmentCallback callback) {
         mErrorFragmentCallback = callback;
     }
 
+    /**
+     * Setzt welche Fehlermeldung angezeigt werden soll
+     * @param errorCode Fehler-Art
+     */
     public void setError(int errorCode) {
         int accentColor = ContextCompat.getColor(getContext(), R.color.accent);
         switch(errorCode) {
@@ -106,6 +127,10 @@ public class ErrorFragment extends Fragment {
         }
     }
 
+    /**
+     * Zeigt das Fragment an
+     * @param delay Zeitverzögerung
+     */
     public void show(long delay) {
         Random r = new Random();
         mIvErr.setImageResource(r.nextInt(2) == 0 ? R.drawable.ic_emj_angry : R.drawable.ic_emj_sad);
@@ -121,6 +146,10 @@ public class ErrorFragment extends Fragment {
                 .start();
     }
 
+    /**
+     * Versteckt das Fragment
+     * @param delay Zeitverzögerung
+     */
     public void hide(long delay) {
         mRoot.animate()
                 .setStartDelay(delay)

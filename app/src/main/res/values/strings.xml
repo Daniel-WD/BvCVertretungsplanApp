@@ -1,3 +1,4 @@
+<!-- Enthält alle Strings... ist ein Android System um Übersetzung in andere Sprachen zu vereinfachen... wird hier nur für Deutsch genutzt -->
 <resources>
     <string name="title">BvC Vertretungsplan</string>
     <string name="app_name">BvC\nVertretungsplan</string>
