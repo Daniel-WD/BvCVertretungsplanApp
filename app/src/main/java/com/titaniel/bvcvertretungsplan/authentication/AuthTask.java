@@ -1,12 +1,16 @@
 package com.titaniel.bvcvertretungsplan.authentication;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.titaniel.bvcvertretungsplan.database.Database;
 
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * @author Daniel Weidensdörfer
@@ -25,12 +29,14 @@ public class AuthTask extends AsyncTask<AuthTask.AuthData, Void, AuthTask.Result
      * Klasse in der die Eingabedaten zusammengefasst werden
      */
     static class AuthData {
-        AuthData(String user, String password, AuthManager.Callback callback) {
+        AuthData(Context context, String user, String password, AuthManager.Callback callback) {
             this.user = user;
             this.password = password;
             this.callback = callback;
+            this.context = context;
         }
 
+        Context context;
         String user, password;
         AuthManager.Callback callback;
     }
@@ -71,7 +77,11 @@ public class AuthTask extends AsyncTask<AuthTask.AuthData, Void, AuthTask.Result
             String t = url.getFile();
             url.openStream().close();
             success = true;
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            FirebaseAnalytics analytics = FirebaseAnalytics.getInstance(input[0].context);
+            Bundle params = new Bundle();
+            params.putString("stack_trace", Arrays.toString(e.getStackTrace()));
+            analytics.logEvent("Exception_in_AuthTask", params);
         }
         return new ResultData(success, input[0].callback);
     }

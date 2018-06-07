@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     private View mVBgOverlay;
     private LinearLayout mLyClass;
     private TextView mTvClass;
-    private TextView mTvNothing;
+    private View mLyNothing;
 
     //list
     private RecyclerView mDayList;
@@ -123,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         mVBgOverlay = findViewById(R.id.vBackgroundOverlay);
         mLyClass = findViewById(R.id.lyClass);
         mTvClass = findViewById(R.id.tvClass);
-        mTvNothing = findViewById(R.id.tvNothing);
+        mLyNothing = findViewById(R.id.lyNothing);
 
         mLoadingView.start();
 
@@ -316,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
             boolean isOnline = Utils.isOnline(this);
             if(isOnline) {
                 //Database
-                AuthManager.checkLogin(success -> { //Callback von AuthManager
+                AuthManager.checkLogin(this, success -> { //Callback von AuthManager
                     if(success) {
                         startLoading(0);
                     } else {
@@ -487,10 +487,10 @@ public class MainActivity extends AppCompatActivity {
         //tv nothing
         if(mDayList.getChildCount() == 0) {
             delay += 50;
-            mTvNothing.setVisibility(View.VISIBLE);
-            mTvNothing.setAlpha(0f);
-            mTvNothing.setTranslationY(50);
-            mTvNothing.animate()
+            mLyNothing.setVisibility(View.VISIBLE);
+            mLyNothing.setAlpha(0f);
+            mLyNothing.setTranslationY(50);
+            mLyNothing.animate()
                     .setStartDelay(delay)
                     .setDuration(250)
                     .setInterpolator(new DecelerateInterpolator())
@@ -498,7 +498,7 @@ public class MainActivity extends AppCompatActivity {
                     .alpha(1)
                     .start();
         } else {
-            mTvNothing.setVisibility(View.INVISIBLE);
+            mLyNothing.setVisibility(View.INVISIBLE);
         }
 
         //list
@@ -538,8 +538,8 @@ public class MainActivity extends AppCompatActivity {
                 .start();
 
         //tv nothing
-        if(mTvNothing.getVisibility() == View.VISIBLE) {
-            mTvNothing.animate()
+        if(mLyNothing.getVisibility() == View.VISIBLE) {
+            mLyNothing.animate()
                     .setStartDelay(delay)
                     .setDuration(150)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
@@ -597,10 +597,10 @@ public class MainActivity extends AppCompatActivity {
         //tv nothing
         if(mDayList.getChildCount() == 0) {
             delay += 50;
-            mTvNothing.setVisibility(View.VISIBLE);
-            mTvNothing.setTranslationY(50);
-            mTvNothing.setAlpha(0);
-            mTvNothing.animate()
+            mLyNothing.setVisibility(View.VISIBLE);
+            mLyNothing.setTranslationY(50);
+            mLyNothing.setAlpha(0);
+            mLyNothing.animate()
                     .setStartDelay(delay)
                     .setDuration(250)
                     .setInterpolator(new DecelerateInterpolator())
@@ -703,9 +703,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case FM_NONE:
                     if(mDayList.getChildCount() == 0) {
-                        mTvNothing.setAlpha(1);
+                        mLyNothing.setAlpha(1);
                     } else {
-                        mTvNothing.setAlpha(0);
+                        mLyNothing.setAlpha(0);
                     }
                     //ly class
                     mLyClass.setTranslationY(0);

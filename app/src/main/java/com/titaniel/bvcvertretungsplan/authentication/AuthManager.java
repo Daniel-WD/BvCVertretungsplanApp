@@ -1,5 +1,7 @@
 package com.titaniel.bvcvertretungsplan.authentication;
 
+import android.content.Context;
+
 import com.titaniel.bvcvertretungsplan.database.Database;
 
 /**
@@ -30,17 +32,17 @@ public class AuthManager {
      * @param password Passwort
      * @param callback Callback(ob Erfolg oder kein Erfolg)
      */
-    public static void checkLogin(String user, String password, Callback callback) {
-        new AuthTask().execute(new AuthTask.AuthData(user, password, callback));
+    public static void checkLogin(Context context, String user, String password, Callback callback) {
+        new AuthTask().execute(new AuthTask.AuthData(context, user, password, callback));
     }
 
     /**
      * Nutzt in der <code>Database</code> gespeicherten Nutzernamen und Passwort
-     * @see AuthManager#checkLogin(Callback)
+     * @see AuthManager#checkLogin(Context, String, String, Callback)
      * @param callback Callback
      */
-    public static void checkLogin(Callback callback) {
-        checkLogin(Database.username, Database.password, callback);
+    public static void checkLogin(Context context, Callback callback) {
+        checkLogin(context, Database.username, Database.password, callback);
     }
 
 }

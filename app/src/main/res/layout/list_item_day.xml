@@ -1,37 +1,36 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Element der Hauptliste, welches einen Tag Repräsentiert -->
+<?xml version="1.0" encoding="utf-8"?><!-- Element der Hauptliste, welches einen Tag Repräsentiert -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="24dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginStart="10dp"
+    android:background="@drawable/card_background"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:background="@drawable/card_background"
-    android:layout_marginBottom="24dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
     android:paddingBottom="4dp">
 
     <TextView
         android:id="@+id/tvDay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="14dp"
         android:fontFamily="sans-serif-medium"
         android:includeFontPadding="false"
-        android:textColor="#e6e6e6"
-        android:layout_marginStart="10dp"
-        android:textSize="14sp"
         android:letterSpacing="0.05"
+        android:textColor="#e6e6e6"
+        android:textSize="14sp"
         tools:text="Montag" />
 
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@id/tvDay"
+        android:id="@+id/entryList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/entryList"
-        android:overScrollMode="never"
+        android:layout_below="@id/tvDay"
         android:clipChildren="false"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        android:overScrollMode="never" />
 
 </RelativeLayout>

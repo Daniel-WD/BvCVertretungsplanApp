@@ -119,7 +119,7 @@ public class LoginFragment extends Fragment {
             hideFail(0);
             mHandler.postDelayed(() -> {
                 if(Utils.isOnline(getContext())) {
-                    AuthManager.checkLogin(mTUser.getText().toString().trim(), mTPassword.getText().toString().trim(), (success) -> {
+                    AuthManager.checkLogin(getContext(), mTUser.getText().toString().trim(), mTPassword.getText().toString().trim(), (success) -> {
                         if(success) {
                             Database.username = mTUser.getText().toString().trim();
                             Database.password = mTPassword.getText().toString().trim();
