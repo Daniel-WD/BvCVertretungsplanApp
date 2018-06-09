@@ -38,8 +38,8 @@ import com.victor.loading.rotate.RotateLoading;
 public class MainActivity extends AppCompatActivity {
 
     //States für jedes Fragment
-    private static final int FM_NONE = 0, FM_COURSE = 1, FM_LOGIN = 2, FM_ERROR = 3;
-    private int mFragmentState = FM_NONE; //aktueller Fragmentstatus, sagt ob und welches Fragment gerade angezeigt wird
+    private static final int FM_NONE = 0, FM_COURSE = 1, FM_LOGIN = 2, FM_ERROR = 3, LOADING = 4;
+    private int mState = FM_NONE; //aktueller Fragmentstatus, sagt ob und welches Fragment gerade angezeigt wird
 
     /*
       Um den Sinn dieses Runnables zu verstehen, muss man sich wirlklich mit Listen in Android beschäftigt haben.
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 mDayList.scrollToPosition(0);
 
                 mHandler.postDelayed(() -> {
-                    if(mFragmentState == FM_NONE) {
+                    if(mState == FM_NONE) {
                         enterMainComponents(0);
                     } else {
                         onBackPressed();
@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean mHeaderFadeEnabled = false;
     private boolean mHeaderVisible = true;
+    private boolean isPaused = false;
 
     private ImageView mIvBackground;
     private ImageView mIvTitle;
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 blockButtons(2000);
                 mErrorFragment.hide(0);
                 login(300);
-                mFragmentState = FM_NONE;
+                mState = FM_NONE;
             }
 
             @Override
@@ -149,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 blockButtons(2000);
                 mErrorFragment.hide(0);
                 Database.fetchData(MainActivity.this, true);
-                mFragmentState = FM_NONE;
+                mState = FM_NONE;
             }
         });
 
@@ -182,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
         mIvEdit.setOnClickListener(v -> {
             if(!mHeaderVisible || mBlockButtons) return;
             blockButtons(800);
-            if(mFragmentState == FM_NONE) {
+            if(mState == FM_NONE) {
                 hideToCourseSettings();
             } else {
                 long delay = mClassSettingsFragment.hide(0);
@@ -322,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         if(Utils.isOnline(this)) {
                             hideLoadingView(0);
-                            mFragmentState = FM_LOGIN;
+                            mState = FM_LOGIN;
                             mLoginFragment.show(300);
                         } else {
                             errorOnLoading(ErrorFragment.ERR_NO_INTERNET);
@@ -344,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
      * @param delay Zeitverzögerung
      */
     public void startLoading(long delay) {
-        mFragmentState = FM_NONE;
+        mState = FM_NONE;
 
         if(!Database.courseChosen) {
             mHandler.postDelayed(() -> {
@@ -382,9 +383,11 @@ public class MainActivity extends AppCompatActivity {
             Database.loaded = true;
             hideLoadingView(0);
 
-            mHandler.postDelayed(() -> {
-                fillList(() -> enterMainComponents(0));
-            }, 300);
+            if(!isPaused) {
+                mHandler.postDelayed(() -> {
+                    fillList(() -> enterMainComponents(0));
+                }, 300);
+            }
 
         } else if(ioException) {
             errorOnLoading(ErrorFragment.ERR_IO_EXCEPTION);
@@ -424,7 +427,7 @@ public class MainActivity extends AppCompatActivity {
 
         delay += 400;
         mErrorFragment.setError(errorCode);
-        mFragmentState = FM_ERROR;
+        mState = FM_ERROR;
         mErrorFragment.show(delay);
     }
 
@@ -513,7 +516,7 @@ public class MainActivity extends AppCompatActivity {
     private void hideToCourseSettings() {
         long delay = 0;
 
-        mFragmentState = FM_COURSE;
+        mState = FM_COURSE;
 
         //avd animation
         AnimatedVectorDrawable drawable = (AnimatedVectorDrawable)
@@ -562,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showFromCourseSettings(long delay) {
 
-        mFragmentState = FM_NONE;
+        mState = FM_NONE;
         updateClassText();
 
         //avd animation
@@ -630,6 +633,7 @@ public class MainActivity extends AppCompatActivity {
      * @param delay Zeitverzögerung
      */
     private void showLoadingView(long delay) {
+        mState = LOADING;
         mLoadingView.setVisibility(View.VISIBLE);
         mLoadingView.animate()
                 .setStartDelay(delay)
@@ -644,6 +648,7 @@ public class MainActivity extends AppCompatActivity {
      * @param delay Zeitverzögerung
      */
     private void hideLoadingView(long delay) {
+        mState = FM_NONE;
         mLoadingView.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new FastOutSlowInInterpolator())
@@ -661,7 +666,7 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        switch(mFragmentState) { //Man konnte hier auch ein IF verwenden, aber es kommt später vieleicht nochwas dazu
+        switch(mState) { //Man konnte hier auch ein IF verwenden, aber es kommt später vieleicht nochwas dazu
             case FM_COURSE:
                 if(!Database.courseChosen) {
                     super.onBackPressed();
@@ -688,21 +693,27 @@ public class MainActivity extends AppCompatActivity {
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
 
-        mDayList.scrollToPosition(0);
-        mHandler.postDelayed(() -> {
-            if(mDayList.getChildCount() != 0) mFixedFirstItemPosition = mDayList.getChildAt(0).getY();
-            switch(mFragmentState) {
-                case FM_COURSE:
-                    mClassSettingsFragment.show(0);
-                    break;
-                case FM_LOGIN:
-                    mLoginFragment.show(0);
-                    break;
-                case FM_ERROR:
-                    mErrorFragment.show(0);
-                    break;
-                case FM_NONE:
-                    if(mDayList.getChildCount() == 0) {
+//        mDayList.scrollToPosition(0);
+        if(isPaused) {
+            mHandler.postDelayed(() -> {
+//            if(mDayList.getChildCount() != 0) mFixedFirstItemPosition = mDayList.getChildAt(0).getY();
+                switch(mState) {
+                    case LOADING:
+                        break;
+                    case FM_COURSE:
+                        mClassSettingsFragment.show(0);
+                        break;
+                    case FM_LOGIN:
+                        mLoginFragment.show(0);
+                        break;
+                    case FM_ERROR:
+                        mErrorFragment.show(0);
+                        break;
+                    case FM_NONE:
+                        mHandler.post(() -> {
+                            fillList(() -> enterMainComponents(0));
+                        });
+                    /*if(mDayList.getChildCount() == 0) {
                         mLyNothing.setAlpha(1);
                     } else {
                         mLyNothing.setAlpha(0);
@@ -717,12 +728,15 @@ public class MainActivity extends AppCompatActivity {
 
                     //edit
                     mIvEdit.setTranslationY(0);
-                    mIvEdit.setAlpha(1f);
-            }
-        }, 500);
+                    mIvEdit.setAlpha(1f);*/
+                }
+            }, 1000);
+        }
 
         //load database
         Database.load();
+
+        isPaused = false;
     }
 
     /**
@@ -731,6 +745,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        isPaused = true;
         Database.save();
     }
 

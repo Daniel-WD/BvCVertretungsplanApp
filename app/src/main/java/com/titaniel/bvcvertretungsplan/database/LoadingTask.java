@@ -280,47 +280,47 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
 
                             case KEY_COURSE:
                                 parser.next();
-                                entry.courseString = parser.getText();
+                                if(entry != null) entry.courseString = parser.getText();
                                 continue;
 
                             case KEY_HOURS:
                                 parser.next();
-                                entry.hoursString = parser.getText();
+                                if(entry != null) entry.hoursString = parser.getText();
                                 continue;
 
                             case KEY_LESSON:
                                 // TODO: 11.02.2018 name
                                 if(parser.getAttributeCount() > 0 &&
                                         parser.getAttributeValue(0).equals(KEY_TRUE)) {
-                                    entry.lessonChange = true;
+                                    if(entry != null) entry.lessonChange = true;
                                 }
                                 parser.next();
-                                entry.lesson = parser.getText();
+                                if(entry != null) entry.lesson = parser.getText();
                                 continue;
 
                             case KEY_TEACHER:
                                 // TODO: 11.02.2018 name
                                 if(parser.getAttributeCount() > 0 &&
                                         parser.getAttributeValue(0).equals(KEY_TRUE)) {
-                                    entry.teacherChange = true;
+                                    if(entry != null) entry.teacherChange = true;
                                 }
                                 parser.next();
-                                entry.teacher = parser.getText();
+                                if(entry != null) entry.teacher = parser.getText();
                                 continue;
 
                             case KEY_ROOM:
                                 // TODO: 11.02.2018 name
                                 if(parser.getAttributeCount() > 0 &&
                                         parser.getAttributeValue(0).equals(KEY_TRUE)) {
-                                    entry.roomChange = true;
+                                    if(entry != null) entry.roomChange = true;
                                 }
                                 parser.next();
-                                entry.room = parser.getText();
+                                if(entry != null) entry.room = parser.getText();
                                 continue;
 
                             case KEY_INFO:
                                 parser.next();
-                                entry.info = parser.getText();
+                                if(entry != null) entry.info = parser.getText();
                                 continue;
                         }
                         break;
@@ -329,6 +329,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                         switch(parser.getName()) {
                             case KEY_ENTRY:
                                 day.entries.add(entry);
+                                entry = null;
                                 continue;
                         }
                         break;

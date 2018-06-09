@@ -143,7 +143,7 @@ public class ClassSettingsFragment extends Fragment {
         mCourseNumberList.setHasFixedSize(true);
         mCourseNumberList.setAdapter(new NumberAdapter(getContext(), sNumbers, R.layout.class_settings_item_number, this::numberPickerClicked));
 
-        mCourseNumberList.post(this::refreshListSelections);
+        //mCourseNumberList.post(this::refreshListSelections);
 
         mRoot.setVisibility(View.INVISIBLE);
     }

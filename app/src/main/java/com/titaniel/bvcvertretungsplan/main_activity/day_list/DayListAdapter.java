@@ -53,10 +53,6 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
         return new DayHolder(view);
     }
     @Override
-    public void onViewRecycled(@NonNull DayHolder holder) {
-        super.onViewRecycled(holder);
-    }
-    @Override
     public void onBindViewHolder(@NonNull DayHolder holder, int position) {
         holder.tvDay.setText(DateManager.preparedCapsDayList[position]);
 
