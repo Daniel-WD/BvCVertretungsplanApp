@@ -1,4 +1,4 @@
-package com.titaniel.bvcvertretungsplan.main_activity.login_fragment;
+package com.titaniel.bvcvertretungsplan.fragments.login_fragment;
 
 import android.animation.ValueAnimator;
 import android.graphics.Color;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +24,7 @@ import android.widget.TextView;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.authentication.AuthManager;
 import com.titaniel.bvcvertretungsplan.database.Database;
+import com.titaniel.bvcvertretungsplan.fragments.AnimatedFragment;
 import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
 import com.titaniel.bvcvertretungsplan.utils.Utils;
 
@@ -32,7 +32,7 @@ import com.titaniel.bvcvertretungsplan.utils.Utils;
  * @author Daniel Weidensdörfer
  * Fragment für das Login
  */
-public class LoginFragment extends Fragment {
+public class LoginFragment extends AnimatedFragment {
 
     private View mRoot;
     private ImageView mIvIcon;
@@ -320,7 +320,7 @@ public class LoginFragment extends Fragment {
      * Verstecken dieses Fragments
      * @param delay Zeitverzögerung
      */
-    public void hide(long delay) {
+    public long hide(long delay) {
         mRoot.animate()
                 .setStartDelay(delay)
                 .setDuration(200)
@@ -331,7 +331,9 @@ public class LoginFragment extends Fragment {
 
         delay += 300;
 
-        mActivity.startLoading(delay);
+        mActivity.load(delay);
+
+        return 300;
     }
 
     /**

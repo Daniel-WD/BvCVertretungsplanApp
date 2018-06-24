@@ -1,4 +1,4 @@
-package com.titaniel.bvcvertretungsplan.main_activity.class_settings.course_picker;
+package com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.course_picker_fragment;
 
 /**
  * @author Daniel Weidensdörfer

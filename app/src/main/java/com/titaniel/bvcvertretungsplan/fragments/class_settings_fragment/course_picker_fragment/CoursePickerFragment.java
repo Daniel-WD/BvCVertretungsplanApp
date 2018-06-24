@@ -1,4 +1,4 @@
-package com.titaniel.bvcvertretungsplan.main_activity.class_settings.course_picker;
+package com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.course_picker_fragment;
 
 import android.annotation.SuppressLint;
 import android.graphics.Typeface;
@@ -27,8 +27,8 @@ import android.widget.TextView;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
 import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
-import com.titaniel.bvcvertretungsplan.main_activity.class_settings.ClassSettingsFragment;
-import com.titaniel.bvcvertretungsplan.main_activity.class_settings.NumberAdapter;
+import com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.ClassSettingsFragment;
+import com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.NumberAdapter;
 
 import org.apmem.tools.layouts.FlowLayout;
 
@@ -127,7 +127,7 @@ public class CoursePickerFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mCourseSpecList.setLayoutManager(manager);
         mCourseSpecList.setHasFixedSize(true);
-        mCourseSpecList.setAdapter(new NumberAdapter(getContext(), sNumbers, R.layout.course_picker_item_number, this::numberClicked));
+        mCourseSpecList.setAdapter(new NumberAdapter(getContext(), sNumbers, R.layout.item_course_picker_number, this::numberClicked));
 
         //button left
         mBtnLeft.setOnClickListener(v -> {

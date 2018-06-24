@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.ArraySet;
-import android.util.Log;
 import android.view.View;
 
 import org.joda.time.LocalDate;
@@ -13,11 +11,7 @@ import org.joda.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 
 /**
  * @author Daniel Weidensdörfer
@@ -181,7 +175,7 @@ public class Database {
     public static String courseNumber = "1";
     public static String username = "";
     public static String password = "";
-    public static boolean courseChosen = false; //ob bereits ein Kurs gewählt wurde... relevant für den ersten Start und wenn die Login Daten verändert werden
+    public static boolean classChosen = false; //ob bereits ein Kurs gewählt wurde... relevant für den ersten Start und wenn die Login Daten verändert werden
     public static ArrayList<String> selectedCourses = new ArrayList<>(); //11/12 only  // Whitelist für Kursefilter für Klasse 11/12
 
     private static SharedPreferences sPrefs;
@@ -241,17 +235,16 @@ public class Database {
         courseNumber = sPrefs.getString(KEY_COURSE_NUMBER , courseNumber);
         username = sPrefs.getString(KEY_USERNAME, username);
         password = sPrefs.getString(KEY_PASSWORD, password);
-        courseChosen = sPrefs.getBoolean(KEY_COURSE_CHOSEN, courseChosen);
+        classChosen = sPrefs.getBoolean(KEY_COURSE_CHOSEN, classChosen);
 
         HashSet<String> courseSet = (HashSet<String>) sPrefs.getStringSet(KEY_SELECTED_COURSES, new HashSet<>());
         selectedCourses.addAll(Arrays.asList(courseSet.toArray(new String[courseSet.size()])));
 
-        //für mich zum Testen
 //        username = "";
 //        password = "";
 //        courseDegree = "5";
 //        courseNumber = "1";
-//        courseChosen = false;
+//        classChosen = false;
     }
 
     /**
@@ -260,7 +253,7 @@ public class Database {
     public static void save() {
         HashSet<String> courseSet = new HashSet<>(selectedCourses);
         sPrefs.edit()
-                .putBoolean(KEY_COURSE_CHOSEN, courseChosen)
+                .putBoolean(KEY_COURSE_CHOSEN, classChosen)
                 .putStringSet(KEY_SELECTED_COURSES, courseSet)
                 .putString(KEY_COURSE_DEGREE, courseDegree)
                 .putString(KEY_COURSE_NUMBER, courseNumber)
