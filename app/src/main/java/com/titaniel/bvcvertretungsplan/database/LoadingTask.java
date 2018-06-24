@@ -2,7 +2,6 @@ package com.titaniel.bvcvertretungsplan.database;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.util.Xml;
 import android.view.View;
 
@@ -23,7 +22,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 
 import static com.titaniel.bvcvertretungsplan.database.Database.KEY_COURSE;
 import static com.titaniel.bvcvertretungsplan.database.Database.KEY_DISABLED_COURSES;
@@ -169,7 +167,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
      */
     @Override
     protected void onPostExecute(LoadingResult result) {
-        ((MainActivity) result.context).onDatabaseLoaded(result.ioException, result.otherException, result.internetCut);
+        ((MainActivity) result.context).onLoaded(result.ioException, result.otherException, result.internetCut);
     }
 
     /**

@@ -1,10 +1,9 @@
-package com.titaniel.bvcvertretungsplan.main_activity.class_settings;
+package com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,8 +18,9 @@ import android.widget.TextView;
 
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
+import com.titaniel.bvcvertretungsplan.fragments.AnimatedFragment;
 import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
-import com.titaniel.bvcvertretungsplan.main_activity.class_settings.course_picker.CoursePickerFragment;
+import com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.course_picker_fragment.CoursePickerFragment;
 import com.titaniel.bvcvertretungsplan.utils.DateManager;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.ArrayList;
 /**
  * Fragment für die Klassenwahl
  */
-public class ClassSettingsFragment extends Fragment {
+public class ClassSettingsFragment extends AnimatedFragment {
 
     private static final String[] sDegrees = {"5", "6", "7", "8", "9", "10", "11", "12"};
     private static final String[] sNumbers = {"1", "2", "3", "4", "5", "6"};
@@ -105,7 +105,7 @@ public class ClassSettingsFragment extends Fragment {
         mBtnBack.setOnClickListener((v) -> {
             if(mButtonsBlocked) return;
             blockButtons(2000);
-            mActivity.onBackPressed();
+            mActivity.showSubstituteFragment(0, false, this);
         });
 
         //btn Ok
@@ -114,10 +114,10 @@ public class ClassSettingsFragment extends Fragment {
             blockButtons(2000);
             String newDegree = mTvDegree.toString();
             String newNumber = mTvNumber.toString();
-            if(!Database.courseNumber.equals(newNumber) || !Database.courseDegree.equals(newDegree) || !Database.courseChosen) {
+            if(!Database.courseNumber.equals(newNumber) || !Database.courseDegree.equals(newDegree) || !Database.classChosen) {
                 confirmChangesAndHide();
             } else {
-                mActivity.onBackPressed();
+                mActivity.showSubstituteFragment(0, false, this);
             }
         });
 
@@ -134,14 +134,14 @@ public class ClassSettingsFragment extends Fragment {
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mCourseDegreeList.setLayoutManager(managerDegrees);
         mCourseDegreeList.setHasFixedSize(true);
-        mCourseDegreeList.setAdapter(new NumberAdapter(getContext(), sDegrees, R.layout.class_settings_item_degree, this::degreePickerClicked));
+        mCourseDegreeList.setAdapter(new NumberAdapter(getContext(), sDegrees, R.layout.item_class_settings_degree, this::degreePickerClicked));
 
         //mCourseNumberList
         LinearLayoutManager managerNumber =
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mCourseNumberList.setLayoutManager(managerNumber);
         mCourseNumberList.setHasFixedSize(true);
-        mCourseNumberList.setAdapter(new NumberAdapter(getContext(), sNumbers, R.layout.class_settings_item_number, this::numberPickerClicked));
+        mCourseNumberList.setAdapter(new NumberAdapter(getContext(), sNumbers, R.layout.item_class_settings_number, this::numberPickerClicked));
 
         //mCourseNumberList.post(this::refreshListSelections);
 
@@ -155,14 +155,12 @@ public class ClassSettingsFragment extends Fragment {
         Database.courseDegree = mTvDegree.getText().toString();
         Database.courseNumber = mTvNumber.getText().toString();
         DateManager.prepare();
-        if(Database.courseChosen) {
-            mActivity.fillList(() -> {
-                mActivity.onBackPressed();
-            });
+        if(Database.classChosen) {
+            mActivity.showSubstituteFragment(0, true, this);
         } else {
-            Database.courseChosen = true;
+            Database.classChosen = true;
             long delay = hide(0);
-            mActivity.startLoading(delay);
+            mActivity.load(delay);
         }
     }
 
@@ -302,7 +300,7 @@ public class ClassSettingsFragment extends Fragment {
         refreshListSelections();
 
         //background
-        if(Database.courseChosen) {
+        if(Database.classChosen) {
             mBackground.setVisibility(View.VISIBLE);
             mBackground.setAlpha(0);
             mBackground.animate()
@@ -366,7 +364,7 @@ public class ClassSettingsFragment extends Fragment {
 
         //buttons
         delay += 50;
-        if(Database.courseChosen) {
+        if(Database.classChosen) {
             mBtnBack.setVisibility(View.VISIBLE);
         } else {
             mBtnBack.setVisibility(View.GONE);
@@ -416,9 +414,7 @@ public class ClassSettingsFragment extends Fragment {
                 .withEndAction(() -> mRoot.setVisibility(View.INVISIBLE))
                 .start();
 
-        delay += 250;
-
-        return delay;
+        return 200;
     }
 
     /**

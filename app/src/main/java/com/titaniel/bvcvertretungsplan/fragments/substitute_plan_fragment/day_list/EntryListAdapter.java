@@ -1,15 +1,11 @@
-package com.titaniel.bvcvertretungsplan.main_activity.day_list;
+package com.titaniel.bvcvertretungsplan.fragments.substitute_plan_fragment.day_list;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.titaniel.bvcvertretungsplan.R;
@@ -42,7 +38,7 @@ public class EntryListAdapter extends RecyclerView.Adapter<EntryListAdapter.Entr
     @NonNull
     @Override
     public EntryHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_item_entry, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_substitute_entry, parent, false);
         return new EntryHolder(view);
     }
     @Override

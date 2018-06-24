@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    tools:visibility="visible">
 
     <View
         android:id="@+id/vBackground"
@@ -160,7 +161,7 @@
 
     <fragment
         android:id="@+id/fragmentCoursePicker"
-        android:name="com.titaniel.bvcvertretungsplan.main_activity.class_settings.course_picker.CoursePickerFragment"
+        android:name="com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.course_picker_fragment.CoursePickerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

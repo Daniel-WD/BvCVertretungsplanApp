@@ -1,31 +1,24 @@
 package com.titaniel.bvcvertretungsplan.main_activity;
 
 import android.annotation.SuppressLint;
-import android.graphics.drawable.AnimatedVectorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.authentication.AuthManager;
 import com.titaniel.bvcvertretungsplan.database.Database;
-import com.titaniel.bvcvertretungsplan.main_activity.class_settings.ClassSettingsFragment;
-import com.titaniel.bvcvertretungsplan.main_activity.day_list.DayListAdapter;
-import com.titaniel.bvcvertretungsplan.main_activity.error_fragment.ErrorFragment;
-import com.titaniel.bvcvertretungsplan.main_activity.login_fragment.LoginFragment;
+import com.titaniel.bvcvertretungsplan.fragments.AnimatedFragment;
+import com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.ClassSettingsFragment;
+import com.titaniel.bvcvertretungsplan.fragments.error_fragment.ErrorFragment;
+import com.titaniel.bvcvertretungsplan.fragments.login_fragment.LoginFragment;
+import com.titaniel.bvcvertretungsplan.fragments.substitute_plan_fragment.SubstitutePlanFragment;
 import com.titaniel.bvcvertretungsplan.utils.DateManager;
 import com.titaniel.bvcvertretungsplan.utils.Utils;
 import com.victor.loading.rotate.RotateLoading;
@@ -37,77 +30,31 @@ import com.victor.loading.rotate.RotateLoading;
  */
 public class MainActivity extends AppCompatActivity {
 
-    //States für jedes Fragment
-    private static final int FM_NONE = 0, FM_COURSE = 1, FM_LOGIN = 2, FM_ERROR = 3, LOADING = 4;
-    private int mState = FM_NONE; //aktueller Fragmentstatus, sagt ob und welches Fragment gerade angezeigt wird
+    //states
+    public static final int
+            STATE_FM_SUBSTITUTE = 0,
+            STATE_FM_CLASS_SETTINGS = 1,
+            STATE_FM_LOGIN = 2,
+            STATE_FM_ERROR = 3,
+            STATE_LOADING = 4;
 
-    /*
-      Um den Sinn dieses Runnables zu verstehen, muss man sich wirlklich mit Listen in Android beschäftigt haben.
-      Dieser Code gehört zu einem Abschnitt, der Laggs(Hänger) beim Scrollen verhindern soll. Diese Lösung ist nicht
-      offiziell, funktioniert aber.
-      Bevor dieser Code ausgeführt wird, wird die Liste zum langsamen nach unten Scrollen gezwungen. Dabei werden
-      im Adapter der Liste, bestimmte zeitaufwändige Methoden ausgeführt, die zu Laggs führen. Diese Methoden
-      werden jedoch nur einmal ausgeführt. Sodass später, wenn der Nutzer nach unten scrollt, keine Laggs auftreten.
-      Sofort nachdem der Befehl zum langsamen nach unten scrollen gegeben wurde, wird dieses Runnable ausgeführt.
-      Dieses ruft sich solange selbst auf, bis die Liste ganz unten angekommen ist, und gibt dann bescheid, dass die
-      Liste wieder angezeigt werden kann.
-
-      Das ganze wird beim starten und nachdem eine neue Klasse gesetzt wurde ausgeführt.
-      Das Runnable wird in der Methode <code>fillList</code> ausgeführt
-     */
-    private Runnable mRBringDayListToTop = new Runnable() {
-
-        boolean wasNotIdle = false;
-
-        @Override
-        public void run() {
-            if(mDayList.getScrollState() == RecyclerView.SCROLL_STATE_IDLE && wasNotIdle) {
-                mDayList.scrollToPosition(0);
-
-                mHandler.postDelayed(() -> {
-                    if(mState == FM_NONE) {
-                        enterMainComponents(0);
-                    } else {
-                        onBackPressed();
-                    }
-                }, 10);
-            } else {
-                wasNotIdle = true;
-                mHandler.post(this);
-            }
-        }
-    };
-
-    private boolean mHeaderFadeEnabled = false;
-    private boolean mHeaderVisible = true;
-    private boolean isPaused = false;
-    private boolean mainComponentsEntered = false;
+    public int state = STATE_LOADING;
+    private boolean mIsPaused = false;
 
     private ImageView mIvBackground;
-    private ImageView mIvTitle;
-    private RotateLoading mLoadingView;
-    private ImageView mIvEdit;
     private View mVBgOverlay;
-    private LinearLayout mLyClass;
-    private TextView mTvClass;
-    private View mLyNothing;
+    private RotateLoading mLoadingView;
 
-    //list
-    private RecyclerView mDayList;
-    private DayListAdapter mDayListAdapter;
-
-    private ErrorFragment mErrorFragment;
-    private ClassSettingsFragment mClassSettingsFragment;
-    private LoginFragment mLoginFragment;
-
-    private float mFixedFirstItemPosition;
+    public SubstitutePlanFragment substitutePlanFragment;
+    public ErrorFragment errorFragment;
+    public ClassSettingsFragment classSettingsFragment;
+    public LoginFragment loginFragment;
 
     private Handler mHandler = new Handler();
 
-    private boolean mBlockButtons = false;
-
     /**
      * Hier ist der Start-Punkt der ganzen Anwendung. Hier werden alle Initialisierungen ausgeführt.
+     *
      * @param savedInstanceState Android spezifisch... wird nicht genutzt deswegen erkläre ich das jetzt nicht :D
      */
     @SuppressLint("ClickableViewAccessibility")
@@ -117,41 +64,29 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //init views
-        mIvTitle = findViewById(R.id.ivTit);
         mLoadingView = findViewById(R.id.loadingView);
-        mIvEdit = findViewById(R.id.ivEdit);
-        mDayList = findViewById(R.id.dayList);
         mIvBackground = findViewById(R.id.ivBackground);
         mVBgOverlay = findViewById(R.id.vBackgroundOverlay);
-        mLyClass = findViewById(R.id.lyClass);
-        mTvClass = findViewById(R.id.tvClass);
-        mLyNothing = findViewById(R.id.lyNothing);
 
-        mLoadingView.start();
 
         //init fragments
-        mErrorFragment = (ErrorFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentErr);
-        mClassSettingsFragment = (ClassSettingsFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentCourseSettings);
-        mLoginFragment = (LoginFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentLogin);
+        substitutePlanFragment = (SubstitutePlanFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentSubstitute);
+        errorFragment = (ErrorFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentErr);
+        classSettingsFragment = (ClassSettingsFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentClassSettings);
+        loginFragment = (LoginFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentLogin);
 
         //errorFragment
-        mErrorFragment.setErrorFragmentCallback(new ErrorFragment.ErrorFragmentCallback() {
+        errorFragment.setErrorFragmentCallback(new ErrorFragment.ErrorFragmentCallback() {
             @Override
             public void onBtnAgainClicked(Button button) {
-                if(mBlockButtons) return;
-                blockButtons(2000);
-                mErrorFragment.hide(0);
+                errorFragment.hide(0);
                 login(300);
-                mState = FM_NONE;
             }
 
             @Override
             public void onBtnOfflineClicked(Button button) {
-                if(mBlockButtons) return;
-                blockButtons(2000);
-                mErrorFragment.hide(0);
+                errorFragment.hide(0);
                 Database.fetchData(MainActivity.this, true);
-                mState = FM_NONE;
             }
         });
 
@@ -161,152 +96,16 @@ public class MainActivity extends AppCompatActivity {
         //Day Manager
         DateManager.init(this);
 
-        //day list
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-
-        mDayList.setLayoutManager(mLayoutManager);
-        mDayList.setHasFixedSize(true);
-        mDayList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                View child = mDayList.getChildAt(0);
-                if(recyclerView.getChildAdapterPosition(child) == 0) {
-                    float y = child.getY();
-                    onScroll(mFixedFirstItemPosition - y);
-                    Log.d("TAG", " ---- " + (mFixedFirstItemPosition - y));
-                }
-                super.onScrolled(recyclerView, dx, dy);
-            }
-
-        });
-
-        //ivEdit
-        mIvEdit.setOnClickListener(v -> {
-            if(!mHeaderVisible || mBlockButtons) return;
-            blockButtons(800);
-            if(mState == FM_NONE) {
-                hideToCourseSettings();
-            } else {
-                long delay = mClassSettingsFragment.hide(0);
-                showFromCourseSettings(delay);
-            }
-        });
-
         //loading view
+        mLoadingView.start();
         mLoadingView.setAlpha(0);
 
-        makeInvisible();
-
-        /*
-        ...tatsächlich wird hier einfach die Methode <code>login()</code> ausgeführt...dies passiert nur 100 ms später
-        Das erscheint Ihnen vielleicht sinnlos, hat aber einen Zweck
-         */
         mHandler.postDelayed(() -> login(0), 100);
     }
 
     /**
-     * Macht die Komponenten des Hauptbildschirms unsichtbar
-     */
-    private void makeInvisible() {
-        mIvTitle.setVisibility(View.INVISIBLE);
-        mIvEdit.setVisibility(View.INVISIBLE);
-        mLyClass.setVisibility(View.INVISIBLE);
-        mDayList.setVisibility(View.INVISIBLE);
-    }
-
-    /**
-     * Wird aufgerufen, wenn die Liste gescrollt wird
-     * @param distance Wie weit die Liste gerade vom Ursprungszustand(ungescrollter Zustand) entfernt ist
-     */
-    private void onScroll(float distance) {
-        if(!mHeaderFadeEnabled) return;
-        if(distance == 0) {
-            showHeader();
-        } else {
-            hideHeader();
-        }
-    }
-
-    /**
-     * Vestecken aller Komponenten über der Liste (wird aufgerufen wenn die Scrolldistanz der Liste größer als 0 ist)
-     */
-    private void hideHeader() {
-        if(!mHeaderVisible) return;
-        mHeaderVisible = false;
-        long delay = 0;
-
-        //edit
-        mIvEdit.animate()
-                .setStartDelay(delay)
-                .setDuration(100)
-                .setInterpolator(new AccelerateInterpolator())
-                .translationY(-100)
-                .alpha(0)
-                .start();
-
-        //title
-        delay += 10;
-        mIvTitle.animate()
-                .setStartDelay(delay)
-                .setDuration(100)
-                .setInterpolator(new AccelerateInterpolator())
-                .translationY(-100)
-                .alpha(0)
-                .start();
-
-        //icon
-        delay += 10;
-        mLyClass.animate()
-                .setStartDelay(delay)
-                .setDuration(100)
-                .setInterpolator(new AccelerateInterpolator())
-                .translationY(-100)
-                .alpha(0)
-                .start();
-    }
-
-    /**
-     * Anzeigen aller Komponenten über der Liste (wird aufgerufen wenn die Scrolldistanz der Liste gleich 0 ist)
-     */
-    private void showHeader() {
-        if(mHeaderVisible) return;
-        mHeaderVisible = true;
-        long delay = 0;
-
-        //ly class
-        mLyClass.animate()
-                .setStartDelay(delay)
-                .setDuration(150)
-                .setInterpolator(new DecelerateInterpolator())
-                .translationY(0)
-                .alpha(1)
-                .start();
-
-        //title
-        delay += 30;
-        mIvTitle.animate()
-                .setStartDelay(delay)
-                .setDuration(150)
-                .setInterpolator(new DecelerateInterpolator())
-                .translationY(0)
-                .alpha(1)
-                .start();
-
-        //edit
-        delay += 30;
-        mIvEdit.setVisibility(View.VISIBLE);
-        mIvEdit.animate()
-                .setStartDelay(delay)
-                .setDuration(150)
-                .setInterpolator(new DecelerateInterpolator())
-                .translationY(0)
-                .alpha(1)
-                .start();
-
-    }
-
-    /**
      * Versuchen sich einzulogen
+     *
      * @param delay Zeitverzögerung
      */
     private void login(long delay) {
@@ -320,19 +119,17 @@ public class MainActivity extends AppCompatActivity {
                 //Database
                 AuthManager.checkLogin(this, success -> { //Callback von AuthManager
                     if(success) {
-                        startLoading(0);
+                        load(0);
                     } else {
                         if(Utils.isOnline(this)) {
-                            hideLoadingView(0);
-                            mState = FM_LOGIN;
-                            mLoginFragment.show(300);
+                            showLoginFragment(0, null);
                         } else {
-                            errorOnLoading(ErrorFragment.ERR_NO_INTERNET);
+                            showErrorFragment(0, ErrorFragment.ERR_NO_INTERNET, null);
                         }
                     }
                 });
             } else {
-                errorOnLoading(ErrorFragment.ERR_NO_INTERNET);
+                showErrorFragment(0, ErrorFragment.ERR_NO_INTERNET, null);
             }
 
         }, delay);
@@ -345,12 +142,10 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param delay Zeitverzögerung
      */
-    public void startLoading(long delay) {
-        mState = FM_NONE;
-
-        if(!Database.courseChosen) {
+    public void load(long delay) {
+        if(!Database.classChosen) {
             mHandler.postDelayed(() -> {
-                mIvEdit.callOnClick();
+                showClassSettingsFragment(0, null);
             }, delay);
             return;
         }
@@ -366,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 //Database
                 Database.fetchData(this, false);
             } else {
-                errorOnLoading(ErrorFragment.ERR_NO_INTERNET);
+                showErrorFragment(0, ErrorFragment.ERR_NO_INTERNET, null);
             }
 
         }, delay);
@@ -375,267 +170,94 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Wird aufgerufen, wenn der Thread für das Downloaden und Lesen der VP-Daten fertig ist
      * Befüllt bei Erfolg die Liste und zeigt die Hauptkomonenten an
-     * @param ioException ob ein Lesefehler aufgetreten ist
+     *
+     * @param ioException    ob ein Lesefehler aufgetreten ist
      * @param otherException ob ein anderer Fehler aufgetreten ist
-     * @param internetCut ob die Internetverbindung abgebrochen ist
+     * @param internetCut    ob die Internetverbindung abgebrochen ist
      */
-    public void onDatabaseLoaded(boolean ioException, boolean otherException, boolean internetCut) {
+    public void onLoaded(boolean ioException, boolean otherException, boolean internetCut) {
         if(!ioException && !otherException && !internetCut) {
             Database.loaded = true;
             hideLoadingView(0);
 
-            if(!isPaused) {
+            if(!mIsPaused) {
                 mHandler.postDelayed(() -> {
-                    fillList(() -> enterMainComponents(0));
+                    showSubstituteFragment(0, true, null);
                 }, 300);
+            } else {
+                state = STATE_FM_SUBSTITUTE;
             }
 
         } else if(ioException) {
-            errorOnLoading(ErrorFragment.ERR_IO_EXCEPTION);
+            showErrorFragment(0, ErrorFragment.ERR_IO_EXCEPTION, null);
         } else if(otherException) {
-            errorOnLoading(ErrorFragment.ERR_OTHER_EXCEPTION);
+            showErrorFragment(0, ErrorFragment.ERR_OTHER_EXCEPTION, null);
         } else {
-            errorOnLoading(ErrorFragment.ERR_NO_INTERNET);
+            showErrorFragment(0, ErrorFragment.ERR_NO_INTERNET, null);
         }
-    }
-
-    /**
-     * Füllen der Liste
-     * @param runnable Runnable, was nach der Befüllung der Liste aufgerufen werden soll
-     */
-    public void fillList(Runnable runnable) {
-        mHeaderFadeEnabled = false;
-        mDayListAdapter = new DayListAdapter(this);
-        mDayList.setAdapter(mDayListAdapter);
-        mDayList.post(() -> {
-            if(mDayList.getChildCount() != 0 && mDayList.canScrollVertically(1)) {
-                mFixedFirstItemPosition = mDayList.getChildAt(0).getY();
-                mDayList.smoothScrollToPosition(mDayList.getAdapter().getItemCount() - 1);
-                mHandler.post(mRBringDayListToTop);
-            } else {
-                if(runnable != null) runnable.run();
-            }
-        });
     }
 
     /**
      * Zeigt einen Fehler an
+     *
      * @param errorCode Code für die Art des Fehlers
      */
-    private void errorOnLoading(int errorCode) {
-        long delay = 0;
-        hideLoadingView(0);
-
-        delay += 400;
-        mErrorFragment.setError(errorCode);
-        mState = FM_ERROR;
-        mErrorFragment.show(delay);
+    public void showErrorFragment(long delay, int errorCode, @Nullable AnimatedFragment oldFragment) {
+        state = STATE_FM_ERROR;
+        delay += hideLoadingView(delay);
+        if(oldFragment != null) delay += oldFragment.hide(delay);
+        if(errorCode != -1) errorFragment.setError(errorCode);
+        errorFragment.show(delay);
     }
 
-    /**
-     * Wird nur beim Start ausgeführt.
-     * Zeigt alle Haupt-Komponenten an.
-     * @param delay Zeitverzögerund
-     */
-    private void enterMainComponents(long delay) {
-        mainComponentsEntered = true;
-        updateClassText();
+    public void showLoginFragment(long delay, @Nullable AnimatedFragment oldFragment) {
+        state = STATE_FM_LOGIN;
+        delay += hideLoadingView(delay);
+        if(oldFragment != null) delay += oldFragment.hide(delay);
+        loginFragment.show(delay);
+    }
 
-        //Background overlay
-        mVBgOverlay.animate()
-                .setStartDelay(delay)
-                .setDuration(500)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .alpha(0)
-                .start();
+    public void showClassSettingsFragment(long delay, @Nullable AnimatedFragment oldFragment) {
+        state = STATE_FM_CLASS_SETTINGS;
+        delay += hideLoadingView(delay);
+        if(oldFragment != null) delay += oldFragment.hide(delay);
+        classSettingsFragment.show(delay);
+    }
 
-        //ivEdit
-        mIvEdit.setImageResource(R.drawable.ic_filter_variant);
-        mIvEdit.setVisibility(View.VISIBLE);
-        mIvEdit.setAlpha(0f);
-        mIvEdit.setTranslationY(50);
-        mIvEdit.animate()
-                .setStartDelay(delay)
-                .setDuration(250)
-                .setInterpolator(new DecelerateInterpolator())
-                .translationY(0)
-                .alpha(1)
-                .start();
+    public void showSubstituteFragment(long delay, boolean updateSubstitutes, @Nullable AnimatedFragment oldFragment) {
+        delay += hideLoadingView(delay);
 
-        //title
-        delay += 50;
-        mIvTitle.setVisibility(View.VISIBLE);
-        mIvTitle.setAlpha(0f);
-        mIvTitle.setTranslationY(50);
-        mIvTitle.animate()
-                .setStartDelay(delay)
-                .setDuration(250)
-                .setInterpolator(new DecelerateInterpolator())
-                .translationY(0)
-                .withEndAction(() -> mHeaderFadeEnabled = true)
-                .alpha(1)
-                .start();
+        final long d = delay;
 
-        //class ly
-        delay += 50;
-        mLyClass.setVisibility(View.VISIBLE);
-        mLyClass.setAlpha(0f);
-        mLyClass.setTranslationY(50);
-        mLyClass.animate()
-                .setStartDelay(delay)
-                .setDuration(250)
-                .setInterpolator(new DecelerateInterpolator())
-                .translationY(0)
-                .alpha(1)
-                .start();
-
-        //tv nothing
-        if(mDayList.getChildCount() == 0) {
-            delay += 50;
-            mLyNothing.setVisibility(View.VISIBLE);
-            mLyNothing.setAlpha(0f);
-            mLyNothing.setTranslationY(50);
-            mLyNothing.animate()
-                    .setStartDelay(delay)
-                    .setDuration(250)
-                    .setInterpolator(new DecelerateInterpolator())
-                    .translationY(0)
-                    .alpha(1)
-                    .start();
+        if(updateSubstitutes) {
+            substitutePlanFragment.fillList(() -> {
+                long aDelay = 0;
+                if(oldFragment != null) aDelay += oldFragment.hide(d);
+                state = STATE_FM_SUBSTITUTE;
+                substitutePlanFragment.show(d + aDelay);
+                //Background overlay
+                mVBgOverlay.animate()
+                        .setStartDelay(0)
+                        .setDuration(500)
+                        .setInterpolator(new AccelerateDecelerateInterpolator())
+                        .alpha(0)
+                        .start();
+            });
         } else {
-            mLyNothing.setVisibility(View.INVISIBLE);
-        }
-
-        //list
-        delay += 50;
-        mDayList.setVisibility(View.VISIBLE);
-        mDayListAdapter.show(delay);
-    }
-
-    /**
-     * Versteckt alle Hauptkomponenten und zeigt die Kurswahl an
-     */
-    private void hideToCourseSettings() {
-        long delay = 0;
-
-        mState = FM_COURSE;
-
-        //avd animation
-        AnimatedVectorDrawable drawable = (AnimatedVectorDrawable)
-                getResources().getDrawable(R.drawable.avd_filter_to_close, getTheme());
-        mIvEdit.setImageDrawable(drawable);
-        drawable.start();
-
-        //class ly
-        mLyClass.animate()
-                .setStartDelay(delay)
-                .setDuration(150)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .alpha(0)
-                .start();
-
-        //title
-        mIvTitle.animate()
-                .setStartDelay(delay)
-                .setDuration(150)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .alpha(0)
-                .start();
-
-        //tv nothing
-        if(mLyNothing.getVisibility() == View.VISIBLE) {
-            mLyNothing.animate()
-                    .setStartDelay(delay)
-                    .setDuration(150)
-                    .setInterpolator(new AccelerateDecelerateInterpolator())
-                    .alpha(0)
-                    .start();
-        }
-
-        //daylist
-        if(mDayListAdapter != null) mDayListAdapter.hide(delay);
-
-        delay += 200;
-
-        mClassSettingsFragment.show(delay);
-    }
-
-    /**
-     * Wird aufgerufen wenn die Kurswahl geschlossen wurde und die Haupt-Komponenten wieder angezeigt
-     * werden sollen
-     * @param delay Zeitverzögerung
-     */
-    private void showFromCourseSettings(long delay) {
-
-        mState = FM_NONE;
-        updateClassText();
-
-        //avd animation
-        AnimatedVectorDrawable drawable = (AnimatedVectorDrawable)
-                getResources().getDrawable(R.drawable.avd_close_to_filter, getTheme());
-        mIvEdit.setImageDrawable(drawable);
-        drawable.start();
-
-        //title
-        delay += 50;
-        mIvTitle.setTranslationY(50);
-        mIvTitle.animate()
-                .setStartDelay(delay)
-                .setDuration(250)
-                .setInterpolator(new DecelerateInterpolator())
-                .translationY(0)
-                .withEndAction(() -> mHeaderFadeEnabled = true)
-                .alpha(1)
-                .start();
-
-        //class ly
-        delay += 50;
-        mLyClass.setTranslationY(50);
-        mLyClass.animate()
-                .setStartDelay(delay)
-                .setDuration(250)
-                .setInterpolator(new DecelerateInterpolator())
-                .translationY(0)
-                .alpha(1)
-                .start();
-
-        //tv nothing
-        if(mDayList.getChildCount() == 0) {
-            delay += 50;
-            mLyNothing.setVisibility(View.VISIBLE);
-            mLyNothing.setTranslationY(50);
-            mLyNothing.setAlpha(0);
-            mLyNothing.animate()
-                    .setStartDelay(delay)
-                    .setDuration(250)
-                    .setInterpolator(new DecelerateInterpolator())
-                    .translationY(0)
-                    .alpha(1)
-                    .start();
-        }
-
-        //list
-        delay += 50;
-        if(mDayListAdapter != null) mDayListAdapter.show(delay);
-    }
-
-    /**
-     * Aktuallisieren der Klassenanzeige
-     */
-    private void updateClassText() {
-        if(Integer.parseInt(Database.courseDegree) > 10) {
-            mTvClass.setText(getString(R.string.temp_class, Database.courseDegree));
-        } else {
-            mTvClass.setText(getString(R.string.temp_class, Database.courseDegree + "/" + Database.courseNumber));
+            state = STATE_FM_SUBSTITUTE;
+            if(oldFragment != null) delay += oldFragment.hide(delay);
+            substitutePlanFragment.show(delay);
         }
     }
 
     /**
      * Anzeigen des Ladekreises
+     *
      * @param delay Zeitverzögerung
      */
     private void showLoadingView(long delay) {
-        mState = LOADING;
+        state = STATE_LOADING;
+        if(mLoadingView.getVisibility() == View.VISIBLE) return;
         mLoadingView.setVisibility(View.VISIBLE);
         mLoadingView.animate()
                 .setStartDelay(delay)
@@ -647,19 +269,19 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Verstecken des Ladekreises
+     *
      * @param delay Zeitverzögerung
      */
-    private void hideLoadingView(long delay) {
-        mState = FM_NONE;
+    private long hideLoadingView(long delay) {
+        if(mLoadingView.getVisibility() == View.GONE) return 0;
         mLoadingView.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new FastOutSlowInInterpolator())
                 .setDuration(300)
                 .alpha(0)
-                .withEndAction(() -> {
-                    mLoadingView.setVisibility(View.GONE);
-                })
+                .withEndAction(() -> mLoadingView.setVisibility(View.GONE))
                 .start();
+        return 400;
     }
 
     /**
@@ -668,14 +290,14 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public void onBackPressed() {
-        switch(mState) { //Man konnte hier auch ein IF verwenden, aber es kommt später vieleicht nochwas dazu
-            case FM_COURSE:
-                if(!Database.courseChosen) {
+        switch(state) {
+            case STATE_FM_CLASS_SETTINGS:
+                if(!Database.classChosen) {
                     super.onBackPressed();
                     return;
                 }
-                long delay = mClassSettingsFragment.hide(0);
-                showFromCourseSettings(delay);
+                long delay = classSettingsFragment.hide(0);
+                showSubstituteFragment(delay, false, classSettingsFragment);
                 break;
             default:
                 super.onBackPressed();
@@ -691,38 +313,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //hide statusbar
-        View decorView = getWindow().getDecorView();  //Versteckt die Statusbar(Da wo Uhrzeigt, Akkuanzeige usw. steht)
+        View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
 
 //        mDayList.scrollToPosition(0);
-        if(isPaused) {
+        if(mIsPaused) {
             mHandler.postDelayed(() -> {
 //            if(mDayList.getChildCount() != 0) mFixedFirstItemPosition = mDayList.getChildAt(0).getY();
-                switch(mState) {
-                    case LOADING:
+                switch(state) {
+                    case STATE_LOADING:
                         break;
-                    case FM_COURSE:
-                        mClassSettingsFragment.show(0);
+                    case STATE_FM_CLASS_SETTINGS:
+                        showClassSettingsFragment(0, null);
                         break;
-                    case FM_LOGIN:
-                        mLoginFragment.show(0);
+                    case STATE_FM_LOGIN:
+                        showLoginFragment(0, null);
                         break;
-                    case FM_ERROR:
-                        mErrorFragment.show(0);
+                    case STATE_FM_ERROR:
+                        showErrorFragment(0, -1, null);
                         break;
-                    case FM_NONE:
-                        if(!mainComponentsEntered) {
-                            mHandler.post(() -> fillList(() -> enterMainComponents(0)));
-                        }
+                    case STATE_FM_SUBSTITUTE:
+//                        if(!mSubstituteShownOnes) {
+                        showSubstituteFragment(0, true, null);
+//                        }
                 }
             }, 1000);
         }
 
         //load database
         Database.load();
-
-        isPaused = false;
+        mIsPaused = false;
     }
 
     /**
@@ -731,12 +352,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        isPaused = true;
+        mIsPaused = true;
         Database.save();
-    }
-
-    private void blockButtons(long duration) {
-        mBlockButtons = true;
-        mHandler.postDelayed(() -> mBlockButtons = false, duration);
     }
 }

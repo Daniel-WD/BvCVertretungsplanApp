@@ -1,11 +1,9 @@
-package com.titaniel.bvcvertretungsplan.main_activity.day_list;
+package com.titaniel.bvcvertretungsplan.fragments.substitute_plan_fragment.day_list;
 
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,7 +47,7 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
     @NonNull
     @Override
     public DayHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.list_item_day, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_substitute_day, parent, false);
         return new DayHolder(view);
     }
     @Override

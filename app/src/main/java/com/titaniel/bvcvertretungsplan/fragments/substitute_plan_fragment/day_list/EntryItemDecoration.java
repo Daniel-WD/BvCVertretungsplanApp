@@ -1,8 +1,7 @@
-package com.titaniel.bvcvertretungsplan.main_activity.day_list;
+package com.titaniel.bvcvertretungsplan.fragments.substitute_plan_fragment.day_list;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;

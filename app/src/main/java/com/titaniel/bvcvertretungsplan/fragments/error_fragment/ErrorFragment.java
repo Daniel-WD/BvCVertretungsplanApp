@@ -1,10 +1,9 @@
-package com.titaniel.bvcvertretungsplan.main_activity.error_fragment;
+package com.titaniel.bvcvertretungsplan.fragments.error_fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.titaniel.bvcvertretungsplan.R;
+import com.titaniel.bvcvertretungsplan.database.Database;
+import com.titaniel.bvcvertretungsplan.fragments.AnimatedFragment;
 
 import java.util.Random;
 
@@ -23,7 +24,7 @@ import java.util.Random;
  * @author Daniel Weidensdörfer
  * Fragment, welches dem Nutzer Fehler mitteilt(zum Beispiel ein fehlende Internet Verbindung)
  */
-public class ErrorFragment extends Fragment {
+public class ErrorFragment extends AnimatedFragment {
 
     public static final int ERR_NO_INTERNET = 0;
     public static final int ERR_IO_EXCEPTION = 1;
@@ -113,9 +114,14 @@ public class ErrorFragment extends Fragment {
                 break;
 
             case ERR_NO_INTERNET:
-                mBtnErrOffline.setVisibility(View.VISIBLE);
-                mBtnErrOffline.setTextColor(accentColor);
-                mBtnErrAgain.setTextColor(Color.WHITE);
+                if(Database.classChosen) {
+                    mBtnErrOffline.setVisibility(View.VISIBLE);
+                    mBtnErrOffline.setTextColor(accentColor);
+                    mBtnErrAgain.setTextColor(Color.WHITE);
+                } else {
+                    mBtnErrOffline.setVisibility(View.GONE);
+                    mBtnErrAgain.setTextColor(accentColor);
+                }
                 mTvErr.setText(R.string.err_no_internet);
                 break;
 
@@ -150,7 +156,7 @@ public class ErrorFragment extends Fragment {
      * Versteckt das Fragment
      * @param delay Zeitverzögerung
      */
-    public void hide(long delay) {
+    public long hide(long delay) {
         mRoot.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
@@ -159,6 +165,7 @@ public class ErrorFragment extends Fragment {
                 .translationY(100)
                 .withEndAction(() -> mRoot.setVisibility(View.INVISIBLE))
                 .start();
+        return 200;
     }
 
 }
