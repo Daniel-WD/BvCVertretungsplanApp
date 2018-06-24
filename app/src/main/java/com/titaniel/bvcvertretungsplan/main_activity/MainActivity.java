@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean mHeaderFadeEnabled = false;
     private boolean mHeaderVisible = true;
     private boolean isPaused = false;
+    private boolean mainComponentsEntered = false;
 
     private ImageView mIvBackground;
     private ImageView mIvTitle;
@@ -437,6 +438,7 @@ public class MainActivity extends AppCompatActivity {
      * @param delay Zeitverzögerund
      */
     private void enterMainComponents(long delay) {
+        mainComponentsEntered = true;
         updateClassText();
 
         //Background overlay
@@ -710,25 +712,9 @@ public class MainActivity extends AppCompatActivity {
                         mErrorFragment.show(0);
                         break;
                     case FM_NONE:
-                        mHandler.post(() -> {
-                            fillList(() -> enterMainComponents(0));
-                        });
-                    /*if(mDayList.getChildCount() == 0) {
-                        mLyNothing.setAlpha(1);
-                    } else {
-                        mLyNothing.setAlpha(0);
-                    }
-                    //ly class
-                    mLyClass.setTranslationY(0);
-                    mLyClass.setAlpha(1);
-
-                    //title
-                    mIvTitle.setTranslationY(0);
-                    mIvTitle.setAlpha(1f);
-
-                    //edit
-                    mIvEdit.setTranslationY(0);
-                    mIvEdit.setAlpha(1f);*/
+                        if(!mainComponentsEntered) {
+                            mHandler.post(() -> fillList(() -> enterMainComponents(0)));
+                        }
                 }
             }, 1000);
         }
