@@ -143,9 +143,7 @@ public class ClassSettingsFragment extends AnimatedFragment {
         mCourseNumberList.setHasFixedSize(true);
         mCourseNumberList.setAdapter(new NumberAdapter(getContext(), sNumbers, R.layout.item_class_settings_number, this::numberPickerClicked));
 
-        //mCourseNumberList.post(this::refreshListSelections);
-
-        mRoot.setVisibility(View.INVISIBLE);
+        if(isActive) mCourseNumberList.post(this::refreshListSelections);
     }
 
     /**
@@ -214,7 +212,6 @@ public class ClassSettingsFragment extends AnimatedFragment {
 
         //skip button
         if(mBtnCourses.getVisibility() == View.VISIBLE) {
-            mBtnSkipCourses.setVisibility(View.VISIBLE);
             mBtnSkipCourses.animate()
                     .setStartDelay(delay)
                     .setDuration(150)
@@ -293,7 +290,7 @@ public class ClassSettingsFragment extends AnimatedFragment {
      * Anzeige der Klassenwahl von der Hauptliste (wenn der Nutzer seine Klasse wählen will)
      * @param delay Zeitverzögerung
      */
-    public void show(long delay) {
+    public void animateShow(long delay) {
         mRoot.setVisibility(View.VISIBLE);
         mRoot.setAlpha(1);
 
@@ -314,6 +311,7 @@ public class ClassSettingsFragment extends AnimatedFragment {
         }
 
         //title
+        mTvTitle.setVisibility(View.VISIBLE);
         mTvTitle.setAlpha(0);
         mTvTitle.setTranslationY(50);
         mTvTitle.animate()
@@ -326,6 +324,7 @@ public class ClassSettingsFragment extends AnimatedFragment {
 
         //class layout
         delay += 50;
+        mLyClass.setVisibility(View.VISIBLE);
         mLyClass.setAlpha(0);
         mLyClass.setTranslationY(50);
         mLyClass.animate()
@@ -404,7 +403,7 @@ public class ClassSettingsFragment extends AnimatedFragment {
      * @param delay Zeitverzögerung
      * @return Zeitverzögerung für nächste Animation
      */
-    public long hide(long delay) {
+    public long animateHide(long delay) {
         mCoursePickerFragment.hide(0);
         mRoot.animate()
                 .setStartDelay(delay)

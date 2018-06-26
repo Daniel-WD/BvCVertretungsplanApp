@@ -43,7 +43,6 @@ public class LoginFragment extends AnimatedFragment {
     private Button mBtnOk;
     private ProgressBar mProgressBar;
     private TextView mTvFail;
-    private View mBackground;
     private FrameLayout mLyUser, mLyPassword;
     private LinearLayout mLyLogin;
     private TextView mTvTitle;
@@ -95,7 +94,6 @@ public class LoginFragment extends AnimatedFragment {
         mBtnOk = mRoot.findViewById(R.id.btnOk);
         mProgressBar = mRoot.findViewById(R.id.progressBar);
         mTvFail = mRoot.findViewById(R.id.tvFail);
-        mBackground = mRoot.findViewById(R.id.vBackground);
         mLyUser = mRoot.findViewById(R.id.lyUser);
         mLyPassword = mRoot.findViewById(R.id.lyPassword);
         mLyLogin = mRoot.findViewById(R.id.lyLoginText);
@@ -142,8 +140,6 @@ public class LoginFragment extends AnimatedFragment {
 
             showLoadingBar();
         });
-
-        mRoot.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -151,6 +147,7 @@ public class LoginFragment extends AnimatedFragment {
      * @param delay Zeitverzögerung
      */
     private void showFail(long delay) {
+        mTvFail.setVisibility(View.VISIBLE);
         mTvFail.animate()
                 .setStartDelay(delay)
                 .setDuration(200)
@@ -231,31 +228,24 @@ public class LoginFragment extends AnimatedFragment {
      * Anzeige dieses Fragments
      * @param delay Zeitverzögerung
      */
-    public void show(long delay) {
+    public void animateShow(long delay) {
         mRoot.setVisibility(View.VISIBLE);
 
-        //background
-        mBackground.setAlpha(0);
-        mBackground.animate()
-                .setStartDelay(delay)
-                .setDuration(500)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
-                .alpha(1)
-                .start();
-
         //icon
+        mIvIcon.setVisibility(View.VISIBLE);
         mIvIcon.setAlpha(0f);
         mIvIcon.setTranslationY(30);
         mIvIcon.animate()
                 .setStartDelay(delay)
-                .setDuration(300)
-                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .setDuration(250)
+                .setInterpolator(new DecelerateInterpolator())
                 .alpha(1)
                 .translationY(0)
                 .start();
 
         //title
         delay += 50;
+        mTvTitle.setVisibility(View.VISIBLE);
         mTvTitle.setAlpha(0f);
         mTvTitle.setTranslationY(30);
         mTvTitle.animate()
@@ -268,6 +258,7 @@ public class LoginFragment extends AnimatedFragment {
 
         //login plus its line
         delay += 50;
+        mLyLogin.setVisibility(View.VISIBLE);
         mLyLogin.setAlpha(0f);
         mLyLogin.setTranslationY(30);
         mLyLogin.animate()
@@ -280,6 +271,7 @@ public class LoginFragment extends AnimatedFragment {
 
         //userlayout
         delay += 50;
+        mLyUser.setVisibility(View.VISIBLE);
         mLyUser.setAlpha(0f);
         mLyUser.setTranslationY(30);
         mLyUser.animate()
@@ -292,6 +284,7 @@ public class LoginFragment extends AnimatedFragment {
 
         //passwordlayout
         delay += 50;
+        mLyPassword.setVisibility(View.VISIBLE);
         mLyPassword.setAlpha(0f);
         mLyPassword.setTranslationY(30);
         mLyPassword.animate()
@@ -304,6 +297,7 @@ public class LoginFragment extends AnimatedFragment {
 
         //btn ok
         delay += 50;
+        mBtnOk.setVisibility(View.VISIBLE);
         mBtnOk.setAlpha(0f);
         mBtnOk.setTranslationY(30);
         mBtnOk.animate()
@@ -320,7 +314,7 @@ public class LoginFragment extends AnimatedFragment {
      * Verstecken dieses Fragments
      * @param delay Zeitverzögerung
      */
-    public long hide(long delay) {
+    public long animateHide(long delay) {
         mRoot.animate()
                 .setStartDelay(delay)
                 .setDuration(200)

@@ -87,9 +87,6 @@ public class ErrorFragment extends AnimatedFragment {
         mBtnErrOffline.setOnClickListener(v -> {
             mErrorFragmentCallback.onBtnOfflineClicked((Button) v);
         });
-
-        //make invisible
-        mRoot.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -137,7 +134,7 @@ public class ErrorFragment extends AnimatedFragment {
      * Zeigt das Fragment an
      * @param delay Zeitverzögerung
      */
-    public void show(long delay) {
+    public void animateShow(long delay) {
         Random r = new Random();
         mIvErr.setImageResource(r.nextInt(2) == 0 ? R.drawable.ic_emj_angry : R.drawable.ic_emj_sad);
         mRoot.setVisibility(View.VISIBLE);
@@ -156,7 +153,7 @@ public class ErrorFragment extends AnimatedFragment {
      * Versteckt das Fragment
      * @param delay Zeitverzögerung
      */
-    public long hide(long delay) {
+    public long animateHide(long delay) {
         mRoot.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new AccelerateDecelerateInterpolator())

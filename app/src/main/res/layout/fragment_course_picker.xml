@@ -4,7 +4,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="invisible"
+    tools:visibility="visible">
 
     <org.apmem.tools.layouts.FlowLayout
         android:id="@+id/lySelected"
@@ -117,6 +119,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/lyBackSkip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -237,7 +240,6 @@
             android:text="@string/complete"
             android:textColor="@color/accent"
             android:textSize="13sp" />
-
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

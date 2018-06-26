@@ -232,82 +232,10 @@ public class SubstitutePlanFragment extends AnimatedFragment {
         });
     }
 
-
-    /**
-     * Wird nur beim Start ausgeführt.
-     * Zeigt alle Haupt-Komponenten an.
-     *
-     * @param delay Zeitverzögerund
-     */
-    public void enterMainComponent(long delay) {
-        updateClassText();
-
-        //ivEdit
-        mIvEdit.setVisibility(View.VISIBLE);
-        mIvEdit.setAlpha(0f);
-        mIvEdit.setTranslationY(50);
-        mIvEdit.animate()
-                .setStartDelay(delay)
-                .setDuration(250)
-                .setInterpolator(new DecelerateInterpolator())
-                .translationY(0)
-                .alpha(1)
-                .start();
-
-        //title
-        delay += 50;
-        mIvTitle.setVisibility(View.VISIBLE);
-        mIvTitle.setAlpha(0f);
-        mIvTitle.setTranslationY(50);
-        mIvTitle.animate()
-                .setStartDelay(delay)
-                .setDuration(250)
-                .setInterpolator(new DecelerateInterpolator())
-                .translationY(0)
-                .withEndAction(() -> mHeaderFadeEnabled = true)
-                .alpha(1)
-                .start();
-
-        //class ly
-        delay += 50;
-        mLyClass.setVisibility(View.VISIBLE);
-        mLyClass.setAlpha(0f);
-        mLyClass.setTranslationY(50);
-        mLyClass.animate()
-                .setStartDelay(delay)
-                .setDuration(250)
-                .setInterpolator(new DecelerateInterpolator())
-                .translationY(0)
-                .alpha(1)
-                .start();
-
-        //tv nothing
-        if(mDayList.getChildCount() == 0) {
-            delay += 50;
-            mLyNothing.setVisibility(View.VISIBLE);
-            mLyNothing.setAlpha(0f);
-            mLyNothing.setTranslationY(50);
-            mLyNothing.animate()
-                    .setStartDelay(delay)
-                    .setDuration(250)
-                    .setInterpolator(new DecelerateInterpolator())
-                    .translationY(0)
-                    .alpha(1)
-                    .start();
-        } else {
-            mLyNothing.setVisibility(View.INVISIBLE);
-        }
-
-        //list
-        delay += 50;
-        mDayList.setVisibility(View.VISIBLE);
-        mDayListAdapter.show(delay);
-    }
-
     /**
      * Versteckt alle Hauptkomponenten und zeigt die Kurswahl an
      */
-    public long hide(long delay) {
+    public long animateHide(long delay) {
         //avd animation
         AnimatedVectorDrawable drawable = (AnimatedVectorDrawable)
                 getResources().getDrawable(R.drawable.avd_filter_to_close, getContext().getTheme());
@@ -354,7 +282,7 @@ public class SubstitutePlanFragment extends AnimatedFragment {
      *
      * @param delay Zeitverzögerung
      */
-    public void show(long delay) {
+    public void animateShow(long delay) {
 
         updateClassText();
 

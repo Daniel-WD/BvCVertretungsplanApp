@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
             STATE_LOADING = 4;
 
     public int state = STATE_LOADING;
-    private boolean mIsPaused = false;
+    private boolean mIsPaused = false, mSubstituteShowBlockedBecauseOfPause = false;
 
     private ImageView mIvBackground;
     private View mVBgOverlay;
@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
                     showSubstituteFragment(0, true, null);
                 }, 300);
             } else {
-                state = STATE_FM_SUBSTITUTE;
+                mSubstituteShowBlockedBecauseOfPause = true;
             }
 
         } else if(ioException) {
@@ -317,27 +317,29 @@ public class MainActivity extends AppCompatActivity {
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         decorView.setSystemUiVisibility(uiOptions);
 
-//        mDayList.scrollToPosition(0);
         if(mIsPaused) {
             mHandler.postDelayed(() -> {
-//            if(mDayList.getChildCount() != 0) mFixedFirstItemPosition = mDayList.getChildAt(0).getY();
-                switch(state) {
-                    case STATE_LOADING:
-                        break;
-                    case STATE_FM_CLASS_SETTINGS:
-                        showClassSettingsFragment(0, null);
-                        break;
-                    case STATE_FM_LOGIN:
-                        showLoginFragment(0, null);
-                        break;
-                    case STATE_FM_ERROR:
-                        showErrorFragment(0, -1, null);
-                        break;
-                    case STATE_FM_SUBSTITUTE:
-//                        if(!mSubstituteShownOnes) {
-                        showSubstituteFragment(0, true, null);
-//                        }
+                if(mSubstituteShowBlockedBecauseOfPause) {
+                    showSubstituteFragment(0, true, null);
+                    mSubstituteShowBlockedBecauseOfPause = false;
                 }
+//
+//                switch(state) {
+//                    case STATE_LOADING:
+//                        break;
+//                    case STATE_FM_CLASS_SETTINGS:
+//                        showClassSettingsFragment(0, null);
+//                        break;
+//                    case STATE_FM_LOGIN:
+//                        showLoginFragment(0, null);
+//                        break;
+//                    case STATE_FM_ERROR:
+//                        showErrorFragment(0, -1, null);
+//                        break;
+//                    case STATE_FM_SUBSTITUTE:
+////                        if(!mSubstituteShownOnes) {
+////                        }
+//                }
             }, 1000);
         }
 
