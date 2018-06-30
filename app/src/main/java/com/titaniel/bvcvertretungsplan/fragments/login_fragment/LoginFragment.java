@@ -28,6 +28,8 @@ import com.titaniel.bvcvertretungsplan.fragments.AnimatedFragment;
 import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
 import com.titaniel.bvcvertretungsplan.utils.Utils;
 
+import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.*;
+
 /**
  * @author Daniel Weidensdörfer
  * Fragment für das Login
@@ -117,8 +119,10 @@ public class LoginFragment extends AnimatedFragment {
             hideFail(0);
             mHandler.postDelayed(() -> {
                 if(Utils.isOnline(getContext())) {
-                    AuthManager.checkLogin(getContext(), mTUser.getText().toString().trim(), mTPassword.getText().toString().trim(), (success) -> {
-                        if(success) {
+                    String user = mTUser.getText().toString().trim();
+                    String pw = mTPassword.getText().toString().trim();
+                    AuthManager.checkLogin(getContext(), user, pw, (result) -> {
+                        if(result == RES_SUCCESS) {
                             Database.username = mTUser.getText().toString().trim();
                             Database.password = mTPassword.getText().toString().trim();
                             hide(0);

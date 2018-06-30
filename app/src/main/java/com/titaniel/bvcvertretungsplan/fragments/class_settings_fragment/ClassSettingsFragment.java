@@ -21,7 +21,7 @@ import com.titaniel.bvcvertretungsplan.database.Database;
 import com.titaniel.bvcvertretungsplan.fragments.AnimatedFragment;
 import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
 import com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.course_picker_fragment.CoursePickerFragment;
-import com.titaniel.bvcvertretungsplan.utils.DateManager;
+import com.titaniel.bvcvertretungsplan.date_manager.DateManager;
 
 import java.util.ArrayList;
 

@@ -20,15 +20,13 @@ import com.titaniel.bvcvertretungsplan.fragments.AnimatedFragment;
 
 import java.util.Random;
 
+import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.*;
+
 /**
  * @author Daniel Weidensdörfer
  * Fragment, welches dem Nutzer Fehler mitteilt(zum Beispiel ein fehlende Internet Verbindung)
  */
 public class ErrorFragment extends AnimatedFragment {
-
-    public static final int ERR_NO_INTERNET = 0;
-    public static final int ERR_IO_EXCEPTION = 1;
-    public static final int ERR_OTHER_EXCEPTION = 2;
 
     /**
      * Callback...wenn ein Button dieses Fragments geklickt wurde
@@ -104,13 +102,14 @@ public class ErrorFragment extends AnimatedFragment {
     public void setError(int errorCode) {
         int accentColor = ContextCompat.getColor(getContext(), R.color.accent);
         switch(errorCode) {
-            case ERR_IO_EXCEPTION:
+            case RES_SERVER_DOWN:
+            case RES_IO_EXCEPTION:
                 mBtnErrOffline.setVisibility(View.GONE);
                 mBtnErrAgain.setTextColor(accentColor);
                 mTvErr.setText(R.string.err_io_exception);
                 break;
 
-            case ERR_NO_INTERNET:
+            case RES_NO_INTERNET:
                 if(Database.classChosen) {
                     mBtnErrOffline.setVisibility(View.VISIBLE);
                     mBtnErrOffline.setTextColor(accentColor);
@@ -122,7 +121,7 @@ public class ErrorFragment extends AnimatedFragment {
                 mTvErr.setText(R.string.err_no_internet);
                 break;
 
-            case ERR_OTHER_EXCEPTION:
+            case RES_XML_EXCEPTION:
                 mBtnErrOffline.setVisibility(View.GONE);
                 mBtnErrAgain.setTextColor(accentColor);
                 mTvErr.setText(R.string.err_other_exception);

@@ -21,9 +21,9 @@ public class AuthManager {
     public interface Callback {
         /**
          * Rückgabemethode für den Erfolg der Login Daten Überprüfung
-         * @param success true wenn Login Daten stimmen, ansonsten false
+         * @param result true wenn Login Daten stimmen, ansonsten false
          */
-        void result(boolean success);
+        void result(int result);
     }
 
     /**

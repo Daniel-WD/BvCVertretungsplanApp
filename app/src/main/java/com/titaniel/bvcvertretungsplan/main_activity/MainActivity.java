@@ -14,14 +14,19 @@ import android.widget.ImageView;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.authentication.AuthManager;
 import com.titaniel.bvcvertretungsplan.database.Database;
+import com.titaniel.bvcvertretungsplan.date_manager.DateManager;
 import com.titaniel.bvcvertretungsplan.fragments.AnimatedFragment;
 import com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.ClassSettingsFragment;
 import com.titaniel.bvcvertretungsplan.fragments.error_fragment.ErrorFragment;
 import com.titaniel.bvcvertretungsplan.fragments.login_fragment.LoginFragment;
 import com.titaniel.bvcvertretungsplan.fragments.substitute_plan_fragment.SubstitutePlanFragment;
-import com.titaniel.bvcvertretungsplan.utils.DateManager;
 import com.titaniel.bvcvertretungsplan.utils.Utils;
 import com.victor.loading.rotate.RotateLoading;
+
+import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_NO_INTERNET;
+import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_SERVER_DOWN;
+import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_SUCCESS;
+import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_WRONG_LOGIN;
 
 /**
  * Repräsentiert das Hauptfenster, also den Frame, der den ganzen Bildschirm ausfüllt.
@@ -117,19 +122,21 @@ public class MainActivity extends AppCompatActivity {
             boolean isOnline = Utils.isOnline(this);
             if(isOnline) {
                 //Database
-                AuthManager.checkLogin(this, success -> { //Callback von AuthManager
-                    if(success) {
+                AuthManager.checkLogin(this, result -> { //Callback von AuthManager
+
+                    if(result == RES_SUCCESS) {
                         load(0);
+                    } else if(result == RES_SERVER_DOWN) {
+                        showErrorFragment(0, RES_SERVER_DOWN, null);
+                    } else if(result == RES_WRONG_LOGIN && Utils.isOnline(this)) {
+                        showLoginFragment(0, null);
                     } else {
-                        if(Utils.isOnline(this)) {
-                            showLoginFragment(0, null);
-                        } else {
-                            showErrorFragment(0, ErrorFragment.ERR_NO_INTERNET, null);
-                        }
+                        showErrorFragment(0, RES_NO_INTERNET, null);
                     }
+
                 });
             } else {
-                showErrorFragment(0, ErrorFragment.ERR_NO_INTERNET, null);
+                showErrorFragment(0, RES_NO_INTERNET, null);
             }
 
         }, delay);
@@ -161,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                 //Database
                 Database.fetchData(this, false);
             } else {
-                showErrorFragment(0, ErrorFragment.ERR_NO_INTERNET, null);
+                showErrorFragment(0, RES_NO_INTERNET, null);
             }
 
         }, delay);
@@ -171,12 +178,10 @@ public class MainActivity extends AppCompatActivity {
      * Wird aufgerufen, wenn der Thread für das Downloaden und Lesen der VP-Daten fertig ist
      * Befüllt bei Erfolg die Liste und zeigt die Hauptkomonenten an
      *
-     * @param ioException    ob ein Lesefehler aufgetreten ist
-     * @param otherException ob ein anderer Fehler aufgetreten ist
-     * @param internetCut    ob die Internetverbindung abgebrochen ist
+     * @param resultCode Ergebnis
      */
-    public void onLoaded(boolean ioException, boolean otherException, boolean internetCut) {
-        if(!ioException && !otherException && !internetCut) {
+    public void onLoaded(int resultCode) {
+        if(resultCode == RES_SUCCESS) {
             Database.loaded = true;
             hideLoadingView(0);
 
@@ -188,12 +193,8 @@ public class MainActivity extends AppCompatActivity {
                 mSubstituteShowBlockedBecauseOfPause = true;
             }
 
-        } else if(ioException) {
-            showErrorFragment(0, ErrorFragment.ERR_IO_EXCEPTION, null);
-        } else if(otherException) {
-            showErrorFragment(0, ErrorFragment.ERR_OTHER_EXCEPTION, null);
         } else {
-            showErrorFragment(0, ErrorFragment.ERR_NO_INTERNET, null);
+            showErrorFragment(0, resultCode, null);
         }
     }
 
@@ -296,8 +297,8 @@ public class MainActivity extends AppCompatActivity {
                     super.onBackPressed();
                     return;
                 }
-                long delay = classSettingsFragment.hide(0);
-                showSubstituteFragment(delay, false, classSettingsFragment);
+//                long delay = classSettingsFragment.hide(0);
+                showSubstituteFragment(0, false, classSettingsFragment);
                 break;
             default:
                 super.onBackPressed();
