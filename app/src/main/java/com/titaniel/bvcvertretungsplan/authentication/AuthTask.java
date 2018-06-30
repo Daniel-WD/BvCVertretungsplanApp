@@ -5,12 +5,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult;
 import com.titaniel.bvcvertretungsplan.database.Database;
 
+import java.io.FileNotFoundException;
 import java.net.Authenticator;
+import java.net.ConnectException;
 import java.net.PasswordAuthentication;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.Arrays;
+
+import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.*;
 
 /**
  * @author Daniel Weidensdörfer
@@ -45,12 +51,12 @@ public class AuthTask extends AsyncTask<AuthTask.AuthData, Void, AuthTask.Result
      * Klasse für die Ausgabedaten
      */
     static class ResultData {
-        ResultData(boolean success, AuthManager.Callback callback) {
-            this.success = success;
+        ResultData(int result, AuthManager.Callback callback) {
+            this.result = result;
             this.callback = callback;
         }
 
-        boolean success;
+        int result;
         AuthManager.Callback callback;
     }
 
@@ -71,19 +77,25 @@ public class AuthTask extends AsyncTask<AuthTask.AuthData, Void, AuthTask.Result
             }
         });
 
-        boolean success = false;
+        int result = -1;
         try {
             URL url = new URL(Database.SERVER_LOCATION + CHECK);
             String t = url.getFile();
             url.openStream().close();
-            success = true;
+            result = RES_SUCCESS;
+
+        } catch (FileNotFoundException | ConnectException e) {
+            result = RES_SERVER_DOWN;
+
+        } catch (SocketException e) {
+            result = RES_NO_INTERNET;
+
         } catch (Exception e) {
-            FirebaseAnalytics analytics = FirebaseAnalytics.getInstance(input[0].context);
-            Bundle params = new Bundle();
-            params.putString("stack_trace", Arrays.toString(e.getStackTrace()));
-            analytics.logEvent("Exception_in_AuthTask", params);
+            result = RES_WRONG_LOGIN;
         }
-        return new ResultData(success, input[0].callback);
+
+
+        return new ResultData(result, input[0].callback);
     }
 
     /**
@@ -96,6 +108,6 @@ public class AuthTask extends AsyncTask<AuthTask.AuthData, Void, AuthTask.Result
     @Override
     protected void onPostExecute(AuthTask.ResultData output) {
         if(output == null) return;
-        output.callback.result(output.success);
+        output.callback.result(output.result);
     }
 }
