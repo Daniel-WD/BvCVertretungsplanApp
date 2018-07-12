@@ -23,10 +23,12 @@ import com.titaniel.bvcvertretungsplan.fragments.substitute_plan_fragment.Substi
 import com.titaniel.bvcvertretungsplan.utils.Utils;
 import com.victor.loading.rotate.RotateLoading;
 
+import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_ITS_HOLIDAYS;
 import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_NO_INTERNET;
 import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_SERVER_DOWN;
 import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_SUCCESS;
 import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_WRONG_LOGIN;
+import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_XML_EXCEPTION;
 
 /**
  * Repräsentiert das Hauptfenster, also den Frame, der den ganzen Bildschirm ausfüllt.
@@ -119,8 +121,12 @@ public class MainActivity extends AppCompatActivity {
 
         //login and internet check
         mHandler.postDelayed(() -> {
+            boolean isHoliday = true;
             boolean isOnline = Utils.isOnline(this);
-            if(isOnline) {
+            if(isHoliday) {
+                showErrorFragment(0, RES_ITS_HOLIDAYS, null);
+
+            } else if(isOnline) {
                 //Database
                 AuthManager.checkLogin(this, result -> { //Callback von AuthManager
 

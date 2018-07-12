@@ -24,7 +24,7 @@ import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult
 
 /**
  * @author Daniel Weidensdörfer
- * Fragment, welches dem Nutzer Fehler mitteilt(zum Beispiel ein fehlende Internet Verbindung)
+ * Fragment, welches dem Nutzer Fehler mitteilt
  */
 public class ErrorFragment extends AnimatedFragment {
 
@@ -62,7 +62,7 @@ public class ErrorFragment extends AnimatedFragment {
         mRoot = getView();
         mIvErr = mRoot.findViewById(R.id.ivErr);
         mTvErr = mRoot.findViewById(R.id.tvErr);
-        mTvTitle = mRoot.findViewById(R.id.ivTit);
+        mTvTitle = mRoot.findViewById(R.id.tvErrorTitle);
         mBtnErrAgain = mRoot.findViewById(R.id.btnErrAgain);
         mBtnErrOffline = mRoot.findViewById(R.id.btnErrOffline);
 
@@ -91,31 +91,53 @@ public class ErrorFragment extends AnimatedFragment {
      */
     public void setError(int errorCode) {
         switch(errorCode) {
+            case RES_ITS_HOLIDAYS:
+                confUI(R.string.holi, R.string.err_holidays, false, true, -1, mAccentColor);
+                break;
+
             case RES_SERVER_DOWN:
             case RES_IO_EXCEPTION:
-                mBtnErrOffline.setVisibility(View.GONE);
-                mBtnErrAgain.setTextColor(mAccentColor);
-                mTvErr.setText(R.string.err_io_exception);
+
+                confUI(R.string.omg, R.string.err_io_exception,
+                        false, true,
+                        -1, mAccentColor);
                 break;
 
             case RES_NO_INTERNET:
                 if(Database.classChosen) {
-                    mBtnErrOffline.setVisibility(View.VISIBLE);
-                    mBtnErrOffline.setTextColor(mAccentColor);
-                    mBtnErrAgain.setTextColor(Color.WHITE);
+                    confUI(R.string.omg, R.string.err_no_internet,
+                            true, true,
+                            mAccentColor, Color.WHITE);
+
                 } else {
-                    mBtnErrOffline.setVisibility(View.GONE);
-                    mBtnErrAgain.setTextColor(mAccentColor);
+                    confUI(R.string.omg, R.string.err_no_internet,
+                            false, true,
+                            -1, mAccentColor);
                 }
-                mTvErr.setText(R.string.err_no_internet);
                 break;
 
             case RES_XML_EXCEPTION:
-                mBtnErrOffline.setVisibility(View.GONE);
-                mBtnErrAgain.setTextColor(mAccentColor);
-                mTvErr.setText(R.string.err_other_exception);
+                confUI(R.string.omg, R.string.err_other_exception,
+                        false, true,
+                        -1, mAccentColor);
                 break;
         }
+    }
+
+    private void confUI(int titleId, int textId,
+                        boolean btnOfflineVisible, boolean btnAgainVisible) {
+        confUI(titleId, textId, btnOfflineVisible, btnAgainVisible, -1, -1);
+    }
+
+    private void confUI(int titleId, int textId,
+                        boolean btnOfflineVisible, boolean btnAgainVisible,
+                        int btnOfflineColor, int btnAgainColor) {
+        mTvTitle.setText(titleId);
+        mTvErr.setText(textId);
+        mBtnErrOffline.setVisibility(btnOfflineVisible ? View.VISIBLE : View.GONE);
+        mBtnErrAgain.setVisibility(btnAgainVisible ? View.VISIBLE : View.GONE);
+        if(btnOfflineColor != -1) mBtnErrOffline.setTextColor(btnOfflineColor);
+        if(btnAgainColor != -1) mBtnErrAgain.setTextColor(btnAgainColor);
     }
 
     /**
@@ -123,8 +145,15 @@ public class ErrorFragment extends AnimatedFragment {
      * @param delay Zeitverzögerung
      */
     public void animateShow(long delay) {
-        Random r = new Random();
-        mIvErr.setImageResource(r.nextInt(2) == 0 ? R.drawable.ic_emj_angry : R.drawable.ic_emj_sad);
+        boolean isHoliday = true;
+
+        if(isHoliday) {
+            mIvErr.setImageResource(R.drawable.ic_emj_admired);
+        } else {
+            Random r = new Random();
+            mIvErr.setImageResource(r.nextInt(2) == 0 ? R.drawable.ic_emj_angry : R.drawable.ic_emj_sad);
+        }
+
         mRoot.setVisibility(View.VISIBLE);
         mRoot.setTranslationY(-100);
         mRoot.setAlpha(0);

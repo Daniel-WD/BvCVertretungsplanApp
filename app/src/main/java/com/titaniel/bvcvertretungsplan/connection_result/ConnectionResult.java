@@ -10,4 +10,6 @@ public final class ConnectionResult {
     public static final int RES_SERVER_DOWN = 4;
     public static final int RES_WRONG_LOGIN = 5;
 
+    public static final int RES_ITS_HOLIDAYS = 6;
+
 }
