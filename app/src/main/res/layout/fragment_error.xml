@@ -1,44 +1,46 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Layout für das Fehler Fragment siehe ErrorFragment -->
+<?xml version="1.0" encoding="utf-8"?><!-- Layout für das Fehler Fragment siehe ErrorFragment -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_gravity="center"
-    android:orientation="vertical"
     android:background="@drawable/card_background"
+    android:orientation="vertical"
     android:visibility="invisible"
     tools:visibility="visible">
 
     <ImageView
-        android:layout_marginTop="18dp"
-        android:src="@drawable/ic_emj_angry"
         android:id="@+id/ivErr"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_gravity="center"
+        android:layout_marginTop="18dp"
+        android:src="@drawable/ic_emj_angry"
         android:tint="@color/accent" />
 
     <TextView
-        android:id="@+id/ivTitle"
+        android:id="@+id/tvErrorTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:fontFamily="sans-serif"
         android:includeFontPadding="false"
         android:letterSpacing="0.1"
         android:text="@string/omg"
+        tools:text="@string/holi"
         android:textAlignment="center"
         android:textColor="@color/snow"
-        android:textSize="30sp" />
+        android:textSize="24sp" />
 
     <TextView
+        android:lineSpacingExtra="1dp"
+        tools:text="@string/err_holidays"
         android:id="@+id/tvErr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:alpha="1"
         android:fontFamily="sans-serif-light"
         android:includeFontPadding="false"
@@ -47,25 +49,25 @@
         android:text="@string/err_io_exception"
         android:textAlignment="center"
         android:textColor="@color/infoColor"
-        android:textSize="18sp" />
+        android:textSize="16sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="8dp"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:orientation="horizontal"
-        android:layout_marginBottom="12dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <Button
-            android:layout_marginStart="16dp"
             android:id="@+id/btnErrAgain"
             android:layout_width="0dp"
-            android:layout_weight="0.5"
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginStart="16dp"
+            android:layout_weight="0.5"
             android:background="@android:color/transparent"
             android:fontFamily="sans-serif-medium"
             android:includeFontPadding="false"
@@ -74,18 +76,18 @@
             android:textSize="13sp" />
 
         <Button
-            android:layout_marginEnd="16dp"
             android:id="@+id/btnErrOffline"
             android:layout_width="0dp"
-            android:layout_weight="0.5"
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="16dp"
+            android:layout_weight="0.5"
             android:background="@android:color/transparent"
             android:fontFamily="sans-serif-medium"
             android:includeFontPadding="false"
             android:text="@string/res_offline"
             android:textColor="@color/accent"
-            android:textSize="13sp"/>
+            android:textSize="13sp" />
 
     </LinearLayout>
 

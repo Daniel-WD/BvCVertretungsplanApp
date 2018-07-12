@@ -58,7 +58,7 @@
     <fragment
         android:id="@+id/fragmentErr"
         android:name="com.titaniel.bvcvertretungsplan.fragments.error_fragment.ErrorFragment"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginEnd="-4dp"
