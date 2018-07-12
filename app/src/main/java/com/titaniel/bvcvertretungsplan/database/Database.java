@@ -20,9 +20,8 @@ import java.util.HashSet;
  * Einträge der Vertretungspläne in geordneter Datenstruktur.
  */
 public class Database {
-    public static final String SERVER_LOCATION = "http://www.cottagym.selfhost.eu/images/cottaintern/vp/";
 
-    // DIE FOLGENDEN KONSTANTEN SIND SCHLÜSSELWORTER IN DER VERTRETUNGSPLAN XML
+    public static final String SERVER_LOCATION = "http://www.cottagym.selfhost.eu/images/cottaintern/vp/";
 
     //Day
     static final String KEY_LAST_UPDATED = "datum";

@@ -44,29 +44,19 @@ public class ErrorFragment extends AnimatedFragment {
     private TextView mTvErr;
     private TextView mTvTitle;
 
-    /**
-     * Von Android aufgerufen wenn die <code>View</code> erstellt werden soll
-     * Liefert die <code>View</code> zurück
-     *
-     * @param inflater LayoutInflater
-     * @param container Container
-     * @param savedInstanceState SavedInstanceState
-     * @return View
-     */
+    private int mAccentColor;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_error, container, false);
     }
 
-    /**
-     * Von Android aufgerufen wenn das Fragment startet
-     *
-     * Enthält die Initialisierungen
-     */
     @Override
     public void onStart() {
         super.onStart();
+
+        mAccentColor = ContextCompat.getColor(getContext(), R.color.accent);
 
         //init
         mRoot = getView();
@@ -100,30 +90,29 @@ public class ErrorFragment extends AnimatedFragment {
      * @param errorCode Fehler-Art
      */
     public void setError(int errorCode) {
-        int accentColor = ContextCompat.getColor(getContext(), R.color.accent);
         switch(errorCode) {
             case RES_SERVER_DOWN:
             case RES_IO_EXCEPTION:
                 mBtnErrOffline.setVisibility(View.GONE);
-                mBtnErrAgain.setTextColor(accentColor);
+                mBtnErrAgain.setTextColor(mAccentColor);
                 mTvErr.setText(R.string.err_io_exception);
                 break;
 
             case RES_NO_INTERNET:
                 if(Database.classChosen) {
                     mBtnErrOffline.setVisibility(View.VISIBLE);
-                    mBtnErrOffline.setTextColor(accentColor);
+                    mBtnErrOffline.setTextColor(mAccentColor);
                     mBtnErrAgain.setTextColor(Color.WHITE);
                 } else {
                     mBtnErrOffline.setVisibility(View.GONE);
-                    mBtnErrAgain.setTextColor(accentColor);
+                    mBtnErrAgain.setTextColor(mAccentColor);
                 }
                 mTvErr.setText(R.string.err_no_internet);
                 break;
 
             case RES_XML_EXCEPTION:
                 mBtnErrOffline.setVisibility(View.GONE);
-                mBtnErrAgain.setTextColor(accentColor);
+                mBtnErrAgain.setTextColor(mAccentColor);
                 mTvErr.setText(R.string.err_other_exception);
                 break;
         }
