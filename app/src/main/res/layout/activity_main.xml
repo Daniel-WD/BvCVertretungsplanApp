@@ -21,105 +21,8 @@
         android:layout_height="match_parent"
         android:background="@color/backgroundOverlayLoading" />
 
-    <ImageView
-        android:id="@+id/ivEdit"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:elevation="1dp"
-        android:padding="14dp"
-        android:src="@drawable/ic_filter_variant"
-        android:tint="@color/snow" />
-
-    <RelativeLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="130dp">
-
-        <ImageView
-            android:id="@+id/ivTit"
-            android:layout_width="wrap_content"
-            android:layout_height="35sp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/title" />
-
-        <LinearLayout
-            android:id="@+id/lyClass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ivTit"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="4dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:src="@drawable/ic_account_group"
-                android:tint="@color/snow" />
-
-            <TextView
-                android:id="@+id/tvClass"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:fontFamily="sans-serif-medium"
-                android:letterSpacing="0.1"
-                android:textColor="@color/snow"
-                android:textSize="13sp"
-                tools:text="6/4" />
-
-        </LinearLayout>
-    </RelativeLayout>
-
-    <LinearLayout
-        tools:visibility="visible"
-        android:visibility="gone"
-        android:layout_marginTop="4dp"
-        android:layout_below="@id/header"
-        android:id="@+id/lyNothing"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:background="@drawable/card_background"
-        android:orientation="horizontal"
-        android:paddingTop="24dp"
-        android:paddingBottom="24dp"
-        android:clipToPadding="false">
-
-        <ImageView
-            android:layout_marginStart="24dp"
-            android:layout_gravity="center_vertical"
-            android:tint="@color/accent"
-            android:src="@drawable/ic_no_entries"
-            android:layout_width="38dp"
-            android:layout_height="38dp" />
-
-        <TextView
-            android:id="@+id/tvNothing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:text="@string/noEntries"
-            android:textColor="@color/snow"
-            android:fontFamily="sans-serif-medium"
-            android:layout_gravity="center_vertical"
-            android:textSize="15sp"/>
-
-    </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/dayList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:overScrollMode="never"
-        android:paddingTop="134dp" />
-
     <com.victor.loading.rotate.RotateLoading
+        android:visibility="gone"
         android:id="@+id/loadingView"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -128,32 +31,39 @@
         app:loading_width="3dp" />
 
     <fragment
+        android:id="@+id/fragmentClassSettings"
+        android:name="com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.ClassSettingsFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        tools:layout="@layout/fragment_class_settings"
+        tools:visibility="invisible" />
+
+    <fragment
+        android:id="@+id/fragmentSubstitute"
+        android:name="com.titaniel.bvcvertretungsplan.fragments.substitute_plan_fragment.SubstitutePlanFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/fragment_substitute_plan" />
+
+    <fragment
+        android:id="@+id/fragmentLogin"
+        android:name="com.titaniel.bvcvertretungsplan.fragments.login_fragment.LoginFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        tools:layout="@layout/fragment_class_settings"
+        tools:visibility="invisible" />
+
+    <fragment
         android:id="@+id/fragmentErr"
-        android:name="com.titaniel.bvcvertretungsplan.main_activity.error_fragment.ErrorFragment"
-        android:layout_width="wrap_content"
+        android:name="com.titaniel.bvcvertretungsplan.fragments.error_fragment.ErrorFragment"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_marginEnd="-4dp"
         android:layout_marginStart="-4dp"
         tools:layout="@layout/fragment_error"
-        tools:visibility="invisible" />
-
-    <fragment
-        android:id="@+id/fragmentCourseSettings"
-        android:name="com.titaniel.bvcvertretungsplan.main_activity.class_settings.ClassSettingsFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        tools:layout="@layout/fragment_class_settings"
-        tools:visibility="invisible" />
-
-    <fragment
-        android:id="@+id/fragmentLogin"
-        android:name="com.titaniel.bvcvertretungsplan.main_activity.login_fragment.LoginFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        tools:layout="@layout/fragment_class_settings"
         tools:visibility="invisible" />
 
 </RelativeLayout>

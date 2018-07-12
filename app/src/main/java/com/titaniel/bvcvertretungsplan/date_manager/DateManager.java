@@ -1,10 +1,11 @@
-package com.titaniel.bvcvertretungsplan.utils;
+package com.titaniel.bvcvertretungsplan.date_manager;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
+import com.titaniel.bvcvertretungsplan.utils.Utils;
 
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;

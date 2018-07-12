@@ -2,11 +2,10 @@ package com.titaniel.bvcvertretungsplan.database;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.util.Xml;
 import android.view.View;
 
-import com.titaniel.bvcvertretungsplan.utils.DateManager;
+import com.titaniel.bvcvertretungsplan.date_manager.DateManager;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
 import com.titaniel.bvcvertretungsplan.utils.Utils;
@@ -23,19 +22,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
 
-import static com.titaniel.bvcvertretungsplan.database.Database.KEY_COURSE;
-import static com.titaniel.bvcvertretungsplan.database.Database.KEY_DISABLED_COURSES;
-import static com.titaniel.bvcvertretungsplan.database.Database.KEY_DISABLED_ROOMS;
-import static com.titaniel.bvcvertretungsplan.database.Database.KEY_ENTRY;
-import static com.titaniel.bvcvertretungsplan.database.Database.KEY_HOURS;
-import static com.titaniel.bvcvertretungsplan.database.Database.KEY_INFO;
-import static com.titaniel.bvcvertretungsplan.database.Database.KEY_LAST_UPDATED;
-import static com.titaniel.bvcvertretungsplan.database.Database.KEY_LESSON;
-import static com.titaniel.bvcvertretungsplan.database.Database.KEY_ROOM;
-import static com.titaniel.bvcvertretungsplan.database.Database.KEY_TEACHER;
-import static com.titaniel.bvcvertretungsplan.database.Database.KEY_TRUE;
+import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.*;
+import static com.titaniel.bvcvertretungsplan.database.Database.*;
 
 /**
  * @author Daniel Weidensdörfer
@@ -69,15 +58,11 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
      */
     static class LoadingResult {
         Context context;
-        boolean ioException;
-        boolean otherException;
-        boolean internetCut;
+        int resultCode;
 
-        LoadingResult(Context context, boolean ioException, boolean otherException, boolean internetCut) {
+        LoadingResult(Context context, int resultcode) {
             this.context = context;
-            this.ioException = ioException;
-            this.otherException = otherException;
-            this.internetCut = internetCut;
+            this.resultCode = resultcode;
         }
     }
 
@@ -106,16 +91,14 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
         Context context = inputs[0].context;
         try {
 
-            //@me we are offline and we only load already downloaded data
             if(inputs[0].offline) { //OFFLINE
-                //read all current existing files
                 readData(context, context.fileList());
                 prepareEntries(context);
 
                 //Day Manager
                 DateManager.prepare();
 
-                return new LoadingResult(context, false, false, false); // Erfolg
+                return new LoadingResult(context, RES_SUCCESS);
             }
 
             //ONLINE
@@ -131,14 +114,14 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
                     url.openStream().close();
                     allUrls.add(new UrlHolder(url, name));
                 } catch (Exception e) {
-                    if(!Utils.isOnline(context)) return new LoadingResult(context, false, false, true);
+                    if(!Utils.isOnline(context)) return new LoadingResult(context, RES_NO_INTERNET);
                 }
             }
 
             //Erreichbare Dateien Downloaden
             for(UrlHolder newFile : allUrls) {
                 boolean success = downloadFile(context, newFile);
-                if(!success) return new LoadingResult(context, false, false, true);
+                if(!success) return new LoadingResult(context, RES_NO_INTERNET);
             }
 
             //read all files //Daten lesen
@@ -152,12 +135,12 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
 
         } catch (IOException e) {
             e.printStackTrace();
-            return new LoadingResult(context, true, false, false); //Lesefehler/Netzwerkfehler
+            return new LoadingResult(context, RES_IO_EXCEPTION); //Lesefehler/Netzwerkfehler
         } catch (Exception e) {
             e.printStackTrace();
-            return new LoadingResult(context, false, true, false); //anderer Fehler
+            return new LoadingResult(context, RES_XML_EXCEPTION); //anderer Fehler
         }
-        return new LoadingResult(context, false, false, false);//kein Fehler
+        return new LoadingResult(context, RES_SUCCESS);//kein Fehler
     }
 
     /**
@@ -169,7 +152,7 @@ public class LoadingTask extends AsyncTask<LoadingTask.Input, Void, LoadingTask.
      */
     @Override
     protected void onPostExecute(LoadingResult result) {
-        ((MainActivity) result.context).onDatabaseLoaded(result.ioException, result.otherException, result.internetCut);
+        ((MainActivity) result.context).onLoaded(result.resultCode);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.titaniel.bvcvertretungsplan.main_activity.class_settings;
+package com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment;
 
 import android.animation.ValueAnimator;
 import android.content.Context;

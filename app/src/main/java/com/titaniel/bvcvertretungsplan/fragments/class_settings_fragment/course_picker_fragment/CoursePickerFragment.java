@@ -1,4 +1,4 @@
-package com.titaniel.bvcvertretungsplan.main_activity.class_settings.course_picker;
+package com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.course_picker_fragment;
 
 import android.annotation.SuppressLint;
 import android.graphics.Typeface;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,9 +25,10 @@ import android.widget.TextView;
 
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
+import com.titaniel.bvcvertretungsplan.fragments.AnimatedFragment;
+import com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.ClassSettingsFragment;
+import com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.NumberAdapter;
 import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
-import com.titaniel.bvcvertretungsplan.main_activity.class_settings.ClassSettingsFragment;
-import com.titaniel.bvcvertretungsplan.main_activity.class_settings.NumberAdapter;
 
 import org.apmem.tools.layouts.FlowLayout;
 
@@ -36,11 +36,10 @@ import java.util.ArrayList;
 
 /**
  * @author Daniel Weidensdörfer
- *
+ * <p>
  * Repräsentiert die Kurswahl als Fragment
- *
  */
-public class CoursePickerFragment extends Fragment {
+public class CoursePickerFragment extends AnimatedFragment {
 
     private static final String[] sNumbers = {"1", "2", "3", "4", "5"};
 
@@ -80,8 +79,8 @@ public class CoursePickerFragment extends Fragment {
      * Von Android aufgerufen, wenn die <code>View</code> erstellt werden soll
      * Liefert die <code>View</code> zurück
      *
-     * @param inflater LayoutInflater
-     * @param container Container
+     * @param inflater           LayoutInflater
+     * @param container          Container
      * @param savedInstanceState SavedInstanceState
      * @return View
      */
@@ -93,7 +92,7 @@ public class CoursePickerFragment extends Fragment {
 
     /**
      * Von Android aufgerufen, wenn das Fragment startet
-     *
+     * <p>
      * Enthält die Initialisierungen
      */
     @Override
@@ -127,7 +126,7 @@ public class CoursePickerFragment extends Fragment {
         LinearLayoutManager manager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         mCourseSpecList.setLayoutManager(manager);
         mCourseSpecList.setHasFixedSize(true);
-        mCourseSpecList.setAdapter(new NumberAdapter(getContext(), sNumbers, R.layout.course_picker_item_number, this::numberClicked));
+        mCourseSpecList.setAdapter(new NumberAdapter(getContext(), sNumbers, R.layout.item_course_picker_number, this::numberClicked));
 
         //button left
         mBtnLeft.setOnClickListener(v -> {
@@ -181,9 +180,16 @@ public class CoursePickerFragment extends Fragment {
 
         //edittext course
         mTCourse.addTextChangedListener(new TextWatcher() {
-            @Override public void afterTextChanged(Editable s) {}
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if(!s.toString().trim().equals("")) {
                     mBtnNext.animate()
                             .setStartDelay(0)
@@ -230,11 +236,17 @@ public class CoursePickerFragment extends Fragment {
             mClassSettingsFragment.confirmChangesAndHide();
         });
 
-        mRoot.setVisibility(View.INVISIBLE);
+
+        if(mLyStandard.getVisibility() == View.VISIBLE)
+            mCourseSpecList.post(() -> {
+                ((NumberAdapter) mCourseSpecList.getAdapter()).setNumber("1");
+            });
+
     }
 
     /**
      * Fügt einen neuen Kurs zu den ausgewählten Kursen hinzu
+     *
      * @param course Kurs
      */
     private void addCourse(String course) {
@@ -269,7 +281,7 @@ public class CoursePickerFragment extends Fragment {
 
     /**
      * Entfernt den letzten hinzugefügten Kurs.
-     *
+     * <p>
      * Wenn ein Kurs übersprungen wurde, dann wird dies hier rückgängig gemacht
      */
     private void removeLastCourse() {
@@ -319,6 +331,7 @@ public class CoursePickerFragment extends Fragment {
 
     /**
      * Wandelt die Einheit DensityPixel(Android spezifisch, wird als Standardeinheit in Layouts genutzt) in Pixel um
+     *
      * @param dp DensityPixel
      * @return Pixel
      */
@@ -329,6 +342,7 @@ public class CoursePickerFragment extends Fragment {
     /**
      * Wird aufgerufen, wenn eine Nummer geklickt wurde
      * Ändert die Nummer in den Auswahlmöglichkeiten der Kurse
+     *
      * @param number Nummer als String
      */
     private void numberClicked(String number) {
@@ -367,6 +381,7 @@ public class CoursePickerFragment extends Fragment {
 
     /**
      * Ändert die Texte der Buttons und der Überschrift zu einem bestimmten Kurs
+     *
      * @param course der Kurs.... siehe <code>CoursePickerManager.Course</code>
      */
     @SuppressLint("SetTextI18n")
@@ -384,7 +399,8 @@ public class CoursePickerFragment extends Fragment {
     /**
      * Animiert die Kursänderung
      * Wird aufgerufen wenn ein Kurs geklickt wurde oder wenn mann zurück gehen will
-     * @param next True wenn nächster Kurs, False für letzten Kurs
+     *
+     * @param next    True wenn nächster Kurs, False für letzten Kurs
      * @param animate True wenn eine Bewegung animiert werden soll, ansonsten wird nur ein- und ausgeblendet
      */
     private void setCourseWithCoolAnimation(boolean next, boolean animate) {
@@ -447,7 +463,7 @@ public class CoursePickerFragment extends Fragment {
 
     /**
      * Ändert den Text des <code>mBtnBackCancel</code> zu Zurück oder Abbrechen
-     *
+     * <p>
      * ... das erste Element in der Kurswahl angezeigt wird, dann kann man die Kurswahl abbrechen
      * ... ansonsten nicht ...man kann dann nur zurück zum jeweils letzten Kurs gehen
      *
@@ -474,6 +490,7 @@ public class CoursePickerFragment extends Fragment {
 
     /**
      * Ändert das Layout von der geführten Kurswahl(Standard) zu der zusätzlichen Kurswahl(Additional)
+     *
      * @param additional true wenn zum Zusätzlichen gewechselt werden soll, false wenn zur geführten Kurswahl gewechselt werden soll
      */
     private void switchAdditionalStd(boolean additional) {
@@ -520,9 +537,10 @@ public class CoursePickerFragment extends Fragment {
 
     /**
      * Macht alle Komponenten zum für den Anfang der Kurswahl sichtbar
+     *
      * @param delay Zeitverzögerung
      */
-    public void show(long delay) {
+    public void animateShow(long delay) {
         mLyStandard.setVisibility(View.VISIBLE);
         mLyStandard.setAlpha(1);
         mLyAdditional.setVisibility(View.INVISIBLE);
@@ -538,6 +556,8 @@ public class CoursePickerFragment extends Fragment {
             setCourse(mManager.currentCourse());
         });
 
+        // TODO: 26.06.2018 bessere geile animation --> dafür eine methode erstellen die die Animationen macht und wenn du das hier machst, dann musst du die tools/android:visibility paare in das layout einfügen
+
         mRoot.setVisibility(View.VISIBLE);
         mRoot.setAlpha(0);
         mRoot.animate()
@@ -550,11 +570,12 @@ public class CoursePickerFragment extends Fragment {
 
     /**
      * Macht das gesamte Fragment unsichtbar
+     *
      * @param delay Zeitverzögerung
      * @return Zeit die eingenommen werden soll, ohne das eine andere Animation(die folgende) beginnt
-     *         oder auch die Zeitverzögerung für die nächste Animation
+     * oder auch die Zeitverzögerung für die nächste Animation
      */
-    public long hide(long delay) {
+    public long animateHide(long delay) {
         mRoot.animate()
                 .setStartDelay(delay)
                 .setDuration(150)
@@ -567,6 +588,7 @@ public class CoursePickerFragment extends Fragment {
 
     /**
      * Macht alle Buttons nicht klickbar
+     *
      * @param duration Zeit für die die Buttons nicht klickbar gemacht werden sollen
      */
     private void blockButtons(long duration) {

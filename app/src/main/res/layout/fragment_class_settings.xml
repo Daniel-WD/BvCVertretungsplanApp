@@ -9,6 +9,8 @@
     android:focusable="true">
 
     <View
+        android:visibility="invisible"
+        tools:visibility="visible"
         android:id="@+id/vBackground"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,6 +37,8 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:visibility="invisible"
+            tools:visibility="visible"
             android:id="@+id/tvChooseClass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,6 +53,8 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <RelativeLayout
+            android:visibility="invisible"
+            tools:visibility="visible"
             android:id="@+id/lyClass"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,6 +86,8 @@
         </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
+            android:visibility="invisible"
+            tools:visibility="visible"
             android:id="@+id/courseDegreeList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,6 +97,8 @@
             tools:layout_height="40dp" />
 
         <android.support.v7.widget.RecyclerView
+            android:visibility="invisible"
+            tools:visibility="visible"
             android:id="@+id/courseNumberList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -98,6 +108,8 @@
             tools:layout_height="40dp" />
 
         <LinearLayout
+            android:visibility="invisible"
+            tools:visibility="visible"
             android:id="@+id/lyButtons"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -160,7 +172,7 @@
 
     <fragment
         android:id="@+id/fragmentCoursePicker"
-        android:name="com.titaniel.bvcvertretungsplan.main_activity.class_settings.course_picker.CoursePickerFragment"
+        android:name="com.titaniel.bvcvertretungsplan.fragments.class_settings_fragment.course_picker_fragment.CoursePickerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"

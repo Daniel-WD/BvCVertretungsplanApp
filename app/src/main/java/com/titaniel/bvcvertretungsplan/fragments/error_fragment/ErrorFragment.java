@@ -1,10 +1,9 @@
-package com.titaniel.bvcvertretungsplan.main_activity.error_fragment;
+package com.titaniel.bvcvertretungsplan.fragments.error_fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,18 +15,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.titaniel.bvcvertretungsplan.R;
+import com.titaniel.bvcvertretungsplan.database.Database;
+import com.titaniel.bvcvertretungsplan.fragments.AnimatedFragment;
 
 import java.util.Random;
 
+import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.*;
+
 /**
  * @author Daniel Weidensdörfer
- * Fragment, welches dem Nutzer Fehler mitteilt(zum Beispiel ein fehlende Internet Verbindung)
+ * Fragment, welches dem Nutzer Fehler mitteilt
  */
-public class ErrorFragment extends Fragment {
-
-    public static final int ERR_NO_INTERNET = 0;
-    public static final int ERR_IO_EXCEPTION = 1;
-    public static final int ERR_OTHER_EXCEPTION = 2;
+public class ErrorFragment extends AnimatedFragment {
 
     /**
      * Callback...wenn ein Button dieses Fragments geklickt wurde
@@ -45,35 +44,25 @@ public class ErrorFragment extends Fragment {
     private TextView mTvErr;
     private TextView mTvTitle;
 
-    /**
-     * Von Android aufgerufen wenn die <code>View</code> erstellt werden soll
-     * Liefert die <code>View</code> zurück
-     *
-     * @param inflater LayoutInflater
-     * @param container Container
-     * @param savedInstanceState SavedInstanceState
-     * @return View
-     */
+    private int mAccentColor;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_error, container, false);
     }
 
-    /**
-     * Von Android aufgerufen wenn das Fragment startet
-     *
-     * Enthält die Initialisierungen
-     */
     @Override
     public void onStart() {
         super.onStart();
+
+        mAccentColor = ContextCompat.getColor(getContext(), R.color.accent);
 
         //init
         mRoot = getView();
         mIvErr = mRoot.findViewById(R.id.ivErr);
         mTvErr = mRoot.findViewById(R.id.tvErr);
-        mTvTitle = mRoot.findViewById(R.id.ivTit);
+        mTvTitle = mRoot.findViewById(R.id.tvErrorTitle);
         mBtnErrAgain = mRoot.findViewById(R.id.btnErrAgain);
         mBtnErrOffline = mRoot.findViewById(R.id.btnErrOffline);
 
@@ -86,9 +75,6 @@ public class ErrorFragment extends Fragment {
         mBtnErrOffline.setOnClickListener(v -> {
             mErrorFragmentCallback.onBtnOfflineClicked((Button) v);
         });
-
-        //make invisible
-        mRoot.setVisibility(View.INVISIBLE);
     }
 
     /**
@@ -104,36 +90,70 @@ public class ErrorFragment extends Fragment {
      * @param errorCode Fehler-Art
      */
     public void setError(int errorCode) {
-        int accentColor = ContextCompat.getColor(getContext(), R.color.accent);
         switch(errorCode) {
-            case ERR_IO_EXCEPTION:
-                mBtnErrOffline.setVisibility(View.GONE);
-                mBtnErrAgain.setTextColor(accentColor);
-                mTvErr.setText(R.string.err_io_exception);
+            case RES_ITS_HOLIDAYS:
+                confUI(R.string.holi, R.string.err_holidays, false, true, -1, mAccentColor);
                 break;
 
-            case ERR_NO_INTERNET:
-                mBtnErrOffline.setVisibility(View.VISIBLE);
-                mBtnErrOffline.setTextColor(accentColor);
-                mBtnErrAgain.setTextColor(Color.WHITE);
-                mTvErr.setText(R.string.err_no_internet);
+            case RES_SERVER_DOWN:
+            case RES_IO_EXCEPTION:
+
+                confUI(R.string.omg, R.string.err_io_exception,
+                        false, true,
+                        -1, mAccentColor);
                 break;
 
-            case ERR_OTHER_EXCEPTION:
-                mBtnErrOffline.setVisibility(View.GONE);
-                mBtnErrAgain.setTextColor(accentColor);
-                mTvErr.setText(R.string.err_other_exception);
+            case RES_NO_INTERNET:
+                if(Database.classChosen) {
+                    confUI(R.string.omg, R.string.err_no_internet,
+                            true, true,
+                            mAccentColor, Color.WHITE);
+
+                } else {
+                    confUI(R.string.omg, R.string.err_no_internet,
+                            false, true,
+                            -1, mAccentColor);
+                }
+                break;
+
+            case RES_XML_EXCEPTION:
+                confUI(R.string.omg, R.string.err_other_exception,
+                        false, true,
+                        -1, mAccentColor);
                 break;
         }
+    }
+
+    private void confUI(int titleId, int textId,
+                        boolean btnOfflineVisible, boolean btnAgainVisible) {
+        confUI(titleId, textId, btnOfflineVisible, btnAgainVisible, -1, -1);
+    }
+
+    private void confUI(int titleId, int textId,
+                        boolean btnOfflineVisible, boolean btnAgainVisible,
+                        int btnOfflineColor, int btnAgainColor) {
+        mTvTitle.setText(titleId);
+        mTvErr.setText(textId);
+        mBtnErrOffline.setVisibility(btnOfflineVisible ? View.VISIBLE : View.GONE);
+        mBtnErrAgain.setVisibility(btnAgainVisible ? View.VISIBLE : View.GONE);
+        if(btnOfflineColor != -1) mBtnErrOffline.setTextColor(btnOfflineColor);
+        if(btnAgainColor != -1) mBtnErrAgain.setTextColor(btnAgainColor);
     }
 
     /**
      * Zeigt das Fragment an
      * @param delay Zeitverzögerung
      */
-    public void show(long delay) {
-        Random r = new Random();
-        mIvErr.setImageResource(r.nextInt(2) == 0 ? R.drawable.ic_emj_angry : R.drawable.ic_emj_sad);
+    public void animateShow(long delay) {
+        boolean isHoliday = true;
+
+        if(isHoliday) {
+            mIvErr.setImageResource(R.drawable.ic_emj_admired);
+        } else {
+            Random r = new Random();
+            mIvErr.setImageResource(r.nextInt(2) == 0 ? R.drawable.ic_emj_angry : R.drawable.ic_emj_sad);
+        }
+
         mRoot.setVisibility(View.VISIBLE);
         mRoot.setTranslationY(-100);
         mRoot.setAlpha(0);
@@ -150,7 +170,7 @@ public class ErrorFragment extends Fragment {
      * Versteckt das Fragment
      * @param delay Zeitverzögerung
      */
-    public void hide(long delay) {
+    public long animateHide(long delay) {
         mRoot.animate()
                 .setStartDelay(delay)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
@@ -159,6 +179,7 @@ public class ErrorFragment extends Fragment {
                 .translationY(100)
                 .withEndAction(() -> mRoot.setVisibility(View.INVISIBLE))
                 .start();
+        return 200;
     }
 
 }
