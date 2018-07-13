@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
 import com.titaniel.bvcvertretungsplan.fragments.AnimatedFragment;
+import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
 
 import java.util.Random;
 
@@ -46,6 +47,8 @@ public class ErrorFragment extends AnimatedFragment {
 
     private int mAccentColor;
 
+    private MainActivity mActivity;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,6 +58,8 @@ public class ErrorFragment extends AnimatedFragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        mActivity = (MainActivity) getActivity();
 
         mAccentColor = ContextCompat.getColor(getContext(), R.color.accent);
 
@@ -92,48 +97,50 @@ public class ErrorFragment extends AnimatedFragment {
     public void setError(int errorCode) {
         switch(errorCode) {
             case RES_ITS_HOLIDAYS:
-                confUI(R.string.holi, R.string.err_holidays, false, true, -1, mAccentColor);
+                confUI(getString(R.string.holi), getString(R.string.err_holidays),
+                        false, true,
+                        -1, mAccentColor);
                 break;
 
             case RES_SERVER_DOWN:
             case RES_IO_EXCEPTION:
 
-                confUI(R.string.omg, R.string.err_io_exception,
+                confUI(getString(R.string.omg), getString(R.string.err_io_exception),
                         false, true,
                         -1, mAccentColor);
                 break;
 
             case RES_NO_INTERNET:
                 if(Database.classChosen) {
-                    confUI(R.string.omg, R.string.err_no_internet,
+                    confUI(getString(R.string.omg), getString(R.string.err_no_internet),
                             true, true,
                             mAccentColor, Color.WHITE);
 
                 } else {
-                    confUI(R.string.omg, R.string.err_no_internet,
+                    confUI(getString(R.string.omg), getString(R.string.err_no_internet),
                             false, true,
                             -1, mAccentColor);
                 }
                 break;
 
             case RES_XML_EXCEPTION:
-                confUI(R.string.omg, R.string.err_other_exception,
+                confUI(getString(R.string.omg), getString(R.string.err_other_exception),
                         false, true,
                         -1, mAccentColor);
                 break;
         }
     }
 
-    private void confUI(int titleId, int textId,
+    private void confUI(String title, String text,
                         boolean btnOfflineVisible, boolean btnAgainVisible) {
-        confUI(titleId, textId, btnOfflineVisible, btnAgainVisible, -1, -1);
+        confUI(title, text, btnOfflineVisible, btnAgainVisible, -1, -1);
     }
 
-    private void confUI(int titleId, int textId,
+    private void confUI(String title, String text,
                         boolean btnOfflineVisible, boolean btnAgainVisible,
                         int btnOfflineColor, int btnAgainColor) {
-        mTvTitle.setText(titleId);
-        mTvErr.setText(textId);
+        mTvTitle.setText(title);
+        mTvErr.setText(text);
         mBtnErrOffline.setVisibility(btnOfflineVisible ? View.VISIBLE : View.GONE);
         mBtnErrAgain.setVisibility(btnAgainVisible ? View.VISIBLE : View.GONE);
         if(btnOfflineColor != -1) mBtnErrOffline.setTextColor(btnOfflineColor);

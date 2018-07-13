@@ -11,6 +11,9 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
+import com.titaniel.bvcvertretungsplan.BuildConfig;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.authentication.AuthManager;
 import com.titaniel.bvcvertretungsplan.database.Database;
@@ -28,7 +31,6 @@ import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult
 import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_SERVER_DOWN;
 import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_SUCCESS;
 import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_WRONG_LOGIN;
-import static com.titaniel.bvcvertretungsplan.connection_result.ConnectionResult.RES_XML_EXCEPTION;
 
 /**
  * Repräsentiert das Hauptfenster, also den Frame, der den ganzen Bildschirm ausfüllt.
@@ -108,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         mLoadingView.setAlpha(0);
 
         mHandler.postDelayed(() -> login(0), 100);
+
     }
 
     /**

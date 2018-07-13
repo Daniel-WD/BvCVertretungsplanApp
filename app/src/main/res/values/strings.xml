@@ -37,7 +37,7 @@
     <string name="err_io_exception">Es konnte keine Verbindung zum Server hergestellt werden</string>
     <string name="err_other_exception">Beim lesen der Daten ist ein Fehler aufgetreten</string>
 
-    <string name="err_holidays">Dir ist langweilig? Bewerte die App im PlayStore! Schreib, wie dir diese App hilft und welche Funktionen du dir für die Zukunft wünschst!\n\n~Titaniel Productions</string>
+    <string name="err_holidays">Dir ist langweilig? Bewerte die App im PlayStore! Schreib, wie dir diese App gefällt und welche Funktionen du dir für die Zukunft wünschst.\n\n~Titaniel Productions</string>
 
 
     <string name="res_offline">OFFLINE MODUS</string>
