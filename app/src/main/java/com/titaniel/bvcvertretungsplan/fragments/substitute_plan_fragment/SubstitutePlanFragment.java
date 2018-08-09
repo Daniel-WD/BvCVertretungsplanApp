@@ -21,11 +21,12 @@ import android.widget.TextView;
 import com.titaniel.bvcvertretungsplan.R;
 import com.titaniel.bvcvertretungsplan.database.Database;
 import com.titaniel.bvcvertretungsplan.fragments.AnimatedFragment;
-import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
 import com.titaniel.bvcvertretungsplan.fragments.substitute_plan_fragment.day_list.DayListAdapter;
+import com.titaniel.bvcvertretungsplan.main_activity.MainActivity;
 
 public class SubstitutePlanFragment extends AnimatedFragment {
 
+    private Runnable mRunnableToRun = null;
     private Runnable mRBringDayListToTop = new Runnable() {
 
         boolean wasNotIdle = false;
@@ -33,11 +34,16 @@ public class SubstitutePlanFragment extends AnimatedFragment {
         @Override
         public void run() {
             if(mDayList.getScrollState() == RecyclerView.SCROLL_STATE_IDLE && wasNotIdle) {
+
                 mDayList.scrollToPosition(0);
 
                 mHandler.postDelayed(() -> {
-                    show(0);
-                }, 10);
+                    if(mRunnableToRun != null) {
+                        mRunnableToRun.run();
+                        mRunnableToRun = null;
+                    }
+//                    show(0);
+                }, 100);
             } else {
                 wasNotIdle = true;
                 mHandler.post(this);
@@ -57,6 +63,7 @@ public class SubstitutePlanFragment extends AnimatedFragment {
     private View mLyNothing;
 
     private RecyclerView mDayList;
+    private LinearLayoutManager mLayoutManager;
     private DayListAdapter mDayListAdapter;
 
     private MainActivity mActivity;
@@ -87,7 +94,7 @@ public class SubstitutePlanFragment extends AnimatedFragment {
         mLyNothing = mRoot.findViewById(R.id.lyNothing);
 
         //day list
-        LinearLayoutManager mLayoutManager =
+        mLayoutManager =
                 new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
 
         mDayList.setLayoutManager(mLayoutManager);
@@ -106,6 +113,7 @@ public class SubstitutePlanFragment extends AnimatedFragment {
             }
 
         });
+
 
         //ivEdit
         mIvEdit.setOnClickListener(v -> {
@@ -225,6 +233,7 @@ public class SubstitutePlanFragment extends AnimatedFragment {
             if(mDayList.getChildCount() != 0 && mDayList.canScrollVertically(1)) {
                 mFixedFirstItemPosition = mDayList.getChildAt(0).getY();
                 mDayList.smoothScrollToPosition(mDayList.getAdapter().getItemCount() - 1);
+                mRunnableToRun = runnable;
                 mHandler.post(mRBringDayListToTop);
             } else {
                 if(runnable != null) runnable.run();
@@ -353,8 +362,11 @@ public class SubstitutePlanFragment extends AnimatedFragment {
 
         //list
         delay += 50;
-        mDayList.setVisibility(View.VISIBLE);
-        if(mDayListAdapter != null) mDayListAdapter.show(delay);
+        long d = delay;
+        mHandler.postDelayed(() -> {
+            mDayList.setVisibility(View.VISIBLE);
+            if(mDayListAdapter != null) mDayListAdapter.show(0);
+        }, delay);
     }
 
     /**

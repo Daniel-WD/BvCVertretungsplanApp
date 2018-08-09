@@ -134,6 +134,9 @@ public class DayListAdapter extends RecyclerView.Adapter<DayListAdapter.DayHolde
          */
         void show(long delay) {
             itemView.setVisibility(View.VISIBLE);
+//            itemView.setAlpha(1);
+//            itemView.setTranslationY(0);
+//            if(true) return;
             itemView.setAlpha(0);
             itemView.setTranslationY(50);
             itemView.animate()
