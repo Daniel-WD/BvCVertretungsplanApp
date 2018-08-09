@@ -90,7 +90,7 @@ public class NumberAdapter extends RecyclerView.Adapter<NumberAdapter.NumberHold
     public void setNumber(String number) {
         for(int i = 0; i < getItemCount(); i++) {
             NumberHolder holder = (NumberHolder) mList.findViewHolderForAdapterPosition(i);
-            if(holder.tvNumber.getText().equals(number)) {
+            if(holder != null && holder.tvNumber.getText().equals(number)) {
                 holder.itemView.callOnClick();
                 break;
             }

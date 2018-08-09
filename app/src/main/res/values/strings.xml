@@ -8,6 +8,7 @@
     <string name="password">Passwort</string>
     <string name="fail">Die eingegebenen Daten sind falsch</string>
     <string name="fail_offline">Du bist offline</string>
+    <string name="info">Die Login Daten findest du im Intranet</string>
 
     <!--  -->
     <string name="ok">OK</string>

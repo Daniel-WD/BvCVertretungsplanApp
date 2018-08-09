@@ -119,10 +119,10 @@
     <TextView
         android:visibility="invisible"
         tools:visibility="visible"
-        android:id="@+id/tvFail"
+        android:id="@+id/tvInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/fail"
+        android:text="@string/info"
         android:textColor="@color/accent"
         app:layout_constraintBottom_toTopOf="@+id/lyUser"
         app:layout_constraintEnd_toEndOf="parent"

@@ -44,7 +44,7 @@ public class LoginFragment extends AnimatedFragment {
     private ImageView mIvUser, mIvPassword;
     private Button mBtnOk;
     private ProgressBar mProgressBar;
-    private TextView mTvFail;
+    private TextView mTvInfo;
     private FrameLayout mLyUser, mLyPassword;
     private LinearLayout mLyLogin;
     private TextView mTvTitle;
@@ -95,14 +95,14 @@ public class LoginFragment extends AnimatedFragment {
         mIvPassword = mRoot.findViewById(R.id.ivPassword);
         mBtnOk = mRoot.findViewById(R.id.btnOk);
         mProgressBar = mRoot.findViewById(R.id.progressBar);
-        mTvFail = mRoot.findViewById(R.id.tvFail);
+        mTvInfo = mRoot.findViewById(R.id.tvInfo);
         mLyUser = mRoot.findViewById(R.id.lyUser);
         mLyPassword = mRoot.findViewById(R.id.lyPassword);
         mLyLogin = mRoot.findViewById(R.id.lyLoginText);
         mTvTitle = mRoot.findViewById(R.id.tvLoginTitle);
 
         //fail text
-        mTvFail.setAlpha(0);
+        mTvInfo.setAlpha(0);
 
         //edit texts
         mTUser.setOnFocusChangeListener((v, hasFocus) -> {
@@ -128,7 +128,7 @@ public class LoginFragment extends AnimatedFragment {
                             hide(0);
                         } else {
                             hideLoadingBar();
-                            mTvFail.setText(R.string.fail);
+                            mTvInfo.setText(R.string.fail);
                             showFail(300);
                             mTPassword.setText("");
                             mTUser.setText("");
@@ -136,7 +136,7 @@ public class LoginFragment extends AnimatedFragment {
                         }
                     });
                 } else {
-                    mTvFail.setText(R.string.fail_offline);
+                    mTvInfo.setText(R.string.fail_offline);
                     hideLoadingBar();
                     showFail(300);
                 }
@@ -151,8 +151,9 @@ public class LoginFragment extends AnimatedFragment {
      * @param delay Zeitverzögerung
      */
     private void showFail(long delay) {
-        mTvFail.setVisibility(View.VISIBLE);
-        mTvFail.animate()
+        mTvInfo.setText(R.string.fail);
+        mTvInfo.setVisibility(View.VISIBLE);
+        mTvInfo.animate()
                 .setStartDelay(delay)
                 .setDuration(200)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
@@ -165,7 +166,7 @@ public class LoginFragment extends AnimatedFragment {
      * @param delay Zeitverzögerung
      */
     private void hideFail(long delay) {
-        mTvFail.animate()
+        mTvInfo.animate()
                 .setStartDelay(delay)
                 .setDuration(200)
                 .setInterpolator(new AccelerateDecelerateInterpolator())
@@ -310,6 +311,17 @@ public class LoginFragment extends AnimatedFragment {
                 .setInterpolator(new DecelerateInterpolator())
                 .alpha(1)
                 .translationY(0)
+                .start();
+
+        delay += 400;
+
+        mTvInfo.setVisibility(View.VISIBLE);
+        mTvInfo.setAlpha(0f);
+        mTvInfo.animate()
+                .setStartDelay(delay)
+                .setDuration(300)
+                .setInterpolator(new AccelerateDecelerateInterpolator())
+                .alpha(1)
                 .start();
 
     }

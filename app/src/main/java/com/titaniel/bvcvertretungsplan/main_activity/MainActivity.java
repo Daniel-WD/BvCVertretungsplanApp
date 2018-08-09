@@ -61,11 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
     private Handler mHandler = new Handler();
 
-    /**
-     * Hier ist der Start-Punkt der ganzen Anwendung. Hier werden alle Initialisierungen ausgeführt.
-     *
-     * @param savedInstanceState Android spezifisch... wird nicht genutzt deswegen erkläre ich das jetzt nicht :D
-     */
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         //login and internet check
         mHandler.postDelayed(() -> {
-            boolean isHoliday = true;
+            boolean isHoliday = false;
             boolean isOnline = Utils.isOnline(this);
             if(isHoliday) {
                 showErrorFragment(0, RES_ITS_HOLIDAYS, null);
@@ -235,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showSubstituteFragment(long delay, boolean updateSubstitutes, @Nullable AnimatedFragment oldFragment) {
+//        state = STATE_FM_SUBSTITUTE;
         delay += hideLoadingView(delay);
 
         final long d = delay;
